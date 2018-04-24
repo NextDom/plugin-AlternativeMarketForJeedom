@@ -1,0 +1,26 @@
+#market-filters {
+    margin-top: 2rem;
+}
+
+#market-div {
+    margin-top: 2rem;
+}
+
+#market-div .thumbnail {
+    height: 200px;
+    transition: all 0.2s ease;
+}
+
+#market-div .thumbnail img {
+    height: 100px;
+}
+
+#market-div .thumbnail h4 {
+    text-transform: capitalize;
+    text-align: center;
+}
+
+#market-div .thumbnail:hover {
+    cursor: pointer;
+    transform: scale(1.15);
+}

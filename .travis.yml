@@ -1,0 +1,29 @@
+matrix:
+  include:
+    - language: php
+      php: 7.1
+      install:
+       - composer install
+       - pip install --user jsmin
+       - pip install --user csscompressor
+       - mkdir -p build/logs
+      before_script:
+        - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
+      script:        
+       - cd ${TRAVIS_BUILD_DIR}
+       - ./tests/launch_tests.sh
+      after_script:
+       - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g' clover.xml
+       - php vendor/bin/php-coveralls
+    - language: markdown
+      addons:
+        apt:
+          packages:
+            - aspell
+            - aspell-fr
+      script:
+        - gem install mdl
+        - cd ${TRAVIS_BUILD_DIR}
+        - ./tests/tools/setCustomMDWarnings.sh 
+        - mdl -r $MDLWAR *.md docs/fr_FR/*.md
+        - ./tests/tools/spellCheckMD.sh 
