@@ -21,7 +21,6 @@ header('Content-Type: application/json');
 require_once(dirname(__FILE__) . '/../../../../core/php/core.inc.php');
 
 try {
-
     include_file('core', 'authentification', 'php');
 
     if (!isConnect('admin')) {

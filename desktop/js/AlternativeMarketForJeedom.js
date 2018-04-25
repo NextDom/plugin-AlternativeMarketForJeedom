@@ -8,17 +8,28 @@ $(document).ready(function () {
  * Initialise les évènements des filtres
  */
 function initFilters() {
-    $('#market-filter-src button').click(function() {
+    $('#market-filter-src button').click(function () {
         var github = $(this).data('github');
         if ($(this).hasClass('btn-primary')) {
-            $('#market-div>div[data-gituser='+github+']').slideUp();
+            $('#market-div>div[data-gituser=' + github + ']').slideUp();
             $(this).removeClass('btn-primary');
             $(this).addClass('btn-secondary');
         }
         else {
-            $('#market-div>div[data-gituser='+github+']').slideDown();
+            $('#market-div>div[data-gituser=' + github + ']').slideDown();
             $(this).removeClass('btn-secondary');
             $(this).addClass('btn-primary');
+        }
+    });
+    $('#market-filter-category').change(function () {
+        var selectedCategory = $("#market-filter-category option:selected").val();
+        if (selectedCategory != 'all') {
+            $('#market-div>div[data-category!=' + selectedCategory + ']').slideUp(400, function() {
+                $('#market-div>div[data-category=' + selectedCategory + ']').slideDown();
+            });
+        }
+        else {
+            $('#market-div>div').slideDown();
         }
     });
 }
@@ -102,7 +113,7 @@ function getItemHtml(item) {
     title = title.replace('plugin-', '');
     title = title.replace(/([a-z])([A-Z][a-z])/g, '\$1 \$2');
     var result = '' +
-        '<div class="col-xs-3 col-md-2" data-gituser="' + item['gitUser'] + '" data-category="'+item['category']+'">' +
+        '<div class="col-xs-3 col-md-2" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '">' +
         '  <div class="thumbnail">' +
         '    <img src="' + img + '" />' +
         '    <div class="caption">' +

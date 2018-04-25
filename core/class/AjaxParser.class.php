@@ -42,7 +42,6 @@ class AjaxParser
     public static function refresh($params, $data)
     {
         $result = false;
-        log::add('AlternativeMarketForJeedom', 'debug', 'Params ' . $params);
         switch ($params) {
             case 'list':
                 if (is_array($data)) {

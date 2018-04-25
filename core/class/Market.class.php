@@ -41,6 +41,9 @@ class Market
         $gitManager = new GitManager($this->gitUser);
         if ($this->downloadManager->isConnected()) {
             $ignoreList = $this->getIgnoreList();
+            // Optimisation pour pouvoir utiliser isset au lieu de in_array dans le test
+            $ignoreList = array_flip($ignoreList);
+
             if ($gitManager->isUpdateNeeded()) {
                 log::add('AlternativeMarketForJeedom', 'info', 'Mise à jour des données globales');
                 $gitManager->updateRepositoriesJsonList();
@@ -49,21 +52,18 @@ class Market
             $repositories = $gitManager->readRepositoriesJsonList();
             foreach ($repositories as $repository) {
                 $repositoryName = $repository['name'];
-                if (MarketItem::isNeedUpdate($repository) && !in_array($repositoryName, $ignoreList)) {
-                    log::add('AlternativeMarketForJeedom', 'info', 'Mise à jour des informations pour '.$repositoryName);
-                    $marketItem =$this->refreshMarketItem($repository);
+                if (MarketItem::isNeedUpdate($repository) && !isset($ignoreList[$repositoryName])) {
+                    log::add('AlternativeMarketForJeedom', 'info', 'Mise à jour des informations pour ' . $repositoryName);
+                    $marketItem = $this->refreshMarketItem($repository);
                     if ($marketItem === null) {
-                        array_push($ignoreList, $repositoryName);
-                    }
-                    else {
+                        $ignoreList[$repositoryName] = 0;
+                    } else {
                         $iconUrl = $this->getPluginIconURL($repositoryName, $marketItem->getId());
-                        log::add('AlternativeMarketForJeedom', 'debug', $iconUrl);
-                        log::add('AlternativeMarketForJeedom', 'debug', MarketItem::getRepositoryCacheFilename($marketItem->getFullName()).'.png');
-                        $this->downloadManager->downloadBinary($iconUrl, MarketItem::getRepositoryCacheFilename($marketItem->getFullName()).'.png');
+                        $this->downloadManager->downloadBinary($iconUrl, MarketItem::getRepositoryCacheFilename($marketItem->getFullName()) . '.png');
                     }
                 }
             }
-            $this->saveIgnoreList($ignoreList);
+            $this->saveIgnoreList(array_keys($ignoreList));
         }
     }
 
@@ -72,10 +72,11 @@ class Market
      *
      * @return array|mixed
      */
-    protected function getIgnoreList() {
+    protected function getIgnoreList()
+    {
         $result = array();
-        if (file_exists(dirname(__FILE__).'/../../cache/ignore_list')) {
-            $result = json_decode(file_get_contents(dirname(__FILE__).'/../../cache/ignore_list'), true);
+        if (file_exists(dirname(__FILE__) . '/../../cache/ignore_list')) {
+            $result = json_decode(file_get_contents(dirname(__FILE__) . '/../../cache/ignore_list'), true);
         }
         return $result;
     }
@@ -85,8 +86,9 @@ class Market
      *
      * @param $ignoreList Liste des dépôts ignorés
      */
-    protected function saveIgnoreList($ignoreList) {
-        file_put_contents(dirname(__FILE__).'/../../cache/ignore_list', json_encode($ignoreList, true));
+    protected function saveIgnoreList($ignoreList)
+    {
+        file_put_contents(dirname(__FILE__) . '/../../cache/ignore_list', json_encode($ignoreList, true));
     }
 
     /**
@@ -150,6 +152,6 @@ class Market
      */
     protected function getPluginIconURL($repositoryName, $pluginId)
     {
-        return 'https://raw.githubusercontent.com/' . $this->gitUser . '/' . $repositoryName . '/master/plugin_info/'.$pluginId.'_icon.png';
+        return 'https://raw.githubusercontent.com/' . $this->gitUser . '/' . $repositoryName . '/master/plugin_info/' . $pluginId . '_icon.png';
     }
 }
