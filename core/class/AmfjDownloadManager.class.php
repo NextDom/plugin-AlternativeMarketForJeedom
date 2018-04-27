@@ -28,12 +28,12 @@ class DownloadManager
     protected function testConnection()
     {
         try {
-            $sock = fsockopen('www.google.fr', 80);
+            $sock = \fsockopen('www.google.fr', 80);
             if ($sock) {
                 $this->connectionStatus = true;
                 fclose($sock);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->connectionStatus = false;
         }
     }
@@ -51,8 +51,8 @@ class DownloadManager
     /**
      * Télécharge un contenu à partir de son lien
      *
-     * @param $url Lien du contenu à télécharger.
-     * @param $binary Télécharger un binaire
+     * @param string $url Lien du contenu à télécharger.
+     * @param bool $binary Télécharger un binaire
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
@@ -76,13 +76,12 @@ class DownloadManager
     public function downloadBinary($url, $dest)
     {
         $imgData = $this->downloadContent($url, true);
-        if (file_exists($dest)) {
-            unlink($dest);
+        if (\file_exists($dest)) {
+            \unlink($dest);
         }
-        log::add('AlternativeMarketForJeedom', 'debug', $imgData);
-        $filePointer = fopen($dest, 'wb');
-        fwrite($filePointer, $imgData);
-        fclose($filePointer);
+        $filePointer = \fopen($dest, 'wb');
+        \fwrite($filePointer, $imgData);
+        \fclose($filePointer);
     }
 
     /**
@@ -98,8 +97,8 @@ class DownloadManager
     /**
      * Télécharge un contenu à partir de son lien avec la méthode cURL
      *
-     * @param $url Lien du contenu à télécharger.
-     * @param $binary Télécharger un binaire
+     * @param string $url Lien du contenu à télécharger.
+     * @param bool $binary Télécharger un binaire
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
@@ -108,14 +107,14 @@ class DownloadManager
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {
-            curl_setopt($curlSession, CURLOPT_URL, $url);
-            curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
+            \curl_setopt($curlSession, CURLOPT_URL, $url);
+            \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
-                curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
+                \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
             }
-            curl_setopt($curlSession, CURLOPT_USERAGENT, 'AlternativeMarketForJeedom');
-            $content = curl_exec($curlSession);
-            curl_close($curlSession);
+            \curl_setopt($curlSession, CURLOPT_USERAGENT, 'AlternativeMarketForJeedom');
+            $content = \curl_exec($curlSession);
+            \curl_close($curlSession);
         }
         return $content;
     }
@@ -127,13 +126,13 @@ class DownloadManager
      */
     protected function isUrlFopenEnabled()
     {
-        return ini_get('allow_fopen_url');
+        return \ini_get('allow_fopen_url');
     }
 
     /**
      * Télécharge un contenu à partir de son lien avec la méthode fopen
      *
-     * @param $url Lien du contenu à télécharger.
+     * @param string $url Lien du contenu à télécharger.
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
@@ -141,8 +140,8 @@ class DownloadManager
     {
         $result = false;
         try {
-            $result = file_get_contents($url);
-        } catch (Exception $e) {
+            $result = \file_get_contents($url);
+        } catch (\Exception $e) {
             $result = false;
         }
         return $result;

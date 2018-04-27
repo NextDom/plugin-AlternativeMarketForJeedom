@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../core/class/Market.class.php');
+require_once(dirname(__FILE__) . '/../../core/class/AmfjMarket.class.php');
 
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');

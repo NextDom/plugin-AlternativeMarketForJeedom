@@ -1,5 +1,7 @@
 <?php
 
+require_once (dirname(__FILE__).'/../config/common.config.php');
+
 /**
  * Mocked des requêtes
  */
@@ -77,9 +79,15 @@ class DB
     /**
      * Initialisation de la connexion
      */
-    public static function init()
+    public static function init($useRealDB = false)
     {
-        static::$connection = new MockedPDO();
+        if ($useRealDB) {
+            global $CONFIG;
+            static::$connection = new PDO('mysql:host=' . $CONFIG['db']['host'] . ';port=' . $CONFIG['db']['port'] . ';dbname=' . $CONFIG['db']['dbname'], $CONFIG['db']['username'], $CONFIG['db']['password'], array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8', PDO::ATTR_PERSISTENT => true));
+        }
+        else {
+            static::$connection = new MockedPDO();
+        }
     }
 
     /**

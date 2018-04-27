@@ -11,7 +11,7 @@ class MarketItem
     /**
      * @var int Temps de rafraichissement d'un dépôt
      */
-    private static $REFRESH_TIME_LIMIT = 7200;
+    private $REFRESH_TIME_LIMIT = 7200;
 
     /**
      * @var string Identifiant du plugin
@@ -34,7 +34,7 @@ class MarketItem
      */
     private $description;
     /**
-     * @var string URL du dépôt Git
+     * @var string URL Git
      */
     private $url;
     /**
@@ -50,8 +50,9 @@ class MarketItem
      */
     private $category;
     /**
-     * @var string Lien de l'icône
+     * @var DataStorage Gestionnaire de base de données
      */
+    private $dataStorage;
 
     /**
      * Constructeur initialisant les informations de base
@@ -61,6 +62,7 @@ class MarketItem
     public function __construct($repositoryInformations)
     {
         $this->initWithGlobalInformations($repositoryInformations);
+        $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
     /**
@@ -74,7 +76,7 @@ class MarketItem
         $this->fullName = $repositoryInformations['full_name'];
         $this->description = $repositoryInformations['description'];
         $this->url = $repositoryInformations['html_url'];
-        $this->gitUser = $repositoryInformations['owner']['login'];
+        $this->gitUser = $repositoryInformations['git_user'];
     }
 
     /**
@@ -97,13 +99,13 @@ class MarketItem
      *
      * @return bool True si une mise à jour est nécessaire
      */
-    public static function isNeedUpdate($repositoryInformations)
+    public function isNeedUpdate($repositoryInformations)
     {
         $result = true;
-        $cacheFilename = static::getRepositoryCacheFilename($repositoryInformations['full_name']);
-        if (file_exists($cacheFilename)) {
-            if (time() - filemtime($cacheFilename) < static::$REFRESH_TIME_LIMIT) {
-                $result = false;
+        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_'.\str_replace('/', '_', $repositoryInformations['full_name']));
+        if ($lastUpdate !== null) {
+            if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
+                return false;
             }
         }
         return $result;
@@ -132,64 +134,60 @@ class MarketItem
     /**
      * Ecrire le fichier de cache au format JSON
      */
-    public function writeCacheFile()
+    public function writeCache()
     {
         $dataArray = $this->getDataInArray();
-        file_put_contents(static::getRepositoryCacheFilename($this->fullName), json_encode($dataArray));
+        $this->dataStorage->storeJsonData('repo_data_'.str_replace('/', '_', $this->fullName), $dataArray);
+        $this->dataStorage->storeRawData('repo_last_update_'.str_replace('/', '_', $this->fullName), \time());
     }
 
     /**
      * Lire le fichier de cache
      *
-     * @param $cacheFilename Nom du fichier de cache
+     * @return bool True si la lecture a réussi
      */
-    public function readCacheFile($cacheFilename)
+    public function readCache()
     {
-        $content = file_get_contents($cacheFilename);
-        $jsonContent = json_decode($content, true);
-        if (array_key_exists('name', $jsonContent)) $this->name = $jsonContent['name'];
-        if (array_key_exists('gitName', $jsonContent)) $this->gitName = $jsonContent['gitName'];
-        if (array_key_exists('gitUser', $jsonContent)) $this->gitUser = $jsonContent['gitUser'];
-        if (array_key_exists('fullName', $jsonContent)) $this->fullName = $jsonContent['fullName'];
-        if (array_key_exists('description', $jsonContent)) $this->description = $jsonContent['description'];
-        if (array_key_exists('url', $jsonContent)) $this->url = $jsonContent['url'];
-        if (array_key_exists('id', $jsonContent)) $this->id = $jsonContent['id'];
-        if (array_key_exists('author', $jsonContent)) $this->author = $jsonContent['author'];
-        if (array_key_exists('category', $jsonContent)) $this->category = $jsonContent['category'];
-    }
-
-    /**
-     * Créer l'élément à partir du cache
-     *
-     * @param $repositoryInformations Informations du dépôt
-     *
-     * @return MarketItem|null Elément lu ou null
-     */
-    public static function createFromCacheFile($repositoryInformations)
-    {
-        $marketItem = null;
-        $cacheFilename = static::getRepositoryCacheFilename($repositoryInformations['full_name']);
-        if (file_exists($cacheFilename)) {
-            $marketItem = new MarketItem($repositoryInformations);
-            $marketItem->readCacheFile($cacheFilename);
+        $result = false;
+        $jsonContent = $this->dataStorage->getJsonData('repo_data_'.str_replace('/', '_', $this->fullName));
+        if ($jsonContent !== null) {
+            if (\array_key_exists('name', $jsonContent)) $this->name = $jsonContent['name'];
+            if (\array_key_exists('gitName', $jsonContent)) $this->gitName = $jsonContent['gitName'];
+            if (\array_key_exists('gitUser', $jsonContent)) $this->gitUser = $jsonContent['gitUser'];
+            if (\array_key_exists('fullName', $jsonContent)) $this->fullName = $jsonContent['fullName'];
+            if (\array_key_exists('description', $jsonContent)) $this->description = $jsonContent['description'];
+            if (\array_key_exists('url', $jsonContent)) $this->url = $jsonContent['url'];
+            if (\array_key_exists('id', $jsonContent)) $this->id = $jsonContent['id'];
+            if (\array_key_exists('author', $jsonContent)) $this->author = $jsonContent['author'];
+            if (\array_key_exists('category', $jsonContent)) $this->category = $jsonContent['category'];
+            $result = true;
         }
-        return $marketItem;
+        return $result;
     }
 
     /**
-     * Obtenir le chemin du fichier de cache
+     * Met à jour les données de l'élement
      *
-     * @param $fullName Nom du dépôt
-     *
-     * @return string Chemin du fichier de cache
+     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
+     * @return bool True si la mise à jour a été effectuée.
      */
-    public static function getRepositoryCacheFilename($fullName)
-    {
-        return dirname(__FILE__) . '/../../cache/' . str_replace('/', '_', $fullName);
+    public function refresh($downloadManager) {
+        $result = false;
+        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/master/plugin_info/info.json';
+        $infoJson = $downloadManager->downloadContent($infoJsonUrl);
+        if (strpos($infoJson, '404: Not Found') === false) {
+            $pluginData = \json_decode($infoJson, true);
+            $this->addPluginInformations($pluginData);
+            $this->writeCache();
+            $result = true;
+        }
+        return $result;
     }
 
     /**
-     * @return mixed
+     * Obtenir le nom du dépot.
+     *
+     * @return string Nom du dépot
      */
     public function getGitName()
     {
@@ -197,7 +195,9 @@ class MarketItem
     }
 
     /**
-     * @return mixed
+     * Obtenir le nom complet
+     *
+     * @return string Nom complet
      */
     public function getFullName()
     {
@@ -205,7 +205,9 @@ class MarketItem
     }
 
     /**
-     * @return mixed
+     * Obtenir la description du dépot
+     *
+     * @return string Description
      */
     public function getDescription()
     {
@@ -213,7 +215,9 @@ class MarketItem
     }
 
     /**
-     * @return mixed
+     * Obtenir le lien
+     *
+     * @return string Lien
      */
     public function getUrl()
     {
@@ -221,7 +225,9 @@ class MarketItem
     }
 
     /**
-     * @return mixed
+     * Obtenir l'identifiant
+     *
+     * @return string Identifiant
      */
     public function getId()
     {
@@ -229,7 +235,9 @@ class MarketItem
     }
 
     /**
-     * @return mixed
+     * Obtenir l'auteur
+     * 
+     * @return string Auteur
      */
     public function getAuthor()
     {
@@ -237,7 +245,9 @@ class MarketItem
     }
 
     /**
-     * @return mixed
+     * Obtenir la catégorie
+     *
+     * @return string Catégorie
      */
     public function getCategory()
     {
@@ -245,7 +255,9 @@ class MarketItem
     }
 
     /**
-     * @return string
+     * Obtenir le nom
+     *
+     * @return string Nom
      */
     public function getName()
     {
@@ -253,7 +265,9 @@ class MarketItem
     }
 
     /**
-     * @return string
+     * Obtenir l'utilisateur GitHub
+     *
+     * @return string Utilisateur GitHub
      */
     public function getGitUser()
     {

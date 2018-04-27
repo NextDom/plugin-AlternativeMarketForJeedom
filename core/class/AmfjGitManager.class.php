@@ -6,7 +6,8 @@
  * Time: 16:42
  */
 
-require_once ('DownloadManager.class.php');
+require_once('AmfjDownloadManager.class.php');
+require_once('AmfjDataStorage.class.php');
 
 class GitManager
 {
@@ -19,13 +20,13 @@ class GitManager
      */
     private $gitUser;
     /**
-     * @var string Fichier contenant la liste des dépôts au format JSON
-     */
-    private $repositoriesFile;
-    /**
      * @var DownloadManager Gestionnaire de téléchargement
      */
     private $downloadManager;
+    /**
+     * @var DataStorage Gestionnaire de base de données
+     */
+    private $dataStorage;
 
     /**
      * Constructeur du gestionnaire Git
@@ -36,7 +37,7 @@ class GitManager
     {
         $this->downloadManager = new DownloadManager();
         $this->gitUser = $gitUser;
-        $this->repositoriesFile = dirname(__FILE__) . '/../../cache/' . $this->gitUser;
+        $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
     /**
@@ -47,9 +48,10 @@ class GitManager
     public function isUpdateNeeded()
     {
         $result = true;
-        if (file_exists($this->repositoriesFile)) {
-            if (time() - filemtime($this->repositoriesFile) < $this->REFRESH_TIME_LIMIT) {
-                $result = false;
+        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_'.$this->gitUser);
+        if ($lastUpdate !== null) {
+            if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
+                return false;
             }
         }
         return $result;
@@ -60,17 +62,28 @@ class GitManager
      *
      * @return bool True si l'opération a réussie
      */
-    public function updateRepositoriesJsonList()
+    public function updateRepositoriesList()
     {
         $result = false;
-        $jsonList = $this->downloadRepositoriesJsonList();
+        $jsonList = $this->downloadRepositoriesList();
         if ($jsonList !== false) {
-            $jsonAnswer = json_decode($jsonList, true);
-            if (array_key_exists('message', $jsonAnswer) && $jsonAnswer['message'] == 'Not Found') {
+            $jsonAnswer = \json_decode($jsonList, true);
+            if (\array_key_exists('message', $jsonAnswer) && $jsonAnswer['message'] == 'Not Found') {
                 $result = false;
             }
             else {
-                file_put_contents($this->repositoriesFile, $jsonList);
+                $dataToStore = array();
+                foreach ($jsonAnswer as $repository) {
+                    $data = array();
+                    $data['name'] = $repository['name'];
+                    $data['full_name'] = $repository['full_name'];
+                    $data['description'] = $repository['description'];
+                    $data['html_url'] = $repository['html_url'];
+                    $data['git_user'] = $this->gitUser;
+                    \array_push($dataToStore, $data);
+                }
+                $this->dataStorage->storeRawData('repo_last_update_'.$this->gitUser, \time());
+                $this->dataStorage->storeJsonData('repo_data_'.$this->gitUser, $dataToStore);
                 $result = true;
             }
         }
@@ -82,7 +95,7 @@ class GitManager
      *
      * @return string|bool Données au format JSON ou False en cas d'échec
      */
-    protected function downloadRepositoriesJsonList()
+    protected function downloadRepositoriesList()
     {
         $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitUser . '/repos');
         return $content;
@@ -93,14 +106,11 @@ class GitManager
      *
      * @return bool|array Tableau associatifs contenant les données ou false en cas d'échec
      */
-    public function readRepositoriesJsonList() {
+    public function getRepositoriesList() {
         $result = false;
-        if (file_exists($this->repositoriesFile)) {
-            $rawContent = file_get_contents($this->repositoriesFile);
-            $content = json_decode($rawContent, true);
-            if (is_array($content)) {
-                $result = $content;
-            }
+        $jsonStrList = $this->dataStorage->getJsonData('repo_data_'.$this->gitUser);
+        if ($jsonStrList !== null) {
+            $result = $jsonStrList;
         }
         return $result;
     }

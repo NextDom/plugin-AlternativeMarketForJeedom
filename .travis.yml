@@ -2,11 +2,12 @@ matrix:
   include:
     - language: php
       php: 7.1
+      services:
+       - mysql
       install:
        - composer install
-       - pip install --user jsmin
-       - pip install --user csscompressor
        - mkdir -p build/logs
+       - mysql -e 'CREATE DATABASE jeedom_test;'
       before_script:
         - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
       script:        

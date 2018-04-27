@@ -17,8 +17,12 @@
  */
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once(dirname(__FILE__) . '/../core/class/AmfjDataStorage.class.php');
 
 function AlternativeMarketForJeedom_install() {
+    $dataStorage = new AmfjDataStorage('amfj');
+    $dataStorage->createDataTable();
+
     $pluginExtra = new AlternativeMarketForJeedom();
     $pluginExtra->setName('plugins-extra');
     $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
@@ -38,6 +42,8 @@ function AlternativeMarketForJeedom_update() {
 
 
 function AlternativeMarketForJeedom_remove() {
+    $dataStorage = new AmfjDataStorage('amfj');
+    $dataStorage->dropDataTable();
     foreach (eqLogic::byType('AlternativeMarketForJeedom') as $eqLogic) {
         $eqLogic->remove();
     }

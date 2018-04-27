@@ -18,37 +18,37 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once('core/class/MarketItem.class.php');
+require_once('core/class/AmfjMarketItem.class.php');
+require_once('core/class/AmfjDataStorage.class.php');
 
-class MarketItemTest extends TestCase
+class AmfjMarketItemTest extends TestCase
 {
     /**
      * @var MarketItem
      */
     private $marketItem;
 
+    private $dataStorage;
+
     private $initialData = array(
         'name' => 'core',
         'full_name' => 'jeedom/core',
         'description' => 'A small description',
-        'html_url' => 'https://github.com/jeedom/core'
+        'html_url' => 'https://github.com/jeedom/core',
+        'git_user' => 'jeedom'
     );
 
     public function setUp()
     {
+        DB::init(true);
         $this->marketItem = new MarketItem($this->initialData);
-        mkdir('cache');
+        $this->dataStorage = new AmfjDataStorage('amfj');
+        $this->dataStorage->createDataTable();
     }
 
     public function tearDown()
     {
-        $filesList = scandir('cache');
-        foreach ($filesList as $file) {
-            if ($file != '.' && $file != '..') {
-                unlink('cache/' . $file);
-            }
-        }
-        rmdir('cache');
+        $this->dataStorage->dropDataTable();
     }
 
     public function testInitWithGlobalInformations() {
@@ -61,7 +61,7 @@ class MarketItemTest extends TestCase
     public function testAddPluginInformations() {
         $pluginInformations = array(
             'id' => 'Core',
-            'name' => 'core',
+            'name' => 'Core for test',
             'author' => 'Someone',
             'category' => 'programming'
         );
@@ -69,6 +69,7 @@ class MarketItemTest extends TestCase
         $this->assertEquals('Core', $this->marketItem->getId());
         $this->assertEquals('Someone', $this->marketItem->getAuthor());
         $this->assertEquals('programming', $this->marketItem->getCategory());
+        $this->assertEquals('Core for test', $this->marketItem->getName());
     }
 
     public function testIsNeedUpdateWithNothing() {
@@ -76,15 +77,14 @@ class MarketItemTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testIsNeedUpdateWithRecentFile() {
-        file_put_contents('cache/jeedom_core', 'data');
+    public function testIsNeedUpdateWithRecentData() {
+        $this->dataStorage->storeRawData('repo_last_update_jeedom_core', time());
         $result = $this->marketItem->isNeedUpdate($this->initialData);
         $this->assertFalse($result);
     }
 
     public function testIsNeedUpdateWithOldFile() {
-        file_put_contents('cache/jeedom_core', 'data');
-        touch('cache/jeedom_core', time() - 360000);
+        $this->dataStorage->storeRawData('repo_last_update_jeedom_core', time() - 360000);
         $result = $this->marketItem->isNeedUpdate($this->initialData);
         $this->assertTrue($result);
     }
@@ -97,33 +97,26 @@ class MarketItemTest extends TestCase
     }
 
     public function testWriteCache() {
-        $this->marketItem->writeCacheFile();
-        $this->assertFileExists('cache/jeedom_core');
-        $content = file_get_contents('cache/jeedom_core');
-        $this->assertContains('"fullName":"jeedom\/core"', $content);
+        $this->marketItem->writeCache();
+        $data = $this->dataStorage->getJsonData('repo_data_jeedom_core');
+        $this->assertNotNull($data);
+        $this->assertEquals('jeedom/core', $data['fullName']);
+        $lastUpdate = $this->dataStorage->getJsonData('repo_last_update_jeedom_core');
+        $this->assertNotNull($lastUpdate);
+        $this->assertTrue(is_numeric($lastUpdate));
     }
 
-    public function testReadCacheFile() {
-        file_put_contents('cache/jeedom_core', json_encode($this->initialData));
-        $this->marketItem->readCacheFile('cache/jeedom_core');
-        $this->assertEquals('core', $this->marketItem->getGitName());
-        $this->assertEquals('', $this->marketItem->getId());
+    public function testReadCacheWithCache() {
+        $jsonData = '{"name":"replace name","full_name":"jeedom/core","description":"A small description","html_url":"https://github.com/jeedom/core", "git_user":"jeedom","category":"programming"}';
+        $this->dataStorage->storeRawData('repo_data_jeedom_core', $jsonData);
+        $result = $this->marketItem->readCache();
+        $this->assertTrue($result);
+        $this->assertEquals('replace name', $this->marketItem->getName());
+        $this->assertEquals('programming', $this->marketItem->getCategory());
     }
 
-    public function testCreateFromCacheFileWithoutCache() {
-        $result = MarketItem::createFromCacheFile($this->initialData);
-        $this->assertNull($result);
-    }
-
-    public function testCreateFromCacheFileWithCache() {
-        file_put_contents('cache/jeedom_core', json_encode($this->initialData));
-        $result = MarketItem::createFromCacheFile($this->initialData);
-        $this->assertEquals('core', $result->getGitName());
-        $this->assertEquals('', $result->getId());
-    }
-
-    public function testGetRepositoryCacheFilename() {
-        $result = realpath(dirname(__FILE__) . '/../cache/jeedom_core');
-        $this->assertEquals($result, realpath(MarketItem::getRepositoryCacheFilename('jeedom/core')))   ;
+    public function testReadCacheWithoutCache() {
+        $result = $this->marketItem->readCache();
+        $this->assertFalse($result);
     }
 }

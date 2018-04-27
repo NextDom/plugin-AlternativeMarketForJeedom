@@ -18,7 +18,8 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once('core/class/DownloadManager.class.php');
+require_once('core/class/AmfjDownloadManager.class.php');
+require_once('../../core/php/core.inc.php');
 
 class Mocked_DownloadManager extends DownloadManager
 {

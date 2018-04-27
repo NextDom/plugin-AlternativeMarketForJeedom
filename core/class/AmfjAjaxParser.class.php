@@ -6,7 +6,7 @@
  * Time: 13:08
  */
 
-require_once 'Market.class.php';
+require_once 'AmfjMarket.class.php';
 
 class AjaxParser
 {
@@ -15,6 +15,7 @@ class AjaxParser
      *
      * @param $action Action de la requête
      * @param $params Paramètres de la requête
+     * @param $data Données de la requête
      *
      * @return array|bool Résultat
      */
@@ -35,7 +36,8 @@ class AjaxParser
     /**
      * Actions de refraichissement
      *
-     * @param $params Type de rafraichissement
+     * @param string $params Type de rafraichissement
+     * @param mixed $data Données en fonction du paramètre
      *
      * @return bool True si l'action a réussie
      */
@@ -59,7 +61,8 @@ class AjaxParser
     /**
      * Obtenir une information
      *
-     * @param $params Identifiant de l'information
+     * @param string $params Identifiant de l'information
+     * @param mixed $data Données en fonction du paramètre
      *
      * @return array|bool Information demandée
      */
@@ -77,7 +80,7 @@ class AjaxParser
                             array_push($result, $item->getDataInArray());
                         }
                     }
-                    usort($result, function($item1, $item2) {
+                    \usort($result, function($item1, $item2) {
                         return $item1['name'] > $item2['name'];
                     });
                 }

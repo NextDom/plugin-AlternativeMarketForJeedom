@@ -27,7 +27,7 @@ try {
         throw new \Exception(__('401 - Accès non autorisé', __FILE__));
     }
 
-    require_once dirname(__FILE__).'/../class/AjaxParser.class.php';
+    require_once dirname(__FILE__) . '/../class/AmfjAjaxParser.class.php';
 
     ajax::init();
 
