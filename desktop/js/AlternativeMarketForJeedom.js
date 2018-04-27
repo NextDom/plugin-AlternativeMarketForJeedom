@@ -117,7 +117,11 @@ function getItemHtml(item) {
         '  <div class="thumbnail">' +
         '    <img src="' + img + '" />' +
         '    <div class="caption">' +
-        '      <h4>' + title + '</h4>' +
+        '      <h4>' + title + '</h4>';
+    if (item['installed']) {
+        result += '<span>Installed</span>';
+    }
+    result += '' +
         '    </div>' +
         '  </div>' +
         '</div>';

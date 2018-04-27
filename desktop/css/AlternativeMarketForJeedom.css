@@ -9,6 +9,7 @@
 #market-div .thumbnail {
     height: 200px;
     transition: all 0.2s ease;
+    overflow: hidden;
 }
 
 #market-div .thumbnail img {

@@ -128,6 +128,7 @@ class MarketItem
         $dataArray['id'] = $this->id;
         $dataArray['author'] = $this->author;
         $dataArray['category'] = $this->category;
+        $dataArray['installed'] = $this->isInstalled();
         return $dataArray;
     }
 
@@ -179,6 +180,19 @@ class MarketItem
             $pluginData = \json_decode($infoJson, true);
             $this->addPluginInformations($pluginData);
             $this->writeCache();
+            $result = true;
+        }
+        return $result;
+    }
+
+    /**
+     * Test si le plugin est installée
+     *
+     * @return bool True si le plugin est installée
+     */
+    public function isInstalled() {
+        $result = false;
+        if (\file_exists(\dirname(__FILE__).'/../../../'.$this->id)) {
             $result = true;
         }
         return $result;
