@@ -14,7 +14,7 @@ class GitManager
     /**
      * @var int Temps de rafraichissement de la liste des plugins
      */
-    private $REFRESH_TIME_LIMIT = 7200;
+    private $REFRESH_TIME_LIMIT = 86400;
     /**
      * @var string Utilisateur du dépot
      */

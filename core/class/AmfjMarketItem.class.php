@@ -11,7 +11,7 @@ class MarketItem
     /**
      * @var int Temps de rafraichissement d'un dépôt
      */
-    private $REFRESH_TIME_LIMIT = 7200;
+    private $REFRESH_TIME_LIMIT = 86400;
 
     /**
      * @var string Identifiant du plugin

@@ -1,3 +1,5 @@
+var currentPlugin = null;
+
 // Point d'entrée du script
 $(document).ready(function () {
     refresh();
@@ -24,7 +26,7 @@ function initFilters() {
     $('#market-filter-category').change(function () {
         var selectedCategory = $("#market-filter-category option:selected").val();
         if (selectedCategory != 'all') {
-            $('#market-div>div[data-category!=' + selectedCategory + ']').slideUp(400, function() {
+            $('#market-div>div[data-category!=' + selectedCategory + ']').slideUp(400, function () {
                 $('#market-div>div[data-category=' + selectedCategory + ']').slideDown();
             });
         }
@@ -32,7 +34,7 @@ function initFilters() {
             $('#market-div>div').slideDown();
         }
     });
-    $('#refresh-markets').click(function() {
+    $('#refresh-markets').click(function () {
         refresh(true);
     });
 }
@@ -106,6 +108,10 @@ function showItems(items) {
     for (var index = 0; index < items.length; ++index) {
         container.append(getItemHtml(items[index]));
     }
+    $('.thumbnail').click(function () {
+        showPluginModal($(this).data('plugin'));
+    });
+
 }
 
 /**
@@ -120,18 +126,34 @@ function getItemHtml(item) {
     var title = item['name'];
     title = title.replace('plugin-', '');
     title = title.replace(/([a-z])([A-Z][a-z])/g, '\$1 \$2');
+    var pluginData = JSON.stringify(item);
+    pluginData = pluginData.replace(/"/g, '&quot;');
     var result = '' +
         '<div class="col-xs-3 col-md-2" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '">' +
-        '  <div class="thumbnail">' +
+        '  <div class="thumbnail" data-plugin="'+pluginData+'">' +
         '    <img src="' + img + '" />' +
         '    <div class="caption">' +
         '      <h4>' + title + '</h4>';
     if (item['installed']) {
         result += '<span>Installed</span>';
     }
+    /*
+    else {
+        result += '<button data-plugin="'+pluginData+'" class="btn btn-default show-plugin-modal">Installer</button>';
+    }
+    */
     result += '' +
         '    </div>' +
         '  </div>' +
         '</div>';
     return result;
+}
+
+/**
+ * Initialise les fenêtres modales
+ */
+function showPluginModal(pluginData) {
+    $('#md_modal').dialog({title: pluginData['name']});
+    $('#md_modal').load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
+    currentPlugin = pluginData;
 }
