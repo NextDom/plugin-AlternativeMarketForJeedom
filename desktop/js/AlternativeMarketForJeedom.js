@@ -108,7 +108,7 @@ function showItems(items) {
     for (var index = 0; index < items.length; ++index) {
         container.append(getItemHtml(items[index]));
     }
-    $('.thumbnail').click(function () {
+    $('.media').click(function () {
         showPluginModal($(this).data('plugin'));
     });
 
@@ -129,23 +129,20 @@ function getItemHtml(item) {
     var pluginData = JSON.stringify(item);
     pluginData = pluginData.replace(/"/g, '&quot;');
     var result = '' +
-        '<div class="col-xs-3 col-md-2" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '">' +
-        '  <div class="thumbnail" data-plugin="'+pluginData+'">' +
-        '    <img src="' + img + '" />' +
-        '    <div class="caption">' +
-        '      <h4>' + title + '</h4>';
+                 '<div class="media-container col-xs-6 col-md-4" data-gituser="\' + item[\'gitUser\'] + \'" data-category="\' + item[\'category\'] + \'">' +
+                   '<div class="media" data-plugin="\'+pluginData+\'">' +
+                     '<div class="media-left media-middle">'+
+                       '<img src="'+img+'"/>' +
+                     '</div>' +
+                     '<div class="media-body">' +
+                       '<h4 class="media-heading">'+title+'</h4>' +
+                       '<p>'+item['description']+'</p>';
     if (item['installed']) {
-        result += '<span>Installed</span>';
+        result +=        '<p>Déjà installé</p>';
     }
-    /*
-    else {
-        result += '<button data-plugin="'+pluginData+'" class="btn btn-default show-plugin-modal">Installer</button>';
-    }
-    */
-    result += '' +
-        '    </div>' +
-        '  </div>' +
-        '</div>';
+    result +=        '</div>' +
+                   '</div>' +
+                 '</div>';
     return result;
 }
 

@@ -74,9 +74,9 @@ class MarketItem
     {
         $this->gitName = $repositoryInformations['name'];
         $this->fullName = $repositoryInformations['full_name'];
-        $this->description = $repositoryInformations['description'];
         $this->url = $repositoryInformations['html_url'];
         $this->gitUser = $repositoryInformations['git_user'];
+        $this->description = $repositoryInformations['description'];
     }
 
     /**
@@ -90,6 +90,9 @@ class MarketItem
         $this->name = $pluginInfo['name'];
         $this->author = $pluginInfo['author'];
         $this->category = $pluginInfo['category'];
+        if ($pluginInfo['description'] !== null && $pluginInfo['description'] !== '') {
+            $this->description = $pluginInfo['description'];
+        }
     }
 
     /**

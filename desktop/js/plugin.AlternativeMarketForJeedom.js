@@ -16,8 +16,7 @@ function installPlugin() {
         },
         dataType: 'json',
         success: function (data, status) {
-            console.log('coucou');
-//            window.location.replace('/index.php?v=d&p=plugin');
+            window.location.replace('/index.php?v=d&p=plugin');
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);

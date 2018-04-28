@@ -6,22 +6,36 @@
     margin-top: 2rem;
 }
 
-#market-div .thumbnail {
+#market-div .media-container {
+    margin: 0;
+    padding: 1rem;
+}
+
+#market-div .media {
+    display: table;
     height: 200px;
     transition: all 0.2s ease;
     overflow: hidden;
+    border: 1px solid #ccc;
+    margin: 0;
+    border-radius: 5px;
+    padding: 1rem;
 }
 
-#market-div .thumbnail img {
+#market-div .media img {
     height: 100px;
 }
 
-#market-div .thumbnail h4 {
+#market-div .media h4 {
     text-transform: capitalize;
     text-align: center;
 }
 
-#market-div .thumbnail:hover {
+#market-div .media-body p {
+    text-align: justify;
+}
+
+#market-div .media:hover {
     cursor: pointer;
-    transform: scale(1.15);
+    transform: scale(1.02);
 }
