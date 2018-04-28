@@ -32,17 +32,24 @@ function initFilters() {
             $('#market-div>div').slideDown();
         }
     });
+    $('#refresh-markets').click(function() {
+        refresh(true);
+    });
 }
 
 /**
  * Rafraichit les éléments affichés
  */
-function refresh() {
+function refresh(force) {
+    var params = 'list';
+    if (typeof force !== undefined && force === true) {
+        params = 'list-force';
+    }
     $.post({
         url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
         data: {
             action: 'refresh',
-            params: 'list',
+            params: params,
             data: gitLists
         },
         dataType: 'json',
@@ -95,6 +102,7 @@ function refreshItems() {
  */
 function showItems(items) {
     var container = $('#market-div');
+    container.empty();
     for (var index = 0; index < items.length; ++index) {
         container.append(getItemHtml(items[index]));
     }
