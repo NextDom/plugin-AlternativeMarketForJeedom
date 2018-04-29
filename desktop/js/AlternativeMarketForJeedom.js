@@ -1,4 +1,6 @@
 var currentPlugin = null;
+var filterHiddenSrc = [];
+var filterCategory = '';
 
 // Point d'entrée du script
 $(document).ready(function () {
@@ -13,29 +15,60 @@ function initFilters() {
     $('#market-filter-src button').click(function () {
         var github = $(this).data('github');
         if ($(this).hasClass('btn-primary')) {
-            $('#market-div>div[data-gituser=' + github + ']').slideUp();
+            filterHiddenSrc.push(github);
             $(this).removeClass('btn-primary');
             $(this).addClass('btn-secondary');
         }
         else {
-            $('#market-div>div[data-gituser=' + github + ']').slideDown();
+            var itemIndex = -1;
+            for (var index = 0; index < filterHiddenSrc.length; ++index) {
+                if (filterHiddenSrc[index] == github) {
+                    itemIndex = index;
+                }
+            }
+            if (itemIndex > -1) {
+                filterHiddenSrc.splice(itemIndex, 1);
+            }
             $(this).removeClass('btn-secondary');
             $(this).addClass('btn-primary');
         }
+        updateFilteredList();
     });
     $('#market-filter-category').change(function () {
         var selectedCategory = $("#market-filter-category option:selected").val();
         if (selectedCategory != 'all') {
-            $('#market-div>div[data-category!=' + selectedCategory + ']').slideUp(400, function () {
-                $('#market-div>div[data-category=' + selectedCategory + ']').slideDown();
-            });
+            filterCategory = selectedCategory;
         }
         else {
-            $('#market-div>div').slideDown();
+            filterCategory = '';
         }
+        updateFilteredList();
     });
     $('#refresh-markets').click(function () {
         refresh(true);
+    });
+}
+
+/**
+ * Met à jour la liste des éléments affichés
+ */
+function updateFilteredList() {
+    $('#market-div>div').each(function () {
+        var hide = false;
+        var dataGitUser = $(this).data('gituser');
+        var dataCategory = $(this).data('category');
+        if (filterHiddenSrc.indexOf(dataGitUser) !== -1) {
+            hide = true;
+        }
+        if (filterCategory != dataCategory) {
+            hide = true;
+        }
+        if (hide) {
+            $(this).slideUp();
+        }
+        else {
+            $(this).slideDown();
+        }
     });
 }
 
@@ -129,20 +162,20 @@ function getItemHtml(item) {
     var pluginData = JSON.stringify(item);
     pluginData = pluginData.replace(/"/g, '&quot;');
     var result = '' +
-                 '<div class="media-container col-xs-6 col-md-4" data-gituser="\' + item[\'gitUser\'] + \'" data-category="\' + item[\'category\'] + \'">' +
-                   '<div class="media" data-plugin="\'+pluginData+\'">' +
-                     '<div class="media-left media-middle">'+
-                       '<img src="'+img+'"/>' +
-                     '</div>' +
-                     '<div class="media-body">' +
-                       '<h4 class="media-heading">'+title+'</h4>' +
-                       '<p>'+item['description']+'</p>';
+        '<div class="media-container col-xs-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '">' +
+        '<div class="media" data-plugin="' + pluginData + '">' +
+        '<div class="media-left media-middle">' +
+        '<img src="' + img + '"/>' +
+        '</div>' +
+        '<div class="media-body">' +
+        '<h4 class="media-heading">' + title + '</h4>' +
+        '<p>' + item['description'] + '</p>';
     if (item['installed']) {
-        result +=        '<p>Déjà installé</p>';
+        result += '<p>Déjà installé</p>';
     }
-    result +=        '</div>' +
-                   '</div>' +
-                 '</div>';
+    result += '</div>' +
+        '</div>' +
+        '</div>';
     return result;
 }
 
