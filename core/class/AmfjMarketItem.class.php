@@ -86,11 +86,11 @@ class MarketItem
      */
     public function addPluginInformations($pluginInfo)
     {
-        $this->id = $pluginInfo['id'];
-        $this->name = $pluginInfo['name'];
-        $this->author = $pluginInfo['author'];
-        $this->category = $pluginInfo['category'];
-        if ($pluginInfo['description'] !== null && $pluginInfo['description'] !== '') {
+        if (\array_key_exists('id', $pluginInfo)) $this->id = $pluginInfo['id'];
+        if (\array_key_exists('name', $pluginInfo)) $this->name = $pluginInfo['name'];
+        if (\array_key_exists('author', $pluginInfo)) $this->author = $pluginInfo['author'];
+        if (\array_key_exists('category', $pluginInfo)) $this->category = $pluginInfo['category'];
+        if (\array_key_exists('description', $pluginInfo) && $pluginInfo['description'] !== null && $pluginInfo['description'] !== '') {
             $this->description = $pluginInfo['description'];
         }
     }
@@ -105,7 +105,7 @@ class MarketItem
     public function isNeedUpdate($repositoryInformations)
     {
         $result = true;
-        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_'.\str_replace('/', '_', $repositoryInformations['full_name']));
+        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . \str_replace('/', '_', $repositoryInformations['full_name']));
         if ($lastUpdate !== null) {
             if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
                 return false;
@@ -141,8 +141,8 @@ class MarketItem
     public function writeCache()
     {
         $dataArray = $this->getDataInArray();
-        $this->dataStorage->storeJsonData('repo_data_'.str_replace('/', '_', $this->fullName), $dataArray);
-        $this->dataStorage->storeRawData('repo_last_update_'.str_replace('/', '_', $this->fullName), \time());
+        $this->dataStorage->storeJsonData('repo_data_' . str_replace('/', '_', $this->fullName), $dataArray);
+        $this->dataStorage->storeRawData('repo_last_update_' . str_replace('/', '_', $this->fullName), \time());
     }
 
     /**
@@ -153,7 +153,7 @@ class MarketItem
     public function readCache()
     {
         $result = false;
-        $jsonContent = $this->dataStorage->getJsonData('repo_data_'.str_replace('/', '_', $this->fullName));
+        $jsonContent = $this->dataStorage->getJsonData('repo_data_' . str_replace('/', '_', $this->fullName));
         if ($jsonContent !== null) {
             if (\array_key_exists('name', $jsonContent)) $this->name = $jsonContent['name'];
             if (\array_key_exists('gitName', $jsonContent)) $this->gitName = $jsonContent['gitName'];
@@ -175,7 +175,8 @@ class MarketItem
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      * @return bool True si la mise à jour a été effectuée.
      */
-    public function refresh($downloadManager) {
+    public function refresh($downloadManager)
+    {
         $result = false;
         $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/master/plugin_info/info.json';
         $infoJson = $downloadManager->downloadContent($infoJsonUrl);
@@ -193,9 +194,10 @@ class MarketItem
      *
      * @return bool True si le plugin est installée
      */
-    public function isInstalled() {
+    public function isInstalled()
+    {
         $result = false;
-        if (\file_exists(\dirname(__FILE__).'/../../../'.$this->id)) {
+        if (\file_exists(\dirname(__FILE__) . '/../../../' . $this->id)) {
             $result = true;
         }
         return $result;
@@ -253,7 +255,7 @@ class MarketItem
 
     /**
      * Obtenir l'auteur
-     * 
+     *
      * @return string Auteur
      */
     public function getAuthor()

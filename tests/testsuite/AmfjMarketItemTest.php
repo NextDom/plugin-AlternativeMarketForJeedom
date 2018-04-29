@@ -63,7 +63,8 @@ class AmfjMarketItemTest extends TestCase
             'id' => 'Core',
             'name' => 'Core for test',
             'author' => 'Someone',
-            'category' => 'programming'
+            'category' => 'programming',
+            'description' => 'Une description'
         );
         $this->marketItem->addPluginInformations($pluginInformations);
         $this->assertEquals('Core', $this->marketItem->getId());
@@ -118,5 +119,30 @@ class AmfjMarketItemTest extends TestCase
     public function testReadCacheWithoutCache() {
         $result = $this->marketItem->readCache();
         $this->assertFalse($result);
+    }
+
+    public function testDescriptionOverrideWithPluginDescription() {
+        $pluginInformations = array(
+            'id' => 'Core',
+            'name' => 'Core for test',
+            'author' => 'Someone',
+            'category' => 'programming',
+            'description' => 'Une description'
+        );
+        $this->marketItem->addPluginInformations($pluginInformations);
+        $result = $this->marketItem->getDescription();
+        $this->assertEquals('Une description', $result);
+    }
+
+    public function testDescriptionOverrideWithoutPluginDescription() {
+        $pluginInformations = array(
+            'id' => 'Core',
+            'name' => 'Core for test',
+            'author' => 'Someone',
+            'category' => 'programming'
+        );
+        $this->marketItem->addPluginInformations($pluginInformations);
+        $result = $this->marketItem->getDescription();
+        $this->assertEquals('A small description', $result);
     }
 }
