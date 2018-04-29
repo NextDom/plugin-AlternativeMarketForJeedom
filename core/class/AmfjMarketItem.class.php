@@ -53,6 +53,9 @@ class MarketItem
      * @var DataStorage Gestionnaire de base de données
      */
     private $dataStorage;
+    /**
+     * @var string Chemin de l'icône
+     */
 
     /**
      * Constructeur initialisant les informations de base
@@ -132,6 +135,7 @@ class MarketItem
         $dataArray['author'] = $this->author;
         $dataArray['category'] = $this->category;
         $dataArray['installed'] = $this->isInstalled();
+        $dataArray['iconPath'] = $this->iconPath;
         return $dataArray;
     }
 
@@ -164,6 +168,7 @@ class MarketItem
             if (\array_key_exists('id', $jsonContent)) $this->id = $jsonContent['id'];
             if (\array_key_exists('author', $jsonContent)) $this->author = $jsonContent['author'];
             if (\array_key_exists('category', $jsonContent)) $this->category = $jsonContent['category'];
+            if (\array_key_exists('iconPath', $jsonContent)) $this->iconPath = $jsonContent['iconPath'];
             $result = true;
         }
         return $result;
@@ -183,6 +188,18 @@ class MarketItem
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
             $this->addPluginInformations($pluginData);
+
+            $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
+            $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/master/plugin_info/' . $this->id . '_icon.png';
+            log::add('AlternativeMarketForJeedom', 'info', $iconUrl);
+            $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
+            $downloadManager->downloadBinary($iconUrl, $targetPath);
+            if (\filesize($targetPath) < 100) {
+                unlink($targetPath);
+                $this->iconPath = 'core/img/no-image-plugin.png';
+            } else {
+                $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
+            }
             $this->writeCache();
             $result = true;
         }

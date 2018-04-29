@@ -48,6 +48,10 @@ function initFilters() {
         if (isActive($(this))) {
             filterInstalled = true;
             setActive($(this), false);
+            if (filterNotInstalled) {
+                setActive($('#market-filter-notinstalled'), true);
+                filterNotInstalled = false;
+            }
         }
         else {
             filterInstalled = false;
@@ -59,6 +63,10 @@ function initFilters() {
         if (isActive($(this))) {
             filterNotInstalled = true;
             setActive($(this), false);
+            if (filterInstalled) {
+                setActive($('#market-filter-installed'), true);
+                filterInstalled = false;
+            }
         }
         else {
             filterNotInstalled = false;
@@ -217,21 +225,21 @@ function showItems(items) {
  * @returns {string} Code HTML
  */
 function getItemHtml(item) {
-    var img = 'plugins/AlternativeMarketForJeedom/cache/' + item['fullName'].replace(/\//g, '_') + '.png';
     var title = item['name'];
-    title = title.replace('plugin-', '');
-    title = title.replace(/([a-z])([A-Z][a-z])/g, '\$1 \$2');
+    if (title !== null) {
+        title = title.replace(/([a-z])([A-Z][a-z])/g, '\$1 \$2');
+    }
     var pluginData = JSON.stringify(item);
     pluginData = pluginData.replace(/"/g, '&quot;');
     var result = '' +
-        '<div class="media-container col-xs-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="'+item['installed']+'">' +
+        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="'+item['installed']+'">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
     }
     result += '' +
         '<div class="media-left media-middle">' +
-        '<img src="' + img + '"/>' +
+        '<img src="' + item['iconPath'] + '"/>' +
         '</div>' +
         '<div class="media-body">' +
         '<h4 class="media-heading">' + title + '</h4>' +
