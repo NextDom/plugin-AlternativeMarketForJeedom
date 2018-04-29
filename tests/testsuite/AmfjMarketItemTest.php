@@ -35,7 +35,8 @@ class AmfjMarketItemTest extends TestCase
         'full_name' => 'jeedom/core',
         'description' => 'A small description',
         'html_url' => 'https://github.com/jeedom/core',
-        'git_user' => 'jeedom'
+        'git_user' => 'jeedom',
+        'default_branch' => 'master'
     );
 
     public function setUp()

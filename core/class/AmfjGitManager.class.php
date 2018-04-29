@@ -80,6 +80,7 @@ class GitManager
                     $data['description'] = $repository['description'];
                     $data['html_url'] = $repository['html_url'];
                     $data['git_user'] = $this->gitUser;
+                    $data['default_branch'] = $repository['default_branch'];
                     \array_push($dataToStore, $data);
                 }
                 $this->dataStorage->storeRawData('repo_last_update_'.$this->gitUser, \time());

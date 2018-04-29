@@ -56,6 +56,15 @@ class MarketItem
     /**
      * @var string Chemin de l'icône
      */
+    private $iconPath;
+    /**
+     * @var string Branche par défaut
+     */
+    private $defaultBranch;
+    /**
+     * @var array Liste des branches
+     */
+    private $branchesList;
 
     /**
      * Constructeur initialisant les informations de base
@@ -80,6 +89,7 @@ class MarketItem
         $this->url = $repositoryInformations['html_url'];
         $this->gitUser = $repositoryInformations['git_user'];
         $this->description = $repositoryInformations['description'];
+        $this->defaultBranch = $repositoryInformations['default_branch'];
     }
 
     /**
@@ -136,6 +146,8 @@ class MarketItem
         $dataArray['category'] = $this->category;
         $dataArray['installed'] = $this->isInstalled();
         $dataArray['iconPath'] = $this->iconPath;
+        $dataArray['defaultBranch'] = $this->defaultBranch;
+        $dataArray['branchesList'] = $this->branchesList;
         return $dataArray;
     }
 
@@ -169,6 +181,8 @@ class MarketItem
             if (\array_key_exists('author', $jsonContent)) $this->author = $jsonContent['author'];
             if (\array_key_exists('category', $jsonContent)) $this->category = $jsonContent['category'];
             if (\array_key_exists('iconPath', $jsonContent)) $this->iconPath = $jsonContent['iconPath'];
+            if (\array_key_exists('defaultBranch', $jsonContent)) $this->defaultBranch = $jsonContent['defaultBranch'];
+            if (\array_key_exists('branchesList', $jsonContent)) $this->branchesList = $jsonContent['branchesList'];
             $result = true;
         }
         return $result;
@@ -178,32 +192,62 @@ class MarketItem
      * Met à jour les données de l'élement
      *
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
+     *
      * @return bool True si la mise à jour a été effectuée.
      */
     public function refresh($downloadManager)
     {
         $result = false;
-        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/master/plugin_info/info.json';
+        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/'.$this->defaultBranch.'/plugin_info/info.json';
         $infoJson = $downloadManager->downloadContent($infoJsonUrl);
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
             $this->addPluginInformations($pluginData);
-
-            $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
-            $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/master/plugin_info/' . $this->id . '_icon.png';
-            log::add('AlternativeMarketForJeedom', 'info', $iconUrl);
-            $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
-            $downloadManager->downloadBinary($iconUrl, $targetPath);
-            if (\filesize($targetPath) < 100) {
-                unlink($targetPath);
-                $this->iconPath = 'core/img/no-image-plugin.png';
-            } else {
-                $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
-            }
+            $this->downloadIcon($downloadManager);
+            $this->downloadGitInformations($downloadManager);
             $this->writeCache();
             $result = true;
         }
         return $result;
+    }
+
+    /**
+     * Télécharge l'icône du plugin
+     *
+     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
+     */
+    public function downloadIcon($downloadManager) {
+        $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
+        $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/'.$this->defaultBranch.'/plugin_info/' . $this->id . '_icon.png';
+        $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
+        $downloadManager->downloadBinary($iconUrl, $targetPath);
+        if (\filesize($targetPath) < 100) {
+            unlink($targetPath);
+            $this->iconPath = 'core/img/no-image-plugin.png';
+        } else {
+            $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
+        }
+
+    }
+
+    /**
+     * Met à jour les données de Git
+     *
+     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
+     *
+     * @return bool True si les données ont été trouvées
+     */
+    public function downloadGitInformations($downloadManager) {
+        $baseGitRepoUrl = 'https://api.github.com/repos/'.$this->fullName;
+        $branches = $downloadManager->downloadContent($baseGitRepoUrl.'/branches');
+        if ($branches !== false) {
+            $branches = \json_decode($branches, true);
+            $this->branchesList = array();
+            foreach ($branches as $branch) {
+                array_push($this->branchesList, $branch['name']);
+            }
+
+        }
     }
 
     /**

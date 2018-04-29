@@ -55,7 +55,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
 }
 
@@ -92,4 +92,38 @@
 #market-filters .btn-primary {
     background-color: #40535e !important;
     border-color: #40535e !important;
+}
+
+#div_pluginAlternativeMarketForJeedomAlert {
+    height: 100%;
+}
+
+#plugin-modal-header {
+    margin: 0;
+}
+
+#plugin-modal-header {
+    height: 20em;
+}
+
+#plugin-modal-header>div {
+    height: 100%;
+    padding: 1em;
+}
+
+#plugin-modal-header .left-pane {
+    background-color: #dddddd;
+}
+
+#plugin-modal-header .right-pane {
+    background-color: #eeeeee;
+}
+
+#plugin-modal-header img {
+    margin-top: 1em;
+    width: 14em;
+}
+
+#md_modal {
+    padding: 0;
 }

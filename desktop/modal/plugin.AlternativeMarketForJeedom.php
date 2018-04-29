@@ -20,7 +20,14 @@ if (!isConnect('admin')) {
 }
 ?>
 <div id='div_pluginAlternativeMarketForJeedomAlert' style="display: none;"></div>
-<div id="contentAssistant" style="height: 100%">
-    <button class="btn btn-default" id="install-plugin">Installer</button>
+<div id="plugin-modal">
+    <div id="plugin-modal-header" class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6 left-pane">
+            <img id="plugin-icon" />
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 right-pane">
+            <button class="btn btn-default" id="install-plugin">{{Installer}}</button>
+        </div>
+    </div>
 </div>
 <script src="plugins/AlternativeMarketForJeedom/desktop/js/plugin.AlternativeMarketForJeedom.js"></script>
