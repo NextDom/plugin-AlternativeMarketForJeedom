@@ -78,8 +78,8 @@ class DownloadManagerTest extends TestCase
     }
 
     public function testDdwnloadContentWithFopenGoodContent() {
-        $content = $this->downloadManager->downloadContentWithFopen('https://www.google.fr');
-        $this->assertContains('J\'ai de la chance', $content);
+        $content = $this->downloadManager->downloadContentWithFopen('http://www.perdu.com');
+        $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDdwnloadContentWithFopenBadContent() {
