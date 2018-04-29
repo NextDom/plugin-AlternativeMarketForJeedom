@@ -21,14 +21,18 @@ include_file('core', 'plugin.template', 'js');
 
 ?>
 <div id="market-filters" class="row">
-    <div id="market-filter-src" class="btn-group col-sm-6">
+    <div id="market-filter-src" class="btn-group col-sm-5">
     <?php foreach ($eqLogics as $eqLogic) {
         $gitHub = $eqLogic->getConfiguration()['github'];
         echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
     }
     ?>
     </div>
-    <div class="form-group col-sm-5">
+    <div class="btn-group col-sm-3">
+        <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
+        <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>
+    </div>
+    <div class="form-group col-sm-3">
         <select class="form-control" id="market-filter-category">
             <option value="all">{{Toutes les Catégories}}</option>
             <option value="security">{{Sécurité}}</option>

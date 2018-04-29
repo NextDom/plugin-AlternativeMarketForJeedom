@@ -12,6 +12,7 @@
 }
 
 #market-div .media {
+    position: relative;
     display: table;
     height: 200px;
     transition: all 0.2s ease;
@@ -20,6 +21,23 @@
     margin: 0;
     border-radius: 5px;
     padding: 1rem;
+}
+
+#market-div .media .installed-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 2.5em solid #95c12c;
+    border-right: 2.5em solid transparent;
+}
+
+#market-div .media .installed-marker i {
+    position: absolute;
+    top: -2.3em;
+    left: 0.5em;
+    color: white;
 }
 
 #market-div .media img {
@@ -33,9 +51,45 @@
 
 #market-div .media-body p {
     text-align: justify;
+    max-height: 6em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 #market-div .media:hover {
     cursor: pointer;
     transform: scale(1.02);
+}
+
+#market-div .media-body button {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    background-color: #95c12c;
+    color: black;
+    border: none;
+    float: right;
+    padding: 0.5em;
+    border-radius: 0.3em;
+    background-image: linear-gradient(to right, #95c12c, #95c12c 50%, #40535e 50%, #40535e);
+    background-size: 202% 100%;
+    background-position: 0 0;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+#market-div .media:hover .media-body button {
+    background-position: 100% 0;
+    color: white;
+}
+
+#market-filters .btn-primary {
+    background-color: #40535e !important;
+    border-color: #40535e !important;
 }

@@ -1,6 +1,8 @@
 var currentPlugin = null;
 var filterHiddenSrc = [];
 var filterCategory = '';
+var filterInstalled = false;
+var filterNotInstalled = false;
 
 // Point d'entrée du script
 $(document).ready(function () {
@@ -14,10 +16,9 @@ $(document).ready(function () {
 function initFilters() {
     $('#market-filter-src button').click(function () {
         var github = $(this).data('github');
-        if ($(this).hasClass('btn-primary')) {
+        if (isActive($(this))) {
             filterHiddenSrc.push(github);
-            $(this).removeClass('btn-primary');
-            $(this).addClass('btn-secondary');
+            setActive($(this), false);
         }
         else {
             var itemIndex = -1;
@@ -29,8 +30,7 @@ function initFilters() {
             if (itemIndex > -1) {
                 filterHiddenSrc.splice(itemIndex, 1);
             }
-            $(this).removeClass('btn-secondary');
-            $(this).addClass('btn-primary');
+            setActive($(this), true);
         }
         updateFilteredList();
     });
@@ -44,9 +44,63 @@ function initFilters() {
         }
         updateFilteredList();
     });
+    $('#market-filter-installed').click(function () {
+        if (isActive($(this))) {
+            filterInstalled = true;
+            setActive($(this), false);
+        }
+        else {
+            filterInstalled = false;
+            setActive($(this), true);
+        }
+        updateFilteredList();
+    });
+    $('#market-filter-notinstalled').click(function () {
+        if (isActive($(this))) {
+            filterNotInstalled = true;
+            setActive($(this), false);
+        }
+        else {
+            filterNotInstalled = false;
+            setActive($(this), true);
+        }
+        updateFilteredList();
+    });
     $('#refresh-markets').click(function () {
         refresh(true);
     });
+}
+
+/**
+ * Test si un bouton est actif
+ *
+ * @param button Bouton à tester
+ *
+ * @returns {boolean} True si le bouton est actif
+ */
+function isActive(button) {
+    var result = false;
+    if (button.hasClass('btn-primary')) {
+        result = true;
+    }
+    return result;
+}
+
+/**
+ * Change l'état d'activation d'un bouton
+ *
+ * @param button Bouton à changer
+ * @param activate Etat à changer
+ */
+function setActive(button, activate) {
+    if (activate) {
+        button.removeClass('btn-secondary');
+        button.addClass('btn-primary');
+    }
+    else {
+        button.removeClass('btn-primary');
+        button.addClass('btn-secondary');
+    }
 }
 
 /**
@@ -57,10 +111,18 @@ function updateFilteredList() {
         var hide = false;
         var dataGitUser = $(this).data('gituser');
         var dataCategory = $(this).data('category');
+        var dataInstalled = $(this).data('installed');
         if (filterHiddenSrc.indexOf(dataGitUser) !== -1) {
             hide = true;
         }
-        if (filterCategory != dataCategory) {
+        if (filterCategory != '' && filterCategory != dataCategory) {
+            hide = true;
+        }
+        if (filterInstalled && dataInstalled == true) {
+            hide = true;
+        }
+        if (filterNotInstalled && dataInstalled == false) {
+            console.log('Hide');
             hide = true;
         }
         if (hide) {
@@ -162,18 +224,20 @@ function getItemHtml(item) {
     var pluginData = JSON.stringify(item);
     pluginData = pluginData.replace(/"/g, '&quot;');
     var result = '' +
-        '<div class="media-container col-xs-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '">' +
-        '<div class="media" data-plugin="' + pluginData + '">' +
+        '<div class="media-container col-xs-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="'+item['installed']+'">' +
+        '<div class="media" data-plugin="' + pluginData + '">';
+    if (item['installed']) {
+        result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
+    }
+    result += '' +
         '<div class="media-left media-middle">' +
         '<img src="' + img + '"/>' +
         '</div>' +
         '<div class="media-body">' +
         '<h4 class="media-heading">' + title + '</h4>' +
-        '<p>' + item['description'] + '</p>';
-    if (item['installed']) {
-        result += '<p>Déjà installé</p>';
-    }
-    result += '</div>' +
+        '<p>' + item['description'] + '</p>' +
+        '<button>'+ 'Plus d\'informations' +'</button>' +
+        '</div>' +
         '</div>' +
         '</div>';
     return result;
