@@ -65,6 +65,14 @@ class MarketItem
      * @var array Liste des branches
      */
     private $branchesList;
+    /**
+     * @var string Lien vers la documentation
+     */
+    private $documentationLink;
+    /**
+     * @var string Lien vers le changelog
+     */
+    private $changelogLink;
 
     /**
      * Constructeur initialisant les informations de base
@@ -103,6 +111,8 @@ class MarketItem
         if (\array_key_exists('name', $pluginInfo)) $this->name = $pluginInfo['name'];
         if (\array_key_exists('author', $pluginInfo)) $this->author = $pluginInfo['author'];
         if (\array_key_exists('category', $pluginInfo)) $this->category = $pluginInfo['category'];
+        if (\array_key_exists('changelog', $pluginInfo)) $this->changelogLink = $pluginInfo['changelog'];
+        if (\array_key_exists('documentation', $pluginInfo)) $this->documentationLink = $pluginInfo['documentation'];
         if (\array_key_exists('description', $pluginInfo) && $pluginInfo['description'] !== null && $pluginInfo['description'] !== '') {
             $this->description = $pluginInfo['description'];
         }
@@ -148,6 +158,8 @@ class MarketItem
         $dataArray['iconPath'] = $this->iconPath;
         $dataArray['defaultBranch'] = $this->defaultBranch;
         $dataArray['branchesList'] = $this->branchesList;
+        $dataArray['changelogLink'] = $this->changelogLink;
+        $dataArray['documentationLink'] = $this->documentationLink;
         return $dataArray;
     }
 
@@ -183,6 +195,8 @@ class MarketItem
             if (\array_key_exists('iconPath', $jsonContent)) $this->iconPath = $jsonContent['iconPath'];
             if (\array_key_exists('defaultBranch', $jsonContent)) $this->defaultBranch = $jsonContent['defaultBranch'];
             if (\array_key_exists('branchesList', $jsonContent)) $this->branchesList = $jsonContent['branchesList'];
+            if (\array_key_exists('changelogLink', $jsonContent)) $this->changelogLink = $jsonContent['changelogLink'];
+            if (\array_key_exists('documentationLink', $jsonContent)) $this->documentationLink = $jsonContent['documentationLink'];
             $result = true;
         }
         return $result;

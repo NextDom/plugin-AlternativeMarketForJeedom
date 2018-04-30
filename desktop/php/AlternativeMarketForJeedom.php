@@ -20,19 +20,26 @@ include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketF
 include_file('core', 'plugin.template', 'js');
 
 ?>
-<div id="market-filters" class="row">
-    <div id="market-filter-src" class="btn-group col-sm-5">
+<div class="market-filters row">
+    <div id="market-filter-src" class="btn-group col-sm-11">
     <?php foreach ($eqLogics as $eqLogic) {
         $gitHub = $eqLogic->getConfiguration()['github'];
         echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
     }
     ?>
     </div>
-    <div class="btn-group col-sm-3">
+    <div class="col-sm-1">
+        <a class="btn btn-default">
+            <i id="refresh-markets" class="fa fa-refresh"></i>
+        </a>
+    </div>
+</div>
+<div class="market-filters row">
+    <div class="btn-group col-sm-6">
         <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
         <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>
     </div>
-    <div class="form-group col-sm-3">
+    <div class="form-group col-sm-6">
         <select class="form-control" id="market-filter-category">
             <option value="all">{{Toutes les Catégories}}</option>
             <option value="security">{{Sécurité}}</option>
@@ -50,11 +57,6 @@ include_file('core', 'plugin.template', 'js');
             <option value="automatisation">{{Automatisme}}</option>
             <option value="energy">{{Energie}}</option>
         </select>
-    </div>
-    <div class="col-sm-1">
-        <a class="btn btn-default">
-            <i id="refresh-markets" class="fa fa-refresh"></i>
-        </a>
     </div>
 </div>
 <div id="market-div" class="row">
