@@ -89,13 +89,16 @@
     color: white;
 }
 
-#market-filters .btn-primary {
+#market-filters .btn-primary,
+#div_pluginAlternativeMarketForJeedomAlert .btn-primary
+{
     background-color: #40535e !important;
     border-color: #40535e !important;
 }
 
 #div_pluginAlternativeMarketForJeedomAlert {
     height: 100%;
+    display: none;
 }
 
 #plugin-modal-header {

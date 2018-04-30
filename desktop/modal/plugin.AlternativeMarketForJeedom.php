@@ -19,14 +19,24 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 ?>
-<div id='div_pluginAlternativeMarketForJeedomAlert' style="display: none;"></div>
+<div id="div_pluginAlternativeMarketForJeedomAlert"></div>
 <div id="plugin-modal">
     <div id="plugin-modal-header" class="row">
         <div class="col-xs-12 col-sm-6 col-md-6 left-pane">
             <img id="plugin-icon" />
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 right-pane">
-            <button class="btn btn-default" id="install-plugin">{{Installer}}</button>
+            <button id="install-plugin" class="btn btn-extra">{{Installer}}</button>
+            <span id="default-branch-information" class="help-block"></span>
+            <div id="install-plugin-advanced" class="btn-group">
+                <button type="button" class="btn btn-warning">{{Installation avancée}}</button>
+                <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                </ul>
+            </div>
         </div>
     </div>
 </div>
