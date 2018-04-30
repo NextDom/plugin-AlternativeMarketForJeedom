@@ -33,6 +33,9 @@ class AjaxParser
     {
         $result = false;
         switch ($action) {
+            case 'add':
+                $result = static::add($params, $data);
+                break;
             case 'refresh':
                 $result = static::refresh($params, $data);
                 break;
@@ -65,7 +68,8 @@ class AjaxParser
         return $result;
     }
 
-    private static function refreshList($markets, $force) {
+    private static function refreshList($markets, $force)
+    {
         $result = false;
         if (is_array($markets)) {
             foreach ($markets as $git) {
@@ -100,9 +104,27 @@ class AjaxParser
                             array_push($result, $item->getDataInArray());
                         }
                     }
-                    \usort($result, function($item1, $item2) {
+                    \usort($result, function ($item1, $item2) {
                         return $item1['name'] > $item2['name'];
                     });
+                }
+                break;
+        }
+        return $result;
+    }
+
+    public static function add($params, $data)
+    {
+        $result = false;
+        switch ($params) {
+            case 'gitUser':
+                if ($data != '') {
+                    $pluginExtra = new AlternativeMarketForJeedom();
+                    $pluginExtra->setName($data);
+                    $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
+                    $pluginExtra->setConfiguration('github', $data);
+                    $pluginExtra->save();
+                    $result = true;
                 }
                 break;
         }

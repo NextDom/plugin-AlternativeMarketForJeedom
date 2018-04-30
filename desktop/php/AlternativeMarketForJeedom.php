@@ -25,11 +25,11 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('AlternativeMarketForJeedom');
 $eqLogics = eqLogic::byType($plugin->getId());
 
-$gitLists = array();
+$gitsList = array();
 foreach ($eqLogics as $eqLogic) {
-    array_push($gitLists, $eqLogic->getConfiguration()['github']);
+    array_push($gitsList, $eqLogic->getConfiguration()['github']);
 }
-sendVarToJs('gitLists', $gitLists);
+sendVarToJs('gitsList', $gitsList);
 
 include_file('desktop', 'AlternativeMarketForJeedom', 'js', 'AlternativeMarketForJeedom');
 include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketForJeedom');

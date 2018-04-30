@@ -165,3 +165,8 @@
 #plugin-modal-footer {
     padding-top: 10px;
 }
+
+#add-git i {
+    font-size: 14px;
+    line-height: 20px;
+}
