@@ -14,12 +14,18 @@ class DownloadManager
     protected $connectionStatus;
 
     /**
+     * @var string Token GitHub
+     */
+    protected $gitHubToken;
+
+    /**
      * Constructeur testant le statut de la connexion.
      */
     public function __construct()
     {
         $this->connectionStatus = false;
         $this->testConnection();
+        $this->gitHubToken = config::byKey('', 'AlternativeMarketForJeedom');
     }
 
     /**
@@ -104,6 +110,9 @@ class DownloadManager
      */
     protected function downloadContentWithCurl($url, $binary = false)
     {
+        if ($this->gitHubToken !== false && !$binary) {
+            $url = $url.'?access_token='.$this->gitHubToken;
+        }
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {
