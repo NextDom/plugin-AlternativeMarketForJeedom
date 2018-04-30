@@ -1,10 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dangin
- * Date: 21/04/2018
- * Time: 01:09
+/* This file is part of Jeedom.
+ *
+ * Jeedom is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Jeedom is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 
 class DownloadManager
 {
@@ -14,12 +25,18 @@ class DownloadManager
     protected $connectionStatus;
 
     /**
+     * @var string Token GitHub
+     */
+    protected $gitHubToken;
+
+    /**
      * Constructeur testant le statut de la connexion.
      */
     public function __construct()
     {
         $this->connectionStatus = false;
         $this->testConnection();
+        $this->gitHubToken = config::byKey('', 'AlternativeMarketForJeedom');
     }
 
     /**
@@ -104,6 +121,9 @@ class DownloadManager
      */
     protected function downloadContentWithCurl($url, $binary = false)
     {
+        if ($this->gitHubToken !== false && !$binary) {
+            $url = $url.'?access_token='.$this->gitHubToken;
+        }
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {

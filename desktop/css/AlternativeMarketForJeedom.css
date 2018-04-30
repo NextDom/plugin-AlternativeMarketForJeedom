@@ -1,9 +1,16 @@
-#market-filters {
+.market-filters {
     margin-top: 2rem;
 }
 
 #market-div {
     margin-top: 2rem;
+    max-width: 1150px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#admin-buttons {
+    float: right;
 }
 
 #market-div .media-container {
@@ -89,19 +96,23 @@
     color: white;
 }
 
-#market-filters .btn-primary,
-#div_pluginAlternativeMarketForJeedomAlert .btn-primary
+.market-filters .btn-primary,
+#plugin-modal .btn-primary
 {
     background-color: #40535e !important;
     border-color: #40535e !important;
 }
 
 #div_pluginAlternativeMarketForJeedomAlert {
-    height: 100%;
+/*    height: 100%;*/
     display: none;
 }
 
-#plugin-modal-header {
+#md_modal {
+    padding: 0;
+}
+
+#plugin-modal .row {
     margin: 0;
 }
 
@@ -114,12 +125,22 @@
     padding: 1em;
 }
 
+#plugin-modal-header #description {
+    clear: both;
+}
+
 #plugin-modal-header .left-pane {
-    background-color: #dddddd;
+    background-color: #FFFFFF;
+}
+
+#plugin-modal-header .left-pane img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #plugin-modal-header .right-pane {
-    background-color: #eeeeee;
+    background-color: #FFFFFF;
 }
 
 #plugin-modal-header img {
@@ -127,6 +148,20 @@
     width: 14em;
 }
 
-#md_modal {
-    padding: 0;
+#plugin-modal-header .button-item {
+    float: left;
+    margin-right: 1em;
+}
+
+#plugin-modal-header .btn {
+    font-size: 1.5em;
+}
+
+#plugin-modal-body {
+    background-color: #EAEAEA;
+}
+
+#plugin-modal-body,
+#plugin-modal-footer {
+    padding-top: 10px;
 }

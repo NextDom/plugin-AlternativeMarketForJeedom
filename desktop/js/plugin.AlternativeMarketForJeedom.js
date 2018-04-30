@@ -9,15 +9,17 @@ $(document).ready(function () {
  * Initialise la fenêtre modale du plugin
  */
 function initModal() {
+    var fullName = currentPlugin['fullName'];
+    var defaultBranch = currentPlugin['defaultBranch'];
     $('#plugin-icon').attr('src', currentPlugin['iconPath']);
-    $('#default-branch-information').text('Branche '+currentPlugin['defaultBranch']);
+    $('#default-branch-information').text('Branche ' + defaultBranch);
     var branchesList = currentPlugin['branchesList'];
     if (branchesList.length > 1) {
         var ulList = $('#install-plugin-advanced .dropdown-menu');
         for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
             var branchName = branchesList[branchIndex];
-            if (branchName != currentPlugin['defaultBranch']) {
-                var liItem = $('<li data-branch="'+branchName+'"><a href="#">Installer la branche ' + branchesList[branchIndex] + '</a></li>');
+            if (branchName != defaultBranch) {
+                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchesList[branchIndex] + '</a></li>');
                 liItem.click(function () {
                     installPlugin($(this).data('branch'));
                 });
@@ -25,13 +27,27 @@ function initModal() {
             }
         }
     }
+
+    $('#description-content').text(currentPlugin['description']);
+    $('#author').text($('#author').text()+currentPlugin['author']);
+    $('#licence').text($('#licence').text()+currentPlugin['licence']);
+    $('#category').text($('#category').text()+currentPlugin['category'])
+    $('#changelog-link').attr('href', currentPlugin['changelogLink']);
+    $('#documentation-link').attr('href', currentPlugin['documentationLink']);
+    $('#github-link').attr('href', 'https://github.com/' + fullName);
+    $('#travis-badge').attr('href', 'https://travis-ci.org/' + fullName + '?branch=' + defaultBranch);
+    $('#travis-badge img').attr('src', 'https://travis-ci.org/' + fullName + '.svg?branch=' + defaultBranch);
+    $('#coveralls-badge').attr('href', 'https://coveralls.io/github/' + fullName + '?branch=' + defaultBranch);
+    $('#coveralls-badge img').attr('src', 'https://coveralls.io/repos/github/' + fullName + '/badge.svg?branch=' + defaultBranch);
+    $('#waffle-badge').attr('href', 'https://waffle.io/' + fullName);
+    $('#waffle-badge img').attr('src', 'https://badge.waffle.io/' + fullName + '.svg?columns=all');
+
 }
 
 /**
  * Lance l'installation du plugin
  */
 function installPlugin(branch) {
-    console.log(branch);
     $.post({
         url: 'core/ajax/update.ajax.php',
         data: {
