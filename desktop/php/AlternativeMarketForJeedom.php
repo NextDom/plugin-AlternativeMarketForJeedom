@@ -21,31 +21,40 @@ include_file('core', 'plugin.template', 'js');
 
 ?>
 <div id="market-filters" class="row">
-    <div id="market-filter-src" class="btn-group">
+    <div id="market-filter-src" class="btn-group col-sm-5">
     <?php foreach ($eqLogics as $eqLogic) {
         $gitHub = $eqLogic->getConfiguration()['github'];
         echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
     }
     ?>
     </div>
-    <div class="form-group">
+    <div class="btn-group col-sm-3">
+        <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
+        <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>
+    </div>
+    <div class="form-group col-sm-3">
         <select class="form-control" id="market-filter-category">
             <option value="all">{{Toutes les Catégories}}</option>
             <option value="security">{{Sécurité}}</option>
-            <option value="automation protocol">automation protocol</option>
-            <option value="programming">programming</option>
-            <option value="organization">organization</option>
+            <option value="automation protocol">{{Protocole domotique}}</option>
+            <option value="programming">{{Programmation}}</option>
+            <option value="organization">{{Organisation}}</option>
             <option value="weather">{{Météo}}</option>
             <option value="communication">{{Communication}}</option>
-            <option value="devicecommunication">devicecommunication</option>
-            <option value="multimedia">multimedia</option>
-            <option value="wellness">wellness</option>
-            <option value="monitoring">monitoring</option>
-            <option value="health">health</option>
-            <option value="nature">nature</option>
-            <option value="automatisation">automatisation</option>
-            <option value="energy">energy</option>
+            <option value="devicecommunication">{{Objets communicants}}</option>
+            <option value="multimedia">{{Multimédia}}</option>
+            <option value="wellness">{{Bien-être}}</option>
+            <option value="monitoring">{{Monitoring}}</option>
+            <option value="health">{{Santé}}</option>
+            <option value="nature">{{Nature}}</option>
+            <option value="automatisation">{{Automatisme}}</option>
+            <option value="energy">{{Energie}}</option>
         </select>
+    </div>
+    <div class="col-sm-1">
+        <a class="btn btn-default">
+            <i id="refresh-markets" class="fa fa-refresh"></i>
+        </a>
     </div>
 </div>
 <div id="market-div" class="row">

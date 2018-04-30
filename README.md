@@ -5,11 +5,12 @@ Partiellement réalisé
  - Téléchargement des icones
  - Tri par catégorie/dépot
  - Intégration Travis
+ - Téléchargement et installation
+ - Détecter les plugin déjà installés
 
 TODO : 
- - Téléchargement et installation
  - Amélioration graphique
  - Optimisation
  - Icone
  - Traduction
- - Détecter les plugin déjà installés
+ - Gestion des versions

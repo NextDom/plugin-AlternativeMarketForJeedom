@@ -40,14 +40,16 @@ class Market
     }
 
     /**
-     * Rafraichit les dépots de l'utilisateur
+     * Met à jour la liste des dépôts
+     *
+     * @param bool $force Forcer la mise à jour
      */
-    public function refresh()
+    public function refresh($force = false)
     {
         $gitManager = new GitManager($this->gitUser);
         if ($this->downloadManager->isConnected()) {
             $ignoreList = array();
-            if ($gitManager->isUpdateNeeded()) {
+            if ($force || $gitManager->isUpdateNeeded()) {
                 $gitManager->updateRepositoriesList();
                 $ignoreList = array();
             }
@@ -58,13 +60,8 @@ class Market
             foreach ($repositories as $repository) {
                 $repositoryName = $repository['name'];
                 $marketItem = new MarketItem($repository);
-                if ($marketItem->isNeedUpdate($repository) && !\in_array($repositoryName, $ignoreList)) {
-                    if ($marketItem->refresh($this->downloadManager)) {
-                        $iconUrl = $this->getPluginIconURL($repositoryName, $marketItem->getId());
-                        $iconPath = dirname(__FILE__) . '/../../cache/' . \str_replace('/', '_', $repository['full_name']).'.png';
-                        $this->downloadManager->downloadBinary($iconUrl, $iconPath);
-                    }
-                    else {
+                if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
+                    if (!$marketItem->refresh($this->downloadManager)) {
                         \array_push($ignoreList, $repositoryName);
                     }
                 }
@@ -117,18 +114,5 @@ class Market
             }
         }
         return $result;
-    }
-
-    /**
-     * Obtenir le lien de l'icône du plugin
-     *
-     * @param string $repositoryName Nom du dépôt
-     * @param string $pluginId Identifiant du plugin
-     *
-     * @return string Lien de l'icône du plugin
-     */
-    protected function getPluginIconURL($repositoryName, $pluginId)
-    {
-        return 'https://raw.githubusercontent.com/' . $this->gitUser . '/' . $repositoryName . '/master/plugin_info/' . $pluginId . '_icon.png';
     }
 }

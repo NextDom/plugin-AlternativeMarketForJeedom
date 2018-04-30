@@ -14,7 +14,7 @@ class GitManager
     /**
      * @var int Temps de rafraichissement de la liste des plugins
      */
-    private $REFRESH_TIME_LIMIT = 7200;
+    private $REFRESH_TIME_LIMIT = 86400;
     /**
      * @var string Utilisateur du dépot
      */
@@ -80,6 +80,7 @@ class GitManager
                     $data['description'] = $repository['description'];
                     $data['html_url'] = $repository['html_url'];
                     $data['git_user'] = $this->gitUser;
+                    $data['default_branch'] = $repository['default_branch'];
                     \array_push($dataToStore, $data);
                 }
                 $this->dataStorage->storeRawData('repo_last_update_'.$this->gitUser, \time());

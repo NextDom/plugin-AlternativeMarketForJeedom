@@ -81,9 +81,9 @@ class AmfjMarketTest extends TestCase
 
     public function testRefreshWithGitData()
     {
-        $repoData = '[{"name":"core","git_user":"jeedom","full_name":"jeedom/core","description":"Core","html_url":"url"},' .
-            '{"name":"plugin-homebridge","git_user":"jeedom","full_name":"jeedom/plugin-homebridge","description":"HomeBridge","html_url":"url"},' .
-            '{"name":"plugin-blea","git_user":"jeedom","full_name":"jeedom/plugin-blea","description":"Blea","html_url":"url"}]';
+        $repoData = '[{"name":"core","git_user":"jeedom","full_name":"jeedom/core","description":"Core","html_url":"url","default_branch":"master"},' .
+            '{"name":"plugin-homebridge","git_user":"jeedom","full_name":"jeedom/plugin-homebridge","description":"HomeBridge","html_url":"url","default_branch":"master"},' .
+            '{"name":"plugin-blea","git_user":"jeedom","full_name":"jeedom/plugin-blea","description":"Blea","html_url":"url","default_branch":"master"}]';
         $updateTime = time();
         $this->dataStorage->storeRawData('repo_ignore_jeedom', '["plugin-blea"]');
         $this->dataStorage->storeRawData('repo_last_update_jeedom', $updateTime);
@@ -108,9 +108,9 @@ class AmfjMarketTest extends TestCase
 
     public function testGetItems()
     {
-        $repoData = '[{"name":"core","git_user":"jeedom","full_name":"jeedom/core","description":"Core","html_url":"url"},' .
-            '{"name":"plugin-weather","git_user":"jeedom","full_name":"jeedom/plugin-weather","description":"Weather","html_url":"url"},' .
-            '{"name":"plugin-blea","git_user":"jeedom","full_name":"jeedom/plugin-blea","description":"Blea","html_url":"url"}]';
+        $repoData = '[{"name":"core","git_user":"jeedom","full_name":"jeedom/core","description":"Core","html_url":"url","default_branch":"master"},' .
+            '{"name":"plugin-weather","git_user":"jeedom","full_name":"jeedom/plugin-weather","description":"Weather","html_url":"url","default_branch":"master"},' .
+            '{"name":"plugin-blea","git_user":"jeedom","full_name":"jeedom/plugin-blea","description":"Blea","html_url":"url","default_branch":"master"}]';
         $updateTime = time();
         $this->dataStorage->storeRawData('repo_last_update_jeedom', $updateTime);
         $this->dataStorage->storeRawData('repo_data_jeedom', $repoData);

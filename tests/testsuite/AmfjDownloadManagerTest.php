@@ -55,13 +55,13 @@ class DownloadManagerTest extends TestCase
     }
 
     public function testDownloadContent() {
-        $content = $this->downloadManager->downloadContent('https://www.google.fr');
-        $this->assertContains('J\'ai de la chance', $content);
+        $content = $this->downloadManager->downloadContent('http://www.perdu.com');
+        $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlGoodContent() {
-        $content = $this->downloadManager->downloadContentWithCurl('https://www.google.fr');
-        $this->assertContains('J\'ai de la chance', $content);
+        $content = $this->downloadManager->downloadContentWithCurl('http://www.perdu.com');
+        $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlBadContent() {
@@ -78,8 +78,8 @@ class DownloadManagerTest extends TestCase
     }
 
     public function testDdwnloadContentWithFopenGoodContent() {
-        $content = $this->downloadManager->downloadContentWithFopen('https://www.google.fr');
-        $this->assertContains('J\'ai de la chance', $content);
+        $content = $this->downloadManager->downloadContentWithFopen('http://www.perdu.com');
+        $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDdwnloadContentWithFopenBadContent() {

@@ -46,15 +46,25 @@ class AjaxParser
         $result = false;
         switch ($params) {
             case 'list':
-                if (is_array($data)) {
-                    foreach ($data as $git) {
-                        $market = new Market($git);
-                        $market->refresh();
-                    }
-                    $result = true;
-                }
+                $result = static::refreshList($data, false);
+                break;
+            case 'list-force':
+                $result = static::refreshList($data, true);
                 break;
         }
+        return $result;
+    }
+
+    private static function refreshList($markets, $force) {
+        $result = false;
+        if (is_array($markets)) {
+            foreach ($markets as $git) {
+                $market = new Market($git);
+                $market->refresh($force);
+            }
+            $result = true;
+        }
+
         return $result;
     }
 

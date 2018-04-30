@@ -6,21 +6,127 @@
     margin-top: 2rem;
 }
 
-#market-div .thumbnail {
-    height: 200px;
-    transition: all 0.2s ease;
+#market-div .media-container {
+    margin: 0;
+    padding: 1rem;
 }
 
-#market-div .thumbnail img {
+#market-div .media {
+    position: relative;
+    display: table;
+    height: 200px;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    margin: 0;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+#market-div .media .installed-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 2.5em solid #95c12c;
+    border-right: 2.5em solid transparent;
+}
+
+#market-div .media .installed-marker i {
+    position: absolute;
+    top: -2.3em;
+    left: 0.5em;
+    color: white;
+}
+
+#market-div .media img {
     height: 100px;
 }
 
-#market-div .thumbnail h4 {
+#market-div .media h4 {
     text-transform: capitalize;
     text-align: center;
 }
 
-#market-div .thumbnail:hover {
+#market-div .media-body p {
+    text-align: justify;
+    max-height: 6em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}
+
+#market-div .media:hover {
     cursor: pointer;
-    transform: scale(1.15);
+    transform: scale(1.02);
+}
+
+#market-div .media-body button {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    background-color: #95c12c;
+    color: black;
+    border: none;
+    float: right;
+    padding: 0.5em;
+    border-radius: 0.3em;
+    background-image: linear-gradient(to right, #95c12c, #95c12c 50%, #40535e 50%, #40535e);
+    background-size: 202% 100%;
+    background-position: 0 0;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+#market-div .media:hover .media-body button {
+    background-position: 100% 0;
+    color: white;
+}
+
+#market-filters .btn-primary,
+#div_pluginAlternativeMarketForJeedomAlert .btn-primary
+{
+    background-color: #40535e !important;
+    border-color: #40535e !important;
+}
+
+#div_pluginAlternativeMarketForJeedomAlert {
+    height: 100%;
+    display: none;
+}
+
+#plugin-modal-header {
+    margin: 0;
+}
+
+#plugin-modal-header {
+    height: 20em;
+}
+
+#plugin-modal-header>div {
+    height: 100%;
+    padding: 1em;
+}
+
+#plugin-modal-header .left-pane {
+    background-color: #dddddd;
+}
+
+#plugin-modal-header .right-pane {
+    background-color: #eeeeee;
+}
+
+#plugin-modal-header img {
+    margin-top: 1em;
+    width: 14em;
+}
+
+#md_modal {
+    padding: 0;
 }
