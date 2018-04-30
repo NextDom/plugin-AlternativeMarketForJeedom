@@ -9,6 +9,10 @@
     margin-right: auto;
 }
 
+#admin-buttons {
+    float: right;
+}
+
 #market-div .media-container {
     margin: 0;
     padding: 1rem;
@@ -100,7 +104,7 @@
 }
 
 #div_pluginAlternativeMarketForJeedomAlert {
-    height: 100%;
+/*    height: 100%;*/
     display: none;
 }
 
@@ -108,7 +112,7 @@
     padding: 0;
 }
 
-#plugin-modal-header {
+#plugin-modal .row {
     margin: 0;
 }
 
@@ -119,6 +123,10 @@
 #plugin-modal-header>div {
     height: 100%;
     padding: 1em;
+}
+
+#plugin-modal-header #description {
+    clear: both;
 }
 
 #plugin-modal-header .left-pane {
@@ -132,7 +140,7 @@
 }
 
 #plugin-modal-header .right-pane {
-    background-color: #DDDDDD;
+    background-color: #FFFFFF;
 }
 
 #plugin-modal-header img {
@@ -142,8 +150,18 @@
 
 #plugin-modal-header .button-item {
     float: left;
+    margin-right: 1em;
+}
+
+#plugin-modal-header .btn {
+    font-size: 1.5em;
 }
 
 #plugin-modal-body {
-    background-color: #EEEEEE;
+    background-color: #EAEAEA;
+}
+
+#plugin-modal-body,
+#plugin-modal-footer {
+    padding-top: 10px;
 }

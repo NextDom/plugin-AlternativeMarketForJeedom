@@ -9,7 +9,6 @@ $(document).ready(function () {
  * Initialise la fenêtre modale du plugin
  */
 function initModal() {
-    console.log(currentPlugin);
     var fullName = currentPlugin['fullName'];
     var defaultBranch = currentPlugin['defaultBranch'];
     $('#plugin-icon').attr('src', currentPlugin['iconPath']);
@@ -30,6 +29,9 @@ function initModal() {
     }
 
     $('#description-content').text(currentPlugin['description']);
+    $('#author').text($('#author').text()+currentPlugin['author']);
+    $('#licence').text($('#licence').text()+currentPlugin['licence']);
+    $('#category').text($('#category').text()+currentPlugin['category'])
     $('#changelog-link').attr('href', currentPlugin['changelogLink']);
     $('#documentation-link').attr('href', currentPlugin['documentationLink']);
     $('#github-link').attr('href', 'https://github.com/' + fullName);
@@ -37,13 +39,15 @@ function initModal() {
     $('#travis-badge img').attr('src', 'https://travis-ci.org/' + fullName + '.svg?branch=' + defaultBranch);
     $('#coveralls-badge').attr('href', 'https://coveralls.io/github/' + fullName + '?branch=' + defaultBranch);
     $('#coveralls-badge img').attr('src', 'https://coveralls.io/repos/github/' + fullName + '/badge.svg?branch=' + defaultBranch);
+    $('#waffle-badge').attr('href', 'https://waffle.io/' + fullName);
+    $('#waffle-badge img').attr('src', 'https://badge.waffle.io/' + fullName + '.svg?columns=all');
+
 }
 
 /**
  * Lance l'installation du plugin
  */
 function installPlugin(branch) {
-    console.log(branch);
     $.post({
         url: 'core/ajax/update.ajax.php',
         data: {

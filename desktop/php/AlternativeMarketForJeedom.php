@@ -1,4 +1,20 @@
 <?php
+/* This file is part of Jeedom.
+ *
+ * Jeedom is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Jeedom is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 
 require_once(dirname(__FILE__) . '/../../core/class/AmfjMarket.class.php');
 
@@ -21,17 +37,22 @@ include_file('core', 'plugin.template', 'js');
 
 ?>
 <div class="market-filters row">
-    <div id="market-filter-src" class="btn-group col-sm-11">
+    <div id="market-filter-src" class="btn-group col-sm-10">
     <?php foreach ($eqLogics as $eqLogic) {
         $gitHub = $eqLogic->getConfiguration()['github'];
         echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
     }
     ?>
     </div>
-    <div class="col-sm-1">
-        <a class="btn btn-default">
-            <i id="refresh-markets" class="fa fa-refresh"></i>
-        </a>
+    <div class="col-sm-2">
+        <div id="admin-buttons" class="btn-group">
+            <button class="btn btn-default">
+                <i id="configure-markets" class="fa fa-cogs"></i>
+            </button>
+            <button class="btn btn-default">
+                <i id="refresh-markets" class="fa fa-refresh"></i>
+            </button>
+        </div>
     </div>
 </div>
 <div class="market-filters row">

@@ -27,13 +27,13 @@ if (!isConnect('admin')) {
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9 right-pane">
             <span class="button-item">
-                <button id="install-plugin" class="btn btn-primary">{{Installer}}</button>
+                <button id="install-plugin" class="btn btn-lg btn-primary">{{Installer}}</button>
                 <span id="default-branch-information" class="help-block"></span>
             </span>
             <span class="button-item">
                 <div id="install-plugin-advanced" class="btn-group">
-                    <button type="button" class="btn btn-warning">{{Installation avancée}}</button>
-                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown"
+                    <button type="button" class="btn btn-lg btn-warning">{{Installation avancée}}</button>
+                    <button type="button" class="btn btn-lg btn-warning dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
@@ -42,21 +42,30 @@ if (!isConnect('admin')) {
                     </ul>
                 </div>
             </span>
+            <div id="description">
+                <h3>{{Description}}</h3>
+                <p id="description-content"></p>
+            </div>
+
         </div>
     </div>
     <div id="plugin-modal-body" class="row">
         <div class="col-xs-6">
-            <h4>{{Description}}</h4>
-            <p id="description-content"></p>
+            <p id="author">{{Auteur}} : </p>
+            <p id="licence">{{Licence}} : </p>
+            <p id="category">{{Catégorie}} : </p>
         </div>
         <div class="col-xs-6">
-            <p><a id="documentation-link" class="btn btn-info" href=""><i class="fa fa-book"></i> {{Documentation}}</a></p>
-            <p><a id="changelog-link" class="btn btn-info" href=""><i class="fa fa-list"></i> {{Changelog}}</a></p>
-            <p><a id="github-link" class="btn btn-info" href=""><i class="fa fa-github"></i> {{GitHub}}</a></p>
-            <p><a id="travis-badge"><img src="" /></a></p>
-            <p><a id="coveralls-badge"><img src="" /></a></p>
-            <p><a id="waffle-badge"><img src="" /></a></p>
+            <p><a id="documentation-link" class="btn btn-success" href=""><i class="fa fa-book"></i>
+                    {{Documentation}}</a></p>
+            <p><a id="changelog-link" class="btn btn-success" href=""><i class="fa fa-list"></i> {{Changelog}}</a></p>
+            <p><a id="github-link" class="btn btn-success" href=""><i class="fa fa-github"></i> {{GitHub}}</a></p>
         </div>
+    </div>
+    <div id="plugin-modal-footer" class="row">
+        <span><a id="travis-badge"><img src=""/></a></span>
+        <span><a id="coveralls-badge"><img src=""/></a></span>
+        <span><a id="waffle-badge"><img src=""/></a></span>
     </div>
 </div>
 <script src="plugins/AlternativeMarketForJeedom/desktop/js/plugin.AlternativeMarketForJeedom.js"></script>
