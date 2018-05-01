@@ -97,14 +97,13 @@
 }
 
 .market-filters .btn-primary,
-#plugin-modal .btn-primary
-{
+#plugin-modal .btn-primary {
     background-color: #40535e !important;
     border-color: #40535e !important;
 }
 
 #div_pluginAlternativeMarketForJeedomAlert {
-/*    height: 100%;*/
+    /*    height: 100%;*/
     display: none;
 }
 
@@ -120,7 +119,7 @@
     height: 20em;
 }
 
-#plugin-modal-header>div {
+#plugin-modal-header > div {
     height: 100%;
     padding: 1em;
 }
@@ -165,7 +164,6 @@
 #plugin-modal-footer {
     padding-top: 10px;
 }
-
 
 #gituser-list li .btn {
     border: none;

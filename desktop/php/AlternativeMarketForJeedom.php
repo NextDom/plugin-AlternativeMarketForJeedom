@@ -56,11 +56,17 @@ include_file('core', 'plugin.template', 'js');
     </div>
 </div>
 <div class="market-filters row">
-    <div class="btn-group col-sm-6">
+    <div class="btn-group col-sm-4">
         <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
         <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>
     </div>
-    <div class="form-group col-sm-6">
+    <div class="form-group col-sm-4">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+            <input type="text" class="form-control" id="market-search" placeholder="{{Rechercher}}" />
+        </div>
+    </div>
+    <div class="form-group col-sm-4">
         <select class="form-control" id="market-filter-category">
             <option value="all">{{Toutes les Catégories}}</option>
             <option value="security">{{Sécurité}}</option>
