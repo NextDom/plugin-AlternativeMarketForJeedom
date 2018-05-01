@@ -76,7 +76,7 @@ function initFilters() {
         updateFilteredList();
     });
     $('#market-search').keyup(function() {
-        currentSearchValue = $(this).val();
+        currentSearchValue = $(this).val().toLowerCase();
         updateFilteredList();
     });
     $('#refresh-markets').click(function () {
@@ -140,7 +140,7 @@ function updateFilteredList() {
         if (filterNotInstalled && dataInstalled == false) {
             hide = true;
         }
-        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().indexOf(currentSearchValue) == -1) {
+        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue) == -1) {
             hide = true;
         }
         if (hide) {
