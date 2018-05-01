@@ -109,7 +109,7 @@ class GitManager
     protected function downloadRepositoriesList()
     {
         $result = false;
-        $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitUser . '/repos');
+        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitUser . '/repos');
         if (!strstr($content, 'API rate limit exceeded')) {
             $result = $content;
         }
