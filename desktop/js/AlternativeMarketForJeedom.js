@@ -140,7 +140,7 @@ function updateFilteredList() {
         if (filterNotInstalled && dataInstalled == false) {
             hide = true;
         }
-        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().indexOf(currentSearchValue) == -1) {
+        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue.toLowerCase()) == -1) {
             hide = true;
         }
         if (hide) {
