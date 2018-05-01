@@ -56,10 +56,10 @@ if (!isConnect('admin')) {
             <p id="category">{{Catégorie}} : </p>
         </div>
         <div class="col-xs-6">
-            <p><a id="documentation-link" class="btn btn-success" href=""><i class="fa fa-book"></i>
+            <p><a id="documentation-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-book"></i>
                     {{Documentation}}</a></p>
-            <p><a id="changelog-link" class="btn btn-success" href=""><i class="fa fa-list"></i> {{Changelog}}</a></p>
-            <p><a id="github-link" class="btn btn-success" href=""><i class="fa fa-github"></i> {{GitHub}}</a></p>
+            <p><a id="changelog-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-list"></i> {{Changelog}}</a></p>
+            <p><a id="github-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-github"></i> {{GitHub}}</a></p>
         </div>
     </div>
     <div id="plugin-modal-footer" class="row">
