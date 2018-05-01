@@ -33,6 +33,9 @@ class AjaxParser
     {
         $result = false;
         switch ($action) {
+            case 'gitUser':
+                $result = static::gitUser($params, $data);
+                break;
             case 'refresh':
                 $result = static::refresh($params, $data);
                 break;
@@ -65,7 +68,8 @@ class AjaxParser
         return $result;
     }
 
-    private static function refreshList($markets, $force) {
+    private static function refreshList($markets, $force)
+    {
         $result = false;
         if (is_array($markets)) {
             foreach ($markets as $git) {
@@ -100,9 +104,35 @@ class AjaxParser
                             array_push($result, $item->getDataInArray());
                         }
                     }
-                    \usort($result, function($item1, $item2) {
+                    \usort($result, function ($item1, $item2) {
                         return $item1['name'] > $item2['name'];
                     });
+                }
+                break;
+        }
+        return $result;
+    }
+
+    public static function gitUser($params, $data)
+    {
+        $result = false;
+        switch ($params) {
+            case 'add':
+                if ($data != '') {
+                    $gitUser = new AlternativeMarketForJeedom();
+                    $gitUser->setName($data);
+                    $gitUser->setLogicalId($data);
+                    $gitUser->setEqType_name('AlternativeMarketForJeedom');
+                    $gitUser->setConfiguration('github', $data);
+                    $gitUser->save();
+                    $result = true;
+                }
+                break;
+            case 'remove':
+                if ($data != '') {
+                    $gitUser = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
+                    $gitUser->remove();
+                    $result = true;
                 }
                 break;
         }
