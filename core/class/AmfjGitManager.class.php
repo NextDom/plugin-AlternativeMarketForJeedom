@@ -58,7 +58,7 @@ class GitManager
     public function isUpdateNeeded()
     {
         $result = true;
-        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_'.$this->gitUser);
+        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . $this->gitUser);
         if ($lastUpdate !== null) {
             if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
                 return false;
@@ -80,8 +80,7 @@ class GitManager
             $jsonAnswer = \json_decode($jsonList, true);
             if (\array_key_exists('message', $jsonAnswer) && $jsonAnswer['message'] == 'Not Found') {
                 $result = false;
-            }
-            else {
+            } else {
                 $dataToStore = array();
                 foreach ($jsonAnswer as $repository) {
                     $data = array();
@@ -93,8 +92,8 @@ class GitManager
                     $data['default_branch'] = $repository['default_branch'];
                     \array_push($dataToStore, $data);
                 }
-                $this->dataStorage->storeRawData('repo_last_update_'.$this->gitUser, \time());
-                $this->dataStorage->storeJsonData('repo_data_'.$this->gitUser, $dataToStore);
+                $this->dataStorage->storeRawData('repo_last_update_' . $this->gitUser, \time());
+                $this->dataStorage->storeJsonData('repo_data_' . $this->gitUser, $dataToStore);
                 $result = true;
             }
         }
@@ -110,8 +109,22 @@ class GitManager
     {
         $result = false;
         $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitUser . '/repos');
-        if (!strstr($content, 'API rate limit exceeded')) {
-            $result = $content;
+        log::add('AlternativeMarketForJeedom', 'debug', 'https://api.github.com/orgs/' . $this->gitUser . '/repos');
+        log::add('AlternativeMarketForJeedom', 'debug', $content);
+        // Limite de l'API GitHub atteinte
+        if (!\strstr($content, 'API rate limit exceeded')) {
+            // Le dépot est celui d'un utilisateur
+            if (\strstr($content, '"message":"Not Found"')) {
+                // Test d'un téléchargement pour un utilisateur
+                $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitUser . '/repos');
+                log::add('AlternativeMarketForJeedom', 'debug', 'https://api.github.com/users/' . $this->gitUser . '/repos');
+                log::add('AlternativeMarketForJeedom', 'debug', $content);
+                if (!\strstr($content, '"message": "Not Found"')) {
+                    $result = $content;
+                }
+            } else {
+                $result = $content;
+            }
         }
         return $result;
     }
@@ -121,9 +134,11 @@ class GitManager
      *
      * @return bool|array Tableau associatifs contenant les données ou false en cas d'échec
      */
-    public function getRepositoriesList() {
+    public
+    function getRepositoriesList()
+    {
         $result = false;
-        $jsonStrList = $this->dataStorage->getJsonData('repo_data_'.$this->gitUser);
+        $jsonStrList = $this->dataStorage->getJsonData('repo_data_' . $this->gitUser);
         if ($jsonStrList !== null) {
             $result = $jsonStrList;
         }

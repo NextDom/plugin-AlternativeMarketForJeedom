@@ -233,11 +233,13 @@ class MarketItem
         $infoJson = $downloadManager->downloadContent($infoJsonUrl);
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
-            $this->addPluginInformations($pluginData);
-            $this->downloadIcon($downloadManager);
-            $this->downloadGitInformations($downloadManager);
-            $this->writeCache();
-            $result = true;
+            if (\is_array($pluginData) && \array_key_exists('id', $pluginData)) {
+                $this->addPluginInformations($pluginData);
+                $this->downloadIcon($downloadManager);
+                $this->downloadGitInformations($downloadManager);
+                $this->writeCache();
+                $result = true;
+            }
         }
         return $result;
     }
