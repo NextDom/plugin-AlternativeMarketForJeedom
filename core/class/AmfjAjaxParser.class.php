@@ -33,8 +33,8 @@ class AjaxParser
     {
         $result = false;
         switch ($action) {
-            case 'add':
-                $result = static::add($params, $data);
+            case 'gitUser':
+                $result = static::gitUser($params, $data);
                 break;
             case 'refresh':
                 $result = static::refresh($params, $data);
@@ -113,17 +113,25 @@ class AjaxParser
         return $result;
     }
 
-    public static function add($params, $data)
+    public static function gitUser($params, $data)
     {
         $result = false;
         switch ($params) {
-            case 'gitUser':
+            case 'add':
                 if ($data != '') {
-                    $pluginExtra = new AlternativeMarketForJeedom();
-                    $pluginExtra->setName($data);
-                    $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
-                    $pluginExtra->setConfiguration('github', $data);
-                    $pluginExtra->save();
+                    $gitUser = new AlternativeMarketForJeedom();
+                    $gitUser->setName($data);
+                    $gitUser->setLogicalId($data);
+                    $gitUser->setEqType_name('AlternativeMarketForJeedom');
+                    $gitUser->setConfiguration('github', $data);
+                    $gitUser->save();
+                    $result = true;
+                }
+                break;
+            case 'remove':
+                if ($data != '') {
+                    $gitUser = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
+                    $gitUser->remove();
                     $result = true;
                 }
                 break;

@@ -23,7 +23,7 @@ if (!isConnect('admin')) {
 <div id="config-modal">
     <div class="container">
         <h3>Liste des utilisateur GitHub</h3>
-        <ul class="list-group">
+        <ul id="gituser-list" class="list-group">
         </ul>
         <div class="input-group">
             <input id="git-user" type="text" class="form-control" placeholder="Nom d'utilisateur GitHub..."/>
