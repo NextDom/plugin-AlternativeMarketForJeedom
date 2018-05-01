@@ -3,6 +3,7 @@ var filterHiddenSrc = [];
 var filterCategory = '';
 var filterInstalled = false;
 var filterNotInstalled = false;
+var currentSearchValue = '';
 
 // Point d'entrée du script
 $(document).ready(function () {
@@ -74,6 +75,10 @@ function initFilters() {
         }
         updateFilteredList();
     });
+    $('#market-search').keyup(function() {
+        currentSearchValue = $(this).val();
+        updateFilteredList();
+    });
     $('#refresh-markets').click(function () {
         refresh(true);
     });
@@ -133,7 +138,9 @@ function updateFilteredList() {
             hide = true;
         }
         if (filterNotInstalled && dataInstalled == false) {
-            console.log('Hide');
+            hide = true;
+        }
+        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().indexOf(currentSearchValue) == -1) {
             hide = true;
         }
         if (hide) {
