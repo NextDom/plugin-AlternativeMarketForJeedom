@@ -40,6 +40,9 @@ try {
     if ($result !== false) {
         ajax::success($result);
     }
+    else {
+        ajax::error(AjaxParser::getErrorMsg());
+    }
 
     throw new \Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */

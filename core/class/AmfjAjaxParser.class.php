@@ -21,6 +21,11 @@ require_once 'AmfjMarket.class.php';
 class AjaxParser
 {
     /**
+     * @var string Message d'erreur
+     */
+    private static $errorMsg;
+
+    /**
      * Point d'entrée des requêtes Ajax
      *
      * @param $action Action de la requête
@@ -72,13 +77,22 @@ class AjaxParser
     {
         $result = false;
         if (is_array($markets)) {
+            $result = true;
             foreach ($markets as $git) {
                 $market = new Market($git);
-                $market->refresh($force);
+                if (!$market->refresh($force)) {
+                    $error = GitManager::getLastErrorMessage();
+                    // Véririfaction que c'est une erreur et pas un refresh avant l'heure
+                    if ($error !== false) {
+                        static::$errorMsg = $error;
+                        $result = false;
+                    }
+                }
             }
-            $result = true;
         }
-
+        else {
+            static::$errorMsg = 'Aucun utilisateur GitHub défini';
+        }
         return $result;
     }
 
@@ -137,5 +151,9 @@ class AjaxParser
                 break;
         }
         return $result;
+    }
+
+    public static function getErrorMsg() {
+        return static::$errorMsg;
     }
 }

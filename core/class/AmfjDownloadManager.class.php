@@ -128,7 +128,9 @@ class DownloadManager
         $curlSession = curl_init();
         if ($curlSession !== false) {
             \curl_setopt($curlSession, CURLOPT_URL, $url);
-            log::add('AlternativeMarketForJeedom', 'debug', $url);
+            if (!$binary) {
+                log::add('AlternativeMarketForJeedom', 'debug', $url);
+            }
             \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
                 \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);

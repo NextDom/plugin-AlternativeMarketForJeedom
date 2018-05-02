@@ -56,12 +56,17 @@ class Market
      */
     public function refresh($force = false)
     {
+        $result = false;
         $gitManager = new GitManager($this->gitUser);
         if ($this->downloadManager->isConnected()) {
             $ignoreList = array();
             if ($force || $gitManager->isUpdateNeeded()) {
-                $gitManager->updateRepositoriesList();
-                $ignoreList = array();
+                if (!$gitManager->updateRepositoriesList()) {
+                    $result = false;
+                }
+                else {
+                    $result = true;
+                }
             }
             else {
                 $ignoreList = $this->getIgnoreList();
@@ -78,6 +83,7 @@ class Market
             }
             $this->saveIgnoreList($ignoreList);
         }
+        return $result;
     }
 
     /**

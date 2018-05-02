@@ -24,8 +24,8 @@ function AlternativeMarketForJeedom_install() {
     $dataStorage->createDataTable();
 
     $pluginExtra = new AlternativeMarketForJeedom();
-    $pluginExtra->setName('plugins-extra');
-    $pluginExtra->setLogicalId('plugins-extra');
+    $pluginExtra->setName('Jeedom-Plugins-Extra');
+    $pluginExtra->setLogicalId('Jeedom-Plugins-Extra');
     $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
     $pluginExtra->setConfiguration('github', 'Jeedom-Plugins-Extra');
     $pluginExtra->save();
