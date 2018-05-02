@@ -117,7 +117,6 @@ class GitManager
             if (\strstr($content, '"message":"Not Found"')) {
                 // Test d'un téléchargement pour un utilisateur
                 $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitUser . '/repos');
-                log::add('AlternativeMarketForJeedom', 'debug', 'https://api.github.com/users/' . $this->gitUser . '/repos');
                 log::add('AlternativeMarketForJeedom', 'debug', $content);
                 if (!\strstr($content, '"message": "Not Found"')) {
                     $result = $content;
