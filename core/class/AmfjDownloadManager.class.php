@@ -121,7 +121,7 @@ class DownloadManager
      */
     protected function downloadContentWithCurl($url, $binary = false)
     {
-        if ($this->gitHubToken !== false && !$binary) {
+        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
             $url = $url.'?access_token='.$this->gitHubToken;
         }
         $content = false;

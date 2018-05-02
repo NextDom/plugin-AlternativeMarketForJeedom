@@ -109,7 +109,6 @@ class GitManager
     {
         $result = false;
         $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitUser . '/repos');
-        log::add('AlternativeMarketForJeedom', 'debug', 'https://api.github.com/orgs/' . $this->gitUser . '/repos');
         log::add('AlternativeMarketForJeedom', 'debug', $content);
         // Limite de l'API GitHub atteinte
         if (!\strstr($content, 'API rate limit exceeded')) {
@@ -124,6 +123,10 @@ class GitManager
             } else {
                 $result = $content;
             }
+        }
+        else {
+            $content = $this->downloadManager->downloadContent('https://api.github.com/rate_limit');
+            log::add('AlternativeMarketForJeedom', 'debug', $content);
         }
         return $result;
     }
