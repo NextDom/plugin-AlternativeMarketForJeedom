@@ -25,6 +25,8 @@ define('GITHUB_TEST_REPO', 'jeedom');
 
 class Mocked_GitManager extends GitManager
 {
+    public static $lastErrorMessage;
+
     public function __construct($user)
     {
         parent::__construct($user);

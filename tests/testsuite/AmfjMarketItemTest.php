@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once('core/class/AmfjMarketItem.class.php');
 require_once('core/class/AmfjDataStorage.class.php');
+require_once('core/class/AmfjDownloadManager.class.php');
 
 class AmfjMarketItemTest extends TestCase
 {
@@ -146,4 +147,13 @@ class AmfjMarketItemTest extends TestCase
         $result = $this->marketItem->getDescription();
         $this->assertEquals('A small description', $result);
     }
+
+    public function testDownloadBranchesInformations() {
+        $downloadManager = new AmfjDownloadManager();
+        $this->marketItem->downloadBranchesInformations($downloadManager);
+        $result = $this->marketItem->getBranchesList();
+        $this->assertContains('beta', $result);
+        $this->assertContains('master', $result);
+    }
+
 }

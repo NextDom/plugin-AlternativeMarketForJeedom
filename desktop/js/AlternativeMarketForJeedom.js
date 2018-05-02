@@ -263,6 +263,8 @@ function getItemHtml(item) {
 
 /**
  * Affiche la fenêtre d'un plugin
+ *
+ * @param array pluginData Données du plugin
  */
 function showPluginModal(pluginData) {
     $('#md_modal').dialog({title: pluginData['name']});

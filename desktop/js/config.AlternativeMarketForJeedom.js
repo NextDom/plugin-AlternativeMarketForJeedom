@@ -1,3 +1,4 @@
+// Point d'entrée du script
 $(document).ready(function () {
     var gitsListUl = $('#config-modal ul');
     console.log(gitsList);
@@ -14,6 +15,9 @@ $(document).ready(function () {
     $('#add-git').click(addGitUser);
 });
 
+/**
+ * Ajouter un utilisateur à la liste
+ */
 function addGitUser() {
     var gitUser = $('#git-user').val();
     if (gitUser != '') {
@@ -22,6 +26,11 @@ function addGitUser() {
     }
 }
 
+/**
+ * Supprimer un utilisateur de la liste
+ *
+ * @param string gitUser Nom de l'utilisateur
+ */
 function removeGitUser(gitUser) {
     if (gitUser != '') {
         var data = {action: 'gitUser', params: 'remove', data: gitUser};
@@ -29,6 +38,11 @@ function removeGitUser(gitUser) {
     }
 }
 
+/**
+ * Lancer une requête Ajax
+ *
+ * @param data Données de la requête
+ */
 function ajaxQuery(data) {
     $.post({
         url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',

@@ -21,6 +21,9 @@ require_once(dirname(__FILE__) . '/../../../../core/class/DB.class.php');
 
 class AmfjDataStorage
 {
+    /**
+     * @var string Nom de la table des données
+     */
     private $dataTableName;
 
     /**

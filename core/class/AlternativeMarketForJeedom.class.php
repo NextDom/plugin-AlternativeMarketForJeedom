@@ -18,6 +18,9 @@
 
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
+/**
+ * Classe des objets de Jeedom
+ */
 class AlternativeMarketForJeedom extends eqLogic
 {
 

@@ -19,6 +19,9 @@
 require_once('AmfjDownloadManager.class.php');
 require_once('AmfjDataStorage.class.php');
 
+/**
+ * Gestion des informations liées à GitHub
+ */
 class GitManager
 {
     /**
@@ -152,6 +155,11 @@ class GitManager
         return $result;
     }
 
+    /**
+     * Obtenir le dernier message d'erreur
+     *
+     * @return string Message de l'erreur
+     */
     public static function getLastErrorMessage()
     {
         $result = static::$lastErrorMessage;

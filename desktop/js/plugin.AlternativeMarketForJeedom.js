@@ -38,6 +38,9 @@ function initModal() {
 
 }
 
+/**
+ * Evènement du bouton de mise à jour des branches
+ */
 function initBranchesUpdate() {
     $.post({
         url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
@@ -56,6 +59,11 @@ function initBranchesUpdate() {
     });
 }
 
+/**
+ * Initalise le bouton de choix des branches
+ *
+ * @param branchesList Liste des branches
+ */
 function initBranchesChoice(branchesList) {
     if (branchesList.length > 1) {
         var ulList = $('#install-plugin-advanced .dropdown-menu');

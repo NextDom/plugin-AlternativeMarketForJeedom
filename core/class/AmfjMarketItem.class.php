@@ -91,7 +91,7 @@ class MarketItem
     /**
      * Constructeur initialisant les informations de base
      *
-     * @param $repositoryInformations Informations obtenus par GitHub
+     * @param $repositoryInformations Informations obtenus par GitHub.
      */
     public function __construct($repositoryInformations = null)
     {
@@ -392,13 +392,20 @@ class MarketItem
     }
 
     /**
-     * @return array
+     * Obtenir la liste des branches du plugin
+     *
+     * @return array Liste des branches
      */
     public function getBranchesList()
     {
         return $this->branchesList;
     }
 
+    /**
+     * Définir le nom du complet du dépôt
+     *
+     * @param $fullName Nom complet
+     */
     public function setFullName($fullName) {
         $this->fullName = $fullName;
     }

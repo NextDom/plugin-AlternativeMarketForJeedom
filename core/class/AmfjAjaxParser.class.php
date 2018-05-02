@@ -19,6 +19,9 @@
 require_once 'AmfjMarket.class.php';
 require_once 'AmfjDownloadManager.class.php';
 
+/**
+ * Analyseur des requêtes Ajax
+ */
 class AjaxParser
 {
     /**
@@ -74,6 +77,14 @@ class AjaxParser
         return $result;
     }
 
+    /**
+     * Rafraichir la liste des dépôts.
+     *
+     * @param array $markets Liste des utilisateur GitHub.
+     * @param bool $force Force la mise à jour.
+     *
+     * @return bool True si une mise à jour a été réalisée ou que la mise à jour n'est pas nécessaire.
+     */
     private static function refreshList($markets, $force)
     {
         $result = false;
@@ -83,7 +94,7 @@ class AjaxParser
                 $market = new Market($git);
                 if (!$market->refresh($force)) {
                     $error = GitManager::getLastErrorMessage();
-                    // Véririfaction que c'est une erreur et pas un refresh avant l'heure
+                    // Vérification que c'est une erreur et pas un refresh avant l'heure
                     if ($error !== false) {
                         static::$errorMsg = $error;
                         $result = false;
@@ -137,6 +148,13 @@ class AjaxParser
         return $result;
     }
 
+    /**
+     * Gestion des utilisateurs GitHub
+     *
+     * @param string $params Type de modification
+     * @param string $data Nom de l'utilisateur
+     * @return bool True si une action a été effectuée
+     */
     public static function gitUser($params, $data)
     {
         $result = false;
@@ -163,6 +181,11 @@ class AjaxParser
         return $result;
     }
 
+    /**
+     * Obtenir le dernier message d'erreur
+     *
+     * @return string Message de l'erreur
+     */
     public static function getErrorMsg()
     {
         return static::$errorMsg;
