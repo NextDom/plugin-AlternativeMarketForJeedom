@@ -16,7 +16,7 @@
  */
 
 
-class DownloadManager
+class AmfjDownloadManager
 {
     /**
      * @var bool Statut de la connexion

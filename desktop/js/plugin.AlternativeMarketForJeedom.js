@@ -13,19 +13,13 @@ function initModal() {
     var defaultBranch = currentPlugin['defaultBranch'];
     $('#plugin-icon').attr('src', currentPlugin['iconPath']);
     $('#default-branch-information').text('Branche ' + defaultBranch);
-    var branchesList = currentPlugin['branchesList'];
-    if (branchesList.length > 1) {
-        var ulList = $('#install-plugin-advanced .dropdown-menu');
-        for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
-            var branchName = branchesList[branchIndex];
-            if (branchName != defaultBranch) {
-                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchesList[branchIndex] + '</a></li>');
-                liItem.click(function () {
-                    installPlugin($(this).data('branch'));
-                });
-                ulList.append(liItem);
-            }
-        }
+    if (currentPlugin['branchesList'].length > 0) {
+        initBranchesChoice(currentPlugin['branchesList']);
+    }
+    else {
+        $('#get-branches-informations button').click(function() {
+            initBranchesUpdate();
+        });
     }
 
     $('#description-content').text(currentPlugin['description']);
@@ -42,6 +36,45 @@ function initModal() {
     $('#waffle-badge').attr('href', 'https://waffle.io/' + fullName);
     $('#waffle-badge img').attr('src', 'https://badge.waffle.io/' + fullName + '.svg?columns=all');
 
+}
+
+function initBranchesUpdate() {
+    $.post({
+        url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
+        data: {
+            action: 'get',
+            params: 'branches',
+            data: currentPlugin['fullName']
+        },
+        dataType: 'json',
+        success: function (data, status) {
+            initBranchesChoice(data['result']);
+        },
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        }
+    });
+}
+
+function initBranchesChoice(branchesList) {
+    if (branchesList.length > 1) {
+        var ulList = $('#install-plugin-advanced .dropdown-menu');
+        for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
+            var branchName = branchesList[branchIndex];
+            if (branchName != currentPlugin['defaultBranch']) {
+                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchesList[branchIndex] + '</a></li>');
+                liItem.click(function () {
+                    installPlugin($(this).data('branch'));
+                });
+                ulList.append(liItem);
+            }
+        }
+        $('#get-branches-informations').css('display', 'none');
+        $('#install-plugin-advanced').css('display', 'block');
+    }
+    else {
+        $('#get-branches-informations').html('Pas d\'autres branches disponibles');
+    }
 }
 
 /**

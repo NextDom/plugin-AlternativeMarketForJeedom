@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 require_once('core/class/AmfjDownloadManager.class.php');
 require_once('../../core/php/core.inc.php');
 
-class Mocked_DownloadManager extends DownloadManager
+class Mocked_Amfj_DownloadManager extends AmfjDownloadManager
 {
     public function downloadContentWithCurl($url, $binary = false) {
         return parent::downloadContentWithCurl($url);
@@ -42,7 +42,7 @@ class DownloadManagerTest extends TestCase
 
     public function setUp()
     {
-        $this->downloadManager = new Mocked_DownloadManager();
+        $this->downloadManager = new Mocked_Amfj_DownloadManager();
     }
 
     public function testIsConnected() {

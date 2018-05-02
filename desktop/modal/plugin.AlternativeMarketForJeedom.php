@@ -31,7 +31,7 @@ if (!isConnect('admin')) {
                 <span id="default-branch-information" class="help-block"></span>
             </span>
             <span class="button-item">
-                <div id="install-plugin-advanced" class="btn-group">
+                <div id="install-plugin-advanced" class="btn-group hidden-btn">
                     <button type="button" class="btn btn-lg btn-warning">{{Installation avancée}}</button>
                     <button type="button" class="btn btn-lg btn-warning dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -40,6 +40,9 @@ if (!isConnect('admin')) {
                     </button>
                     <ul class="dropdown-menu">
                     </ul>
+                </div>
+                <div id="get-branches-informations">
+                    <button type="button" class="btn btn-lg btn-warning"><i class="fa fa-plus"></i></button>
                 </div>
             </span>
             <div id="description">

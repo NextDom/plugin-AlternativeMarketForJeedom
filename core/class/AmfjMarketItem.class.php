@@ -93,9 +93,11 @@ class MarketItem
      *
      * @param $repositoryInformations Informations obtenus par GitHub
      */
-    public function __construct($repositoryInformations)
+    public function __construct($repositoryInformations = null)
     {
-        $this->initWithGlobalInformations($repositoryInformations);
+        if ($repositoryInformations !== null) {
+            $this->initWithGlobalInformations($repositoryInformations);
+        }
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -236,7 +238,7 @@ class MarketItem
             if (\is_array($pluginData) && \array_key_exists('id', $pluginData)) {
                 $this->addPluginInformations($pluginData);
                 $this->downloadIcon($downloadManager);
-                $this->downloadGitInformations($downloadManager);
+                $this->branchesList = [];
                 $this->writeCache();
                 $result = true;
             }
@@ -264,23 +266,25 @@ class MarketItem
     }
 
     /**
-     * Met à jour les données de Git
+     * Met à jour les données des branches
      *
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      *
      * @return bool True si les données ont été trouvées
      */
-    public function downloadGitInformations($downloadManager) {
-        $baseGitRepoUrl = 'https://api.github.com/repos/'.$this->fullName;
-        $branches = $downloadManager->downloadContent($baseGitRepoUrl.'/branches');
+    public function downloadBranchesInformations($downloadManager) {
+        $result = false;
+        $baseGitRepoUrl = 'https://api.github.com/repos/'.$this->fullName.'/branches';
+        $branches = $downloadManager->downloadContent($baseGitRepoUrl);
         if ($branches !== false) {
             $branches = \json_decode($branches, true);
-            $this->branchesList = array();
+            $this->branchesList = [];
             foreach ($branches as $branch) {
                 array_push($this->branchesList, $branch['name']);
             }
-
+            $result = true;
         }
+        return $result;
     }
 
     /**
@@ -385,5 +389,17 @@ class MarketItem
     public function getGitUser()
     {
         return $this->gitUser;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBranchesList()
+    {
+        return $this->branchesList;
+    }
+
+    public function setFullName($fullName) {
+        $this->fullName = $fullName;
     }
 }

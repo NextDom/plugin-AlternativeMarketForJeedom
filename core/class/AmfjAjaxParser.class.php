@@ -17,6 +17,7 @@
 
 
 require_once 'AmfjMarket.class.php';
+require_once 'AmfjDownloadManager.class.php';
 
 class AjaxParser
 {
@@ -120,6 +121,16 @@ class AjaxParser
                     \usort($result, function ($item1, $item2) {
                         return $item1['name'] > $item2['name'];
                     });
+                }
+                break;
+            case 'branches':
+                $downloaderManager = new AmfjDownloadManager();
+                $marketItem = new MarketItem();
+                $marketItem->setFullName($data);
+                $marketItem->readCache();
+                if ($marketItem->downloadBranchesInformations($downloaderManager)) {
+                    $result = $marketItem->getBranchesList();
+                    $marketItem->writeCache();
                 }
                 break;
         }

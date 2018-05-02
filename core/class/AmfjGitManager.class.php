@@ -30,7 +30,7 @@ class GitManager
      */
     private $gitUser;
     /**
-     * @var DownloadManager Gestionnaire de téléchargement
+     * @var AmfjDownloadManager Gestionnaire de téléchargement
      */
     private $downloadManager;
     /**
@@ -49,7 +49,7 @@ class GitManager
      */
     public function __construct($gitUser)
     {
-        $this->downloadManager = new DownloadManager();
+        $this->downloadManager = new AmfjDownloadManager();
         $this->gitUser = $gitUser;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }

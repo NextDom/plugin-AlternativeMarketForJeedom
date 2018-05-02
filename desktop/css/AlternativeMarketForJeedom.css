@@ -4,9 +4,8 @@
 
 #market-div {
     margin-top: 2rem;
-    max-width: 1150px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 #admin-buttons {
@@ -102,6 +101,24 @@
 #plugin-modal .btn-primary {
     background-color: #40535e !important;
     border-color: #40535e !important;
+    background-image: none;
+}
+
+#plugin-modal .btn-success {
+    background-color: #5cb85c !important;
+    border: #5cb85c !important;
+    background-image: none !important;
+}
+
+#plugin-modal .btn-warning {
+    background-color: #f0ad4e !important;
+    border: #f0ad4e !important;
+    background-image: none !important;
+}
+
+#plugin-modal p,
+#plugin-modal h3 {
+    color: black;
 }
 
 #div_pluginAlternativeMarketForJeedomAlert {
@@ -174,4 +191,8 @@
 #add-git i {
     font-size: 14px;
     line-height: 20px;
+}
+
+#plugin-modal .hidden-btn {
+    display: none;
 }
