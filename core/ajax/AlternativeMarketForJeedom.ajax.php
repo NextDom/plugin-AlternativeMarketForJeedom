@@ -39,8 +39,7 @@ try {
 
     if ($result !== false) {
         ajax::success($result);
-    }
-    else {
+    } else {
         ajax::error(AjaxParser::getErrorMsg());
     }
 

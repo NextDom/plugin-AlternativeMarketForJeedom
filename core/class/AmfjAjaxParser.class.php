@@ -89,8 +89,7 @@ class AjaxParser
                     }
                 }
             }
-        }
-        else {
+        } else {
             static::$errorMsg = 'Aucun utilisateur GitHub défini';
         }
         return $result;
@@ -153,7 +152,8 @@ class AjaxParser
         return $result;
     }
 
-    public static function getErrorMsg() {
+    public static function getErrorMsg()
+    {
         return static::$errorMsg;
     }
 }

@@ -40,7 +40,7 @@ class GitManager
     /**
      * @var string Dernier message d'erreur
      */
-    private static $lastErrorMessage;
+    private static $lastErrorMessage = false;
 
     /**
      * Constructeur du gestionnaire Git
@@ -108,7 +108,7 @@ class GitManager
     protected function downloadRepositoriesList()
     {
         $result = false;
-        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitUser . '/repos');
+        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitUser . '/repos?per_page=100');
         log::add('AlternativeMarketForJeedom', 'debug', $content);
         // Limite de l'API GitHub atteinte
         if (\strstr($content, 'API rate limit exceeded')) {
@@ -116,19 +116,18 @@ class GitManager
             log::add('AlternativeMarketForJeedom', 'debug', $content);
             $gitHubLimitData = json_decode($content, true);
             $refreshDate = date('H:i', $gitHubLimitData['resources']['core']['reset']);
-            static::$lastErrorMessage = 'Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à '.$refreshDate;
+            static::$lastErrorMessage = 'Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate;
         } else {
             // Test si c'est un dépôt d'organisation
             if (\strstr($content, '"message":"Not Found"')) {
                 // Test d'un téléchargement pour un utilisateur
-                $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitUser . '/repos');
+                $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitUser . '/repos?per_page=100');
                 log::add('AlternativeMarketForJeedom', 'debug', $content);
                 // Test si c'est un dépot d'utilisateur
                 if (\strstr($content, '"message":"Not Found"') || strlen($content) < 10) {
-                    static::$lastErrorMessage = 'Le dépôt '.$this->gitUser.' n\'existe pas.';
+                    static::$lastErrorMessage = 'Le dépôt ' . $this->gitUser . ' n\'existe pas.';
                     $result = false;
-                }
-                else {
+                } else {
                     $result = $content;
                 }
             } else {
@@ -153,7 +152,8 @@ class GitManager
         return $result;
     }
 
-    public static function getLastErrorMessage() {
+    public static function getLastErrorMessage()
+    {
         $result = static::$lastErrorMessage;
         static::$lastErrorMessage = false;
         return $result;

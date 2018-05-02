@@ -16,7 +16,6 @@
  */
 
 
-
 class DownloadManager
 {
     /**
@@ -122,7 +121,14 @@ class DownloadManager
     protected function downloadContentWithCurl($url, $binary = false)
     {
         if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
-            $url = $url.'?access_token='.$this->gitHubToken;
+            $toAdd = 'access_token=' . $this->gitHubToken;
+            // Test si un paramètre a déjà été passé
+            if (strpos($url, '?') !== false) {
+                $url = $url . '&' .$toAdd;
+            }
+            else {
+                $url = $url . '?' .$toAdd;
+            }
         }
         $content = false;
         $curlSession = curl_init();

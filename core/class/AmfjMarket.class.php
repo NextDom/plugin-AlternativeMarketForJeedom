@@ -63,12 +63,10 @@ class Market
             if ($force || $gitManager->isUpdateNeeded()) {
                 if (!$gitManager->updateRepositoriesList()) {
                     $result = false;
-                }
-                else {
+                } else {
                     $result = true;
                 }
-            }
-            else {
+            } else {
                 $ignoreList = $this->getIgnoreList();
             }
             $repositories = $gitManager->getRepositoriesList();
@@ -94,7 +92,7 @@ class Market
     protected function getIgnoreList()
     {
         $result = array();
-        $jsonList = $this->dataStorage->getJsonData('repo_ignore_'.$this->gitUser);
+        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitUser);
         if ($jsonList !== null) {
             $result = $jsonList;
         }
@@ -108,7 +106,7 @@ class Market
      */
     protected function saveIgnoreList($ignoreList)
     {
-        $this->dataStorage->storeJsonData('repo_ignore_'.$this->gitUser, $ignoreList);
+        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitUser, $ignoreList);
     }
 
     /**
