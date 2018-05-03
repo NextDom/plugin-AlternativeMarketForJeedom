@@ -241,6 +241,16 @@ function getItemHtml(item) {
     }
     var pluginData = JSON.stringify(item);
     pluginData = pluginData.replace(/"/g, '&quot;');
+    var descriptionPar = '';
+    if (item['description'] == null) {
+        item['description'] = '';
+    }
+    if (item['description'].length > 165) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 165) + '</p>';
+    }
+    else {
+        descriptionPar = '<p>' + item['description'] + '</p>';
+    }
     var result = '' +
         '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="'+item['installed']+'">' +
         '<div class="media" data-plugin="' + pluginData + '">';
@@ -248,13 +258,15 @@ function getItemHtml(item) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
     }
     result += '' +
-        '<div class="media-left media-middle">' +
+        '<h4>' + title + '</h4>' +
+        '<div class="media-content">' +
+        '<div class="media-left">' +
         '<img src="' + item['iconPath'] + '"/>' +
         '</div>' +
         '<div class="media-body">' +
-        '<h4 class="media-heading">' + title + '</h4>' +
-        '<p>' + item['description'] + '</p>' +
+        descriptionPar +
         '<button>'+ 'Plus d\'informations' +'</button>' +
+        '</div>' +
         '</div>' +
         '</div>' +
         '</div>';

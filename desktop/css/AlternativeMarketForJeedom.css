@@ -19,7 +19,6 @@
 
 #market-div .media {
     position: relative;
-    display: table;
     height: 200px;
     transition: all 0.2s ease;
     overflow: hidden;
@@ -48,6 +47,10 @@
     color: white;
 }
 
+#market-div .media-left {
+    vertical-align: middle;
+}
+
 #market-div .media img {
     height: 100px;
 }
@@ -57,14 +60,25 @@
     text-align: center;
 }
 
+#market-div .media-body {
+    width: 100%;
+}
+
 #market-div .media-body p {
     text-align: justify;
-    max-height: 6em;
+    height: 6em;
     text-overflow: ellipsis;
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
+    position: relative;
+    line-height: 1.5em;
+    font-size: 1em;
+}
+
+#market-div .media-body p.truncate:after {
+    content: '...';
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 #market-div .media:hover {
@@ -73,9 +87,6 @@
 }
 
 #market-div .media-body button {
-    position: absolute;
-    bottom: 1em;
-    right: 1em;
     background-color: #95c12c;
     color: black;
     border: none;

@@ -25,9 +25,13 @@ function initModal() {
     $('#description-content').text(currentPlugin['description']);
     $('#author').text($('#author').text()+currentPlugin['author']);
     $('#licence').text($('#licence').text()+currentPlugin['licence']);
-    $('#category').text($('#category').text()+currentPlugin['category'])
-    $('#changelog-link').attr('href', currentPlugin['changelogLink']);
-    $('#documentation-link').attr('href', currentPlugin['documentationLink']);
+    $('#category').text($('#category').text()+currentPlugin['category']);
+    if (currentPlugin['changelogLink'] !== '') {
+        $('#changelog-link').attr('href', currentPlugin['changelogLink']);
+    }
+    if (currentPlugin['documentationLink'] !== '') {
+        $('#documentation-link').attr('href', currentPlugin['documentationLink']);
+    }
     $('#github-link').attr('href', 'https://github.com/' + fullName);
     $('#travis-badge').attr('href', 'https://travis-ci.org/' + fullName + '?branch=' + defaultBranch);
     $('#travis-badge img').attr('src', 'https://travis-ci.org/' + fullName + '.svg?branch=' + defaultBranch);
