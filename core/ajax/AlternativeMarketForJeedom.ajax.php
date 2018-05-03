@@ -18,7 +18,7 @@
 
 header('Content-Type: application/json');
 
-require_once(dirname(__FILE__) . '/../../../../core/php/core.inc.php');
+require_once __DIR__ . '/../../../../core/php/core.inc.php';
 
 try {
     include_file('core', 'authentification', 'php');
@@ -27,7 +27,7 @@ try {
         throw new \Exception(__('401 - Accès non autorisé', __FILE__));
     }
 
-    require_once dirname(__FILE__) . '/../class/AmfjAjaxParser.class.php';
+    require_once __DIR__ . '/../class/AmfjAjaxParser.class.php';
 
     ajax::init();
 
