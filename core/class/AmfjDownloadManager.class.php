@@ -169,7 +169,6 @@ class AmfjDownloadManager
      */
     protected function downloadContentWithFopen($url)
     {
-        $result = false;
         try {
             $result = \file_get_contents($url);
         } catch (\Exception $e) {
