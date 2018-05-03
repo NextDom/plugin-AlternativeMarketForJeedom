@@ -268,9 +268,9 @@ function getItemHtml(item) {
         '</div>' +
         '<div class="media-body">' +
         descriptionPar +
+        '</div>' +
+        '</div>' +
         '<button>' + 'Plus d\'informations' + '</button>' +
-        '</div>' +
-        '</div>' +
         '<div class="gituser">' + item['gitUser'] + '</div>' +
         '</div>' +
         '</div>';

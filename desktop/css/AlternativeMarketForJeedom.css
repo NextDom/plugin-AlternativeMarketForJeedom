@@ -82,13 +82,15 @@
     transform: scale(1.02);
 }
 
-#market-div .media-body button {
+#market-div button {
     background-color: #95c12c;
     color: black;
     border: none;
     float: right;
-    padding: 0.5em;
-    border-radius: 0.3em;
+    border-top-left-radius: 0.3em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
     background-image: linear-gradient(to right, #95c12c, #95c12c 50%, #40535e 50%, #40535e);
     background-size: 202% 100%;
     background-position: 0 0;
@@ -97,9 +99,12 @@
     -ms-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
     transition: all 0.2s ease;
+    font-size: 1em;
+    line-height: 2em;
+    padding: 0 1em 0 1em;
 }
 
-#market-div .media:hover .media-body button {
+#market-div .media:hover button {
     background-position: 100% 0;
     color: white;
 }
@@ -215,4 +220,8 @@
 
 #plugin-modal .hidden-btn {
     display: none;
+}
+
+#plugin-modal .list-title {
+    font-weight: bold;
 }

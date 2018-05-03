@@ -22,14 +22,23 @@ function initModal() {
         });
     }
 
+    console.log(currentPlugin);
     $('#description-content').text(currentPlugin['description']);
-    $('#author').text($('#author').text() + currentPlugin['author']);
-    $('#licence').text($('#licence').text() + currentPlugin['licence']);
-    $('#category').text($('#category').text() + currentPlugin['category']);
-    if (currentPlugin['changelogLink'] !== '') {
+    $('#author .list-info').text(currentPlugin['author']);
+    $('#licence .list-info').text(currentPlugin['licence']);
+    $('#category .list-info').text(currentPlugin['category']);
+    $('#gituser .list-info').text(currentPlugin['gitUser']);
+    $('#gitrepo .list-info').text(currentPlugin['gitName']);
+    if (currentPlugin['changelogLink'] === null) {
+        $('#changelog-link').css('display', 'none');
+    }
+    else {
         $('#changelog-link').attr('href', currentPlugin['changelogLink']);
     }
-    if (currentPlugin['documentationLink'] !== '') {
+    if (currentPlugin['documentationLink'] === null) {
+        $('#documentation-link').css('display', 'none');
+    }
+    else {
         $('#documentation-link').attr('href', currentPlugin['documentationLink']);
     }
     $('#github-link').attr('href', 'https://github.com/' + fullName);

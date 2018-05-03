@@ -54,9 +54,11 @@ if (!isConnect('admin')) {
     </div>
     <div id="plugin-modal-body" class="row">
         <div class="col-xs-6">
-            <p id="author">{{Auteur}} : </p>
-            <p id="licence">{{Licence}} : </p>
-            <p id="category">{{Catégorie}} : </p>
+            <p id="author"><span class="list-title">{{Auteur}}</span> : <span class="list-info"></span></p>
+            <p id="licence"><span class="list-title">{{Licence}}</span> : <span class="list-info"></span></p>
+            <p id="category"><span class="list-title">{{Catégorie}}</span> : <span class="list-info"></span></p>
+            <p id="gituser"><span class="list-title">{{Utilisateur Git}}</span> : <span class="list-info"></span></p>
+            <p id="gitrepo"><span class="list-title">{{Dépôt Git}}</span> : <span class="list-info"></span></p>
         </div>
         <div class="col-xs-6">
             <p><a id="documentation-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-book"></i>
