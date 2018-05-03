@@ -102,7 +102,6 @@ function initBranchesChoice(branchesList) {
  * Lance l'installation du plugin
  */
 function installPlugin(branch) {
-    console.log(currentPlugin);
     $.post({
         url: 'core/ajax/update.ajax.php',
         data: {

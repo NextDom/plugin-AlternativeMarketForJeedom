@@ -37,6 +37,8 @@ function AlternativeMarketForJeedom_install()
     $jeedom->setEqType_name('AlternativeMarketForJeedom');
     $jeedom->setConfiguration('github', 'jeedom');
     $jeedom->save();
+
+    config::save('url::enable', 1);
 }
 
 function AlternativeMarketForJeedom_update()

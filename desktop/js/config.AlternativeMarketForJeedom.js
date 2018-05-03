@@ -1,7 +1,6 @@
 // Point d'entrée du script
 $(document).ready(function () {
     var gitsListUl = $('#config-modal ul');
-    console.log(gitsList);
     for (var gitIndex = 0; gitIndex < gitsList.length; ++gitIndex) {
         var item = $('<li class="list-group-item">' + gitsList[gitIndex] + '</li>');
         var deleteButton = $('<button class="badge btn btn-danger" data-gituser="' + gitsList[gitIndex] + '">Supprimer</button>');
