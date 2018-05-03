@@ -216,7 +216,6 @@ function refreshItems() {
  * @param items Liste des éléments
  */
 function showItems(items) {
-    console.log(items);
     var container = $('#market-div');
     container.empty();
     for (var index = 0; index < items.length; ++index) {
