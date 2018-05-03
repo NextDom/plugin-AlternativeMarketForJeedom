@@ -46,7 +46,7 @@ class AmfjDownloadManager
     protected function testConnection()
     {
         $sock = \fsockopen('www.google.fr', 80);
-        if ($sock !== fasle) {
+        if ($sock !== false) {
             $this->connectionStatus = true;
             fclose($sock);
         } else {
