@@ -16,10 +16,10 @@
  */
 
 
-require_once(dirname(__FILE__) . '/../../core/class/AmfjMarket.class.php');
+require_once __DIR__ . '/../../core/class/AmfjMarket.class.php';
 
 if (!isConnect('admin')) {
-    throw new Exception('{{401 - Accès non autorisé}}');
+    throw new \Exception('{{401 - Accès non autorisé}}');
 }
 
 $plugin = plugin::byId('AlternativeMarketForJeedom');
