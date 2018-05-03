@@ -124,10 +124,9 @@ class AmfjDownloadManager
             $toAdd = 'access_token=' . $this->gitHubToken;
             // Test si un paramètre a déjà été passé
             if (strpos($url, '?') !== false) {
-                $url = $url . '&' .$toAdd;
-            }
-            else {
-                $url = $url . '?' .$toAdd;
+                $url = $url . '&' . $toAdd;
+            } else {
+                $url = $url . '?' . $toAdd;
             }
         }
         $content = false;

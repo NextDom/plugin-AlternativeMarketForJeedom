@@ -231,7 +231,7 @@ class MarketItem
     public function refresh($downloadManager)
     {
         $result = false;
-        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/'.$this->defaultBranch.'/plugin_info/info.json';
+        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/info.json';
         $infoJson = $downloadManager->downloadContent($infoJsonUrl);
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
@@ -251,9 +251,10 @@ class MarketItem
      *
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      */
-    public function downloadIcon($downloadManager) {
+    public function downloadIcon($downloadManager)
+    {
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
-        $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/'.$this->defaultBranch.'/plugin_info/' . $this->id . '_icon.png';
+        $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
         $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
         $downloadManager->downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
@@ -272,9 +273,10 @@ class MarketItem
      *
      * @return bool True si les données ont été trouvées
      */
-    public function downloadBranchesInformations($downloadManager) {
+    public function downloadBranchesInformations($downloadManager)
+    {
         $result = false;
-        $baseGitRepoUrl = 'https://api.github.com/repos/'.$this->fullName.'/branches';
+        $baseGitRepoUrl = 'https://api.github.com/repos/' . $this->fullName . '/branches';
         $branches = $downloadManager->downloadContent($baseGitRepoUrl);
         if ($branches !== false) {
             $branches = \json_decode($branches, true);
@@ -405,8 +407,11 @@ class MarketItem
      * Définir le nom du complet du dépôt
      *
      * @param $fullName Nom complet
+     *
+     * @return Instance de l'objet
      */
-    public function setFullName($fullName) {
+    public function setFullName($fullName)
+    {
         $this->fullName = $fullName;
         return $this;
     }

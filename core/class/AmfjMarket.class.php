@@ -53,6 +53,8 @@ class Market
      * Met à jour la liste des dépôts
      *
      * @param bool $force Forcer la mise à jour
+     *
+     * @return True si une mise à jour a été réalisée
      */
     public function refresh($force = false)
     {
@@ -112,7 +114,7 @@ class Market
     /**
      * Obtenir la liste des éléments du dépot
      *
-     * @return array Liste des éléments
+     * @return MarketItem[] Liste des éléments
      */
     public function getItems()
     {

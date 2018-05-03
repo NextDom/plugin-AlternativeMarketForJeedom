@@ -5,7 +5,7 @@ $(document).ready(function () {
         var item = $('<li class="list-group-item">' + gitsList[gitIndex] + '</li>');
         var deleteButton = $('<button class="badge btn btn-danger" data-gituser="' + gitsList[gitIndex] + '">Supprimer</button>');
 
-        deleteButton.click(function() {
+        deleteButton.click(function () {
             removeGitUser($(this).data('gituser'));
         });
         item.append(deleteButton);
@@ -20,8 +20,8 @@ $(document).ready(function () {
 function addGitUser() {
     var gitUser = $('#git-user').val();
     if (gitUser != '') {
-            var data = {action: 'gitUser', params: 'add', data: gitUser};
-            ajaxQuery(data);
+        var data = {action: 'gitUser', params: 'add', data: gitUser};
+        ajaxQuery(data);
     }
 }
 

@@ -51,7 +51,7 @@ class AjaxParser
                 $result = static::get($params, $data);
                 break;
             default :
-               $result = false; 
+                $result = false;
         }
         return $result;
     }
@@ -74,7 +74,7 @@ class AjaxParser
                 $result = static::refreshList($data, true);
                 break;
             default :
-               $result = false;
+                $result = false;
         }
         return $result;
     }
@@ -122,12 +122,21 @@ class AjaxParser
         switch ($params) {
             case 'list':
                 if (is_array($data)) {
-                    $result = array();
+                    $result = [];
+                    $idList = [];
+                    $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
                     foreach ($data as $git) {
                         $market = new Market($git);
                         $items = $market->getItems();
                         foreach ($items as $item) {
-                            array_push($result, $item->getDataInArray());
+                            if ($showDuplicates) {
+                                array_push($result, $item->getDataInArray());
+                            } else {
+                                if (!\in_array($item->getId(), $idList)) {
+                                    array_push($result, $item->getDataInArray());
+                                    array_push($idList, $item->getId());
+                                }
+                            }
                         }
                     }
                     \usort($result, function ($item1, $item2) {
@@ -146,7 +155,7 @@ class AjaxParser
                 }
                 break;
             default :
-               $result = false;
+                $result = false;
         }
         return $result;
     }
@@ -180,7 +189,7 @@ class AjaxParser
                 }
                 break;
             default :
-               $result = false;
+                $result = false;
         }
         return $result;
     }

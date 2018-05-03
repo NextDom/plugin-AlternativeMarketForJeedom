@@ -38,11 +38,11 @@ include_file('core', 'plugin.template', 'js');
 ?>
 <div class="market-filters row">
     <div id="market-filter-src" class="btn-group col-sm-10">
-    <?php foreach ($eqLogics as $eqLogic) {
-        $gitHub = $eqLogic->getConfiguration()['github'];
-        echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
-    }
-    ?>
+        <?php foreach ($eqLogics as $eqLogic) {
+            $gitHub = $eqLogic->getConfiguration()['github'];
+            echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
+        }
+        ?>
     </div>
     <div class="col-sm-2">
         <div id="admin-buttons" class="btn-group">
@@ -63,7 +63,7 @@ include_file('core', 'plugin.template', 'js');
     <div class="form-group col-sm-4">
         <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" class="form-control" id="market-search" placeholder="{{Rechercher}}" />
+            <input type="text" class="form-control" id="market-search" placeholder="{{Rechercher}}"/>
         </div>
     </div>
     <div class="form-group col-sm-4">
