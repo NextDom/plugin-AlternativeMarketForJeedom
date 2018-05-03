@@ -40,7 +40,6 @@ class AjaxParser
      */
     public static function parse($action, $params, $data)
     {
-        $result = false;
         switch ($action) {
             case 'gitUser':
                 $result = static::gitUser($params, $data);
@@ -51,6 +50,8 @@ class AjaxParser
             case 'get':
                 $result = static::get($params, $data);
                 break;
+            default :
+               $result = false; 
         }
         return $result;
     }
@@ -65,7 +66,6 @@ class AjaxParser
      */
     public static function refresh($params, $data)
     {
-        $result = false;
         switch ($params) {
             case 'list':
                 $result = static::refreshList($data, false);
@@ -73,6 +73,8 @@ class AjaxParser
             case 'list-force':
                 $result = static::refreshList($data, true);
                 break;
+            default :
+               $result = false;
         }
         return $result;
     }
@@ -117,7 +119,6 @@ class AjaxParser
      */
     public static function get($params, $data)
     {
-        $result = false;
         switch ($params) {
             case 'list':
                 if (is_array($data)) {
@@ -144,6 +145,8 @@ class AjaxParser
                     $marketItem->writeCache();
                 }
                 break;
+            default :
+               $result = false;
         }
         return $result;
     }
@@ -157,7 +160,6 @@ class AjaxParser
      */
     public static function gitUser($params, $data)
     {
-        $result = false;
         switch ($params) {
             case 'add':
                 if ($data != '') {
@@ -177,6 +179,8 @@ class AjaxParser
                     $result = true;
                 }
                 break;
+            default :
+               $result = false;
         }
         return $result;
     }
