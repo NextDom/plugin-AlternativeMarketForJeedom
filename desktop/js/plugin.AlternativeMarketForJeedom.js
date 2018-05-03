@@ -17,15 +17,15 @@ function initModal() {
         initBranchesChoice(currentPlugin['branchesList']);
     }
     else {
-        $('#get-branches-informations button').click(function() {
+        $('#get-branches-informations button').click(function () {
             initBranchesUpdate();
         });
     }
 
     $('#description-content').text(currentPlugin['description']);
-    $('#author').text($('#author').text()+currentPlugin['author']);
-    $('#licence').text($('#licence').text()+currentPlugin['licence']);
-    $('#category').text($('#category').text()+currentPlugin['category']);
+    $('#author').text($('#author').text() + currentPlugin['author']);
+    $('#licence').text($('#licence').text() + currentPlugin['licence']);
+    $('#category').text($('#category').text() + currentPlugin['category']);
     if (currentPlugin['changelogLink'] !== '') {
         $('#changelog-link').attr('href', currentPlugin['changelogLink']);
     }
