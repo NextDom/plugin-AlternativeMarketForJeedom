@@ -408,5 +408,6 @@ class MarketItem
      */
     public function setFullName($fullName) {
         $this->fullName = $fullName;
+        return $this;
     }
 }

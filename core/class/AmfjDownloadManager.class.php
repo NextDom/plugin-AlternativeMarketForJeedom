@@ -45,14 +45,12 @@ class AmfjDownloadManager
      */
     protected function testConnection()
     {
-        try {
-            $sock = \fsockopen('www.google.fr', 80);
-            if ($sock) {
-                $this->connectionStatus = true;
-                fclose($sock);
-            }
-        } catch (\Exception $e) {
-            $this->connectionStatus = false;
+        $sock = \fsockopen('www.google.fr', 80);
+        if ($sock !== false) {
+            $this->connectionStatus = true;
+            fclose($sock);
+        } else {
+            $this->connectionStatus = $sock;
         }
     }
 
@@ -169,7 +167,6 @@ class AmfjDownloadManager
      */
     protected function downloadContentWithFopen($url)
     {
-        $result = false;
         try {
             $result = \file_get_contents($url);
         } catch (\Exception $e) {
