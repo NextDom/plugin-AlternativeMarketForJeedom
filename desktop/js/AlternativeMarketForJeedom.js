@@ -75,7 +75,7 @@ function initFilters() {
         }
         updateFilteredList();
     });
-    $('#market-search').keyup(function() {
+    $('#market-search').keyup(function () {
         currentSearchValue = $(this).val().toLowerCase();
         updateFilteredList();
     });
@@ -235,6 +235,7 @@ function showItems(items) {
  * @returns {string} Code HTML
  */
 function getItemHtml(item) {
+    // Préparation des données
     var title = item['name'];
     if (title !== null) {
         title = title.replace(/([a-z])([A-Z][a-z])/g, '\$1 \$2');
@@ -251,8 +252,10 @@ function getItemHtml(item) {
     else {
         descriptionPar = '<p>' + item['description'] + '</p>';
     }
+
+    // Préparation du code
     var result = '' +
-        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="'+item['installed']+'">' +
+        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
@@ -265,9 +268,10 @@ function getItemHtml(item) {
         '</div>' +
         '<div class="media-body">' +
         descriptionPar +
-        '<button>'+ 'Plus d\'informations' +'</button>' +
+        '<button>' + 'Plus d\'informations' + '</button>' +
         '</div>' +
         '</div>' +
+        '<div class="gituser">' + item['gitUser'] + '</div>' +
         '</div>' +
         '</div>';
     return result;

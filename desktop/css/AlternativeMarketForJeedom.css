@@ -47,10 +47,6 @@
     color: white;
 }
 
-#market-div .media-left {
-    vertical-align: middle;
-}
-
 #market-div .media img {
     height: 100px;
 }
@@ -106,6 +102,19 @@
 #market-div .media:hover .media-body button {
     background-position: 100% 0;
     color: white;
+}
+
+#market-div .gituser {
+    position: absolute;
+    bottom: 0;
+    background-color: #40535e;
+    line-height: 2em;
+    padding-left: 1em;
+    padding-right: 1em;
+    color: white;
+    left: 0;
+    border-top-right-radius: 5px;
+    font-size: 1em;
 }
 
 .market-filters .btn-primary,
