@@ -246,8 +246,8 @@ function getItemHtml(item) {
     if (item['description'] == null) {
         item['description'] = '';
     }
-    if (item['description'].length > 165) {
-        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 165) + '</p>';
+    if (item['description'].length > 160) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 160) + '</p>';
     }
     else {
         descriptionPar = '<p>' + item['description'] + '</p>';

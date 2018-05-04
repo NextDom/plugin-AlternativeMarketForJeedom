@@ -46,11 +46,11 @@ include_file('core', 'plugin.template', 'js');
     </div>
     <div class="col-sm-2">
         <div id="admin-buttons" class="btn-group">
-            <button class="btn btn-default">
-                <i id="configure-markets" class="fa fa-cogs"></i>
+            <button id="configure-markets" class="btn btn-default">
+                <i class="fa fa-plus"></i> Ajouter
             </button>
-            <button class="btn btn-default">
-                <i id="refresh-markets" class="fa fa-refresh"></i>
+            <button id="refresh-markets" class="btn btn-default">
+                <i class="fa fa-refresh"></i>
             </button>
         </div>
     </div>

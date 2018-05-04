@@ -25,7 +25,7 @@
     border: 1px solid #ccc;
     margin: 0;
     border-radius: 5px;
-    padding: 1rem;
+    padding: 0.75em;
     /** Fix pour darksobre **/
     width: 100%;
 }
@@ -84,14 +84,14 @@
 
 #market-div button {
     background-color: #95c12c;
-    color: black;
+    color: white;
     border: none;
     float: right;
     border-top-left-radius: 0.3em;
     position: absolute;
     bottom: 0;
     right: 0;
-    background-image: linear-gradient(to right, #95c12c, #95c12c 50%, #40535e 50%, #40535e);
+    background-image: linear-gradient(to right, #40535e, #40535e 50%, #95c12c 50%, #95c12c);
     background-size: 202% 100%;
     background-position: 0 0;
     -webkit-transition: all 0.2s ease;
@@ -122,10 +122,15 @@
     font-size: 1em;
 }
 
+#market-dev .media-left {
+    padding-left: 0.25em;
+    padding-right: 1em;
+}
+
 .market-filters .btn-primary,
 #plugin-modal .btn-primary {
-    background-color: #40535e !important;
-    border-color: #40535e !important;
+    background-color: #95c12c !important;
+    border-color: #95c12c !important;
     background-image: none;
 }
 
