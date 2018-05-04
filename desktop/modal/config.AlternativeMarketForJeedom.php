@@ -23,10 +23,10 @@ if (!isConnect('admin')) {
 <div id="config-modal">
     <div class="container">
         <h3>Liste des utilisateur GitHub</h3>
-        <ul id="gituser-list" class="list-group">
+        <ul id="gitid-list" class="list-group">
         </ul>
         <div class="input-group">
-            <input id="git-user" type="text" class="form-control" placeholder="Nom d'utilisateur GitHub..."/>
+            <input id="git-id" type="text" class="form-control" placeholder="Identifiant GitHub..."/>
             <span class="input-group-btn">
             <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
         </span>

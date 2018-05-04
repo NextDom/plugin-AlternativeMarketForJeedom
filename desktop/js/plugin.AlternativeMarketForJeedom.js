@@ -27,7 +27,7 @@ function initModal() {
     $('#author .list-info').text(currentPlugin['author']);
     $('#licence .list-info').text(currentPlugin['licence']);
     $('#category .list-info').text(currentPlugin['category']);
-    $('#gituser .list-info').text(currentPlugin['gitUser']);
+    $('#gitid .list-info').text(currentPlugin['gitId']);
     $('#gitrepo .list-info').text(currentPlugin['gitName']);
     if (currentPlugin['changelogLink'] === null) {
         $('#changelog-link').css('display', 'none');
@@ -109,12 +109,12 @@ function installPlugin(branch) {
             // Version de l'installation par URL
             update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
             // Version de l'installation par GitHub
-            //update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitUser'] + '", "repository":"'+ currentPlugin['gitName'] +'", "version":"'+ branch +'"},"source":"github"}'
+            //update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"'+ currentPlugin['gitName'] +'", "version":"'+ branch +'"},"source":"github"}'
 
         },
         dataType: 'json',
         success: function (data, status) {
-            window.location.replace('/index.php?v=d&p=plugin');
+//            window.location.replace('/index.php?v=d&p=plugin');
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);

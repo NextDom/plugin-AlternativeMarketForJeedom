@@ -34,7 +34,7 @@ class MarketItem
     /**
      * @var string Utilisateur GitHub
      */
-    private $gitUser;
+    private $gitId;
     /**
      * @var string Nom complet de son dépôt
      */
@@ -98,6 +98,7 @@ class MarketItem
         if ($repositoryInformations !== null) {
             $this->initWithGlobalInformations($repositoryInformations);
         }
+
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -108,10 +109,12 @@ class MarketItem
      */
     public function initWithGlobalInformations($repositoryInformations)
     {
+        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['name']);
+        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['full_name']);
         $this->gitName = $repositoryInformations['name'];
         $this->fullName = $repositoryInformations['full_name'];
         $this->url = $repositoryInformations['html_url'];
-        $this->gitUser = $repositoryInformations['git_user'];
+        $this->gitId = $repositoryInformations['git_id'];
         $this->description = $repositoryInformations['description'];
         $this->defaultBranch = $repositoryInformations['default_branch'];
     }
@@ -164,7 +167,7 @@ class MarketItem
         $dataArray = array();
         $dataArray['name'] = $this->name;
         $dataArray['gitName'] = $this->gitName;
-        $dataArray['gitUser'] = $this->gitUser;
+        $dataArray['gitId'] = $this->gitId;
         $dataArray['fullName'] = $this->fullName;
         $dataArray['description'] = $this->description;
         $dataArray['url'] = $this->url;
@@ -203,7 +206,7 @@ class MarketItem
         if ($jsonContent !== null) {
             if (\array_key_exists('name', $jsonContent)) $this->name = $jsonContent['name'];
             if (\array_key_exists('gitName', $jsonContent)) $this->gitName = $jsonContent['gitName'];
-            if (\array_key_exists('gitUser', $jsonContent)) $this->gitUser = $jsonContent['gitUser'];
+            if (\array_key_exists('gitId', $jsonContent)) $this->gitId = $jsonContent['gitId'];
             if (\array_key_exists('fullName', $jsonContent)) $this->fullName = $jsonContent['fullName'];
             if (\array_key_exists('description', $jsonContent)) $this->description = $jsonContent['description'];
             if (\array_key_exists('url', $jsonContent)) $this->url = $jsonContent['url'];
@@ -386,9 +389,9 @@ class MarketItem
      *
      * @return string Utilisateur GitHub
      */
-    public function getGitUser()
+    public function getGitId()
     {
-        return $this->gitUser;
+        return $this->gitId;
     }
 
     /**

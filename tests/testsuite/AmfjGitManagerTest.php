@@ -27,9 +27,9 @@ class Mocked_GitManager extends GitManager
 {
     public static $lastErrorMessage;
 
-    public function __construct($user)
+    public function __construct($id)
     {
-        parent::__construct($user);
+        parent::__construct($id);
     }
 
     public function downloadRepositoriesList() {

@@ -3,24 +3,24 @@ $(document).ready(function () {
     var gitsListUl = $('#config-modal ul');
     for (var gitIndex = 0; gitIndex < gitsList.length; ++gitIndex) {
         var item = $('<li class="list-group-item">' + gitsList[gitIndex] + '</li>');
-        var deleteButton = $('<button class="badge btn btn-danger" data-gituser="' + gitsList[gitIndex] + '">Supprimer</button>');
+        var deleteButton = $('<button class="badge btn btn-danger" data-gitid="' + gitsList[gitIndex] + '">Supprimer</button>');
 
         deleteButton.click(function() {
-            removeGitUser($(this).data('gituser'));
+            removeGitId($(this).data('gitid'));
         });
         item.append(deleteButton);
         gitsListUl.append(item);
     }
-    $('#add-git').click(addGitUser);
+    $('#add-git').click(addGitId);
 });
 
 /**
  * Ajouter un utilisateur à la liste
  */
-function addGitUser() {
-    var gitUser = $('#git-user').val();
-    if (gitUser != '') {
-            var data = {action: 'gitUser', params: 'add', data: gitUser};
+function addGitId() {
+    var gitId = $('#git-id').val();
+    if (gitId != '') {
+            var data = {action: 'gitId', params: 'add', data: gitId};
             ajaxQuery(data);
     }
 }
@@ -28,11 +28,11 @@ function addGitUser() {
 /**
  * Supprimer un utilisateur de la liste
  *
- * @param string gitUser Nom de l'utilisateur
+ * @param string gitId Nom de l'utilisateur
  */
-function removeGitUser(gitUser) {
-    if (gitUser != '') {
-        var data = {action: 'gitUser', params: 'remove', data: gitUser};
+function removeGitId(gitId) {
+    if (gitId != '') {
+        var data = {action: 'gitId', params: 'remove', data: gitId};
         ajaxQuery(data);
     }
 }
