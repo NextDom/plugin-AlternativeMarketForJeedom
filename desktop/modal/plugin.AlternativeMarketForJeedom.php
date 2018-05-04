@@ -16,7 +16,7 @@
  */
 
 if (!isConnect('admin')) {
-    throw new Exception('{{401 - Accès non autorisé}}');
+    throw new \Exception('{{401 - Accès non autorisé}}');
 }
 ?>
 <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
@@ -31,7 +31,7 @@ if (!isConnect('admin')) {
                 <span id="default-branch-information" class="help-block"></span>
             </span>
             <span class="button-item">
-                <div id="install-plugin-advanced" class="btn-group">
+                <div id="install-plugin-advanced" class="btn-group hidden-btn">
                     <button type="button" class="btn btn-lg btn-warning">{{Installation avancée}}</button>
                     <button type="button" class="btn btn-lg btn-warning dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -40,6 +40,9 @@ if (!isConnect('admin')) {
                     </button>
                     <ul class="dropdown-menu">
                     </ul>
+                </div>
+                <div id="get-branches-informations">
+                    <button type="button" class="btn btn-lg btn-warning"><i class="fa fa-plus"></i></button>
                 </div>
             </span>
             <div id="description">
@@ -51,15 +54,19 @@ if (!isConnect('admin')) {
     </div>
     <div id="plugin-modal-body" class="row">
         <div class="col-xs-6">
-            <p id="author">{{Auteur}} : </p>
-            <p id="licence">{{Licence}} : </p>
-            <p id="category">{{Catégorie}} : </p>
+            <p id="author"><span class="list-title">{{Auteur}}</span> : <span class="list-info"></span></p>
+            <p id="licence"><span class="list-title">{{Licence}}</span> : <span class="list-info"></span></p>
+            <p id="category"><span class="list-title">{{Catégorie}}</span> : <span class="list-info"></span></p>
+            <p id="gitid"><span class="list-title">{{Identifiant Git}}</span> : <span class="list-info"></span></p>
+            <p id="gitrepo"><span class="list-title">{{Dépôt Git}}</span> : <span class="list-info"></span></p>
         </div>
         <div class="col-xs-6">
-            <p><a id="documentation-link" class="btn btn-success" href=""><i class="fa fa-book"></i>
+            <p><a id="documentation-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-book"></i>
                     {{Documentation}}</a></p>
-            <p><a id="changelog-link" class="btn btn-success" href=""><i class="fa fa-list"></i> {{Changelog}}</a></p>
-            <p><a id="github-link" class="btn btn-success" href=""><i class="fa fa-github"></i> {{GitHub}}</a></p>
+            <p><a id="changelog-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-list"></i>
+                    {{Changelog}}</a></p>
+            <p><a id="github-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-github"></i>
+                    {{GitHub}}</a></p>
         </div>
     </div>
     <div id="plugin-modal-footer" class="row">

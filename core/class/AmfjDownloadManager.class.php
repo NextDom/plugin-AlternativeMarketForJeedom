@@ -15,9 +15,10 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-class DownloadManager
+/**
+ * Gestion des téléchargements
+ */
+class AmfjDownloadManager
 {
     /**
      * @var bool Statut de la connexion
@@ -36,7 +37,7 @@ class DownloadManager
     {
         $this->connectionStatus = false;
         $this->testConnection();
-        $this->gitHubToken = config::byKey('', 'AlternativeMarketForJeedom');
+        $this->gitHubToken = config::byKey('github-user-token', 'AlternativeMarketForJeedom');
     }
 
     /**
@@ -44,14 +45,12 @@ class DownloadManager
      */
     protected function testConnection()
     {
-        try {
-            $sock = \fsockopen('www.google.fr', 80);
-            if ($sock) {
-                $this->connectionStatus = true;
-                fclose($sock);
-            }
-        } catch (\Exception $e) {
-            $this->connectionStatus = false;
+        $sock = \fsockopen('www.google.fr', 80);
+        if ($sock !== false) {
+            $this->connectionStatus = true;
+            fclose($sock);
+        } else {
+            $this->connectionStatus = $sock;
         }
     }
 
@@ -121,13 +120,22 @@ class DownloadManager
      */
     protected function downloadContentWithCurl($url, $binary = false)
     {
-        if ($this->gitHubToken !== false && !$binary) {
-            $url = $url.'?access_token='.$this->gitHubToken;
+        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
+            $toAdd = 'access_token=' . $this->gitHubToken;
+            // Test si un paramètre a déjà été passé
+            if (strpos($url, '?') !== false) {
+                $url = $url . '&' . $toAdd;
+            } else {
+                $url = $url . '?' . $toAdd;
+            }
         }
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {
             \curl_setopt($curlSession, CURLOPT_URL, $url);
+            if (!$binary) {
+                log::add('AlternativeMarketForJeedom', 'debug', $url);
+            }
             \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
                 \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
@@ -158,7 +166,6 @@ class DownloadManager
      */
     protected function downloadContentWithFopen($url)
     {
-        $result = false;
         try {
             $result = \file_get_contents($url);
         } catch (\Exception $e) {

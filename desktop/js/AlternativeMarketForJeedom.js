@@ -75,8 +75,8 @@ function initFilters() {
         }
         updateFilteredList();
     });
-    $('#market-search').keyup(function() {
-        currentSearchValue = $(this).val();
+    $('#market-search').keyup(function () {
+        currentSearchValue = $(this).val().toLowerCase();
         updateFilteredList();
     });
     $('#refresh-markets').click(function () {
@@ -125,10 +125,10 @@ function setActive(button, activate) {
 function updateFilteredList() {
     $('#market-div>div').each(function () {
         var hide = false;
-        var dataGitUser = $(this).data('gituser');
+        var dataGitId = $(this).data('gitid');
         var dataCategory = $(this).data('category');
         var dataInstalled = $(this).data('installed');
-        if (filterHiddenSrc.indexOf(dataGitUser) !== -1) {
+        if (filterHiddenSrc.indexOf(dataGitId) !== -1) {
             hide = true;
         }
         if (filterCategory != '' && filterCategory != dataCategory) {
@@ -140,7 +140,7 @@ function updateFilteredList() {
         if (filterNotInstalled && dataInstalled == false) {
             hide = true;
         }
-        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().indexOf(currentSearchValue) == -1) {
+        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue) == -1) {
             hide = true;
         }
         if (hide) {
@@ -235,27 +235,43 @@ function showItems(items) {
  * @returns {string} Code HTML
  */
 function getItemHtml(item) {
+    // Préparation des données
     var title = item['name'];
     if (title !== null) {
         title = title.replace(/([a-z])([A-Z][a-z])/g, '\$1 \$2');
     }
     var pluginData = JSON.stringify(item);
     pluginData = pluginData.replace(/"/g, '&quot;');
+    var descriptionPar = '';
+    if (item['description'] == null) {
+        item['description'] = '';
+    }
+    if (item['description'].length > 160) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 160) + '</p>';
+    }
+    else {
+        descriptionPar = '<p>' + item['description'] + '</p>';
+    }
+
+    // Préparation du code
     var result = '' +
-        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="'+item['installed']+'">' +
+        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gitid="' + item['gitId'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
     }
     result += '' +
-        '<div class="media-left media-middle">' +
+        '<h4>' + title + '</h4>' +
+        '<div class="media-content">' +
+        '<div class="media-left">' +
         '<img src="' + item['iconPath'] + '"/>' +
         '</div>' +
         '<div class="media-body">' +
-        '<h4 class="media-heading">' + title + '</h4>' +
-        '<p>' + item['description'] + '</p>' +
-        '<button>'+ 'Plus d\'informations' +'</button>' +
+        descriptionPar +
         '</div>' +
+        '</div>' +
+        '<button>' + 'Plus d\'informations' + '</button>' +
+        '<div class="gitid">' + item['gitId'] + '</div>' +
         '</div>' +
         '</div>';
     return result;
@@ -263,6 +279,8 @@ function getItemHtml(item) {
 
 /**
  * Affiche la fenêtre d'un plugin
+ *
+ * @param array pluginData Données du plugin
  */
 function showPluginModal(pluginData) {
     $('#md_modal').dialog({title: pluginData['name']});

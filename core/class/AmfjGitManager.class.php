@@ -19,7 +19,10 @@
 require_once('AmfjDownloadManager.class.php');
 require_once('AmfjDataStorage.class.php');
 
-class GitManager
+/**
+ * Gestion des informations liées à GitHub
+ */
+class AmfjGitManager
 {
     /**
      * @var int Temps de rafraichissement de la liste des plugins
@@ -28,25 +31,29 @@ class GitManager
     /**
      * @var string Utilisateur du dépot
      */
-    private $gitUser;
+    private $gitId;
     /**
-     * @var DownloadManager Gestionnaire de téléchargement
+     * @var AmfjDownloadManager Gestionnaire de téléchargement
      */
     private $downloadManager;
     /**
      * @var DataStorage Gestionnaire de base de données
      */
     private $dataStorage;
+    /**
+     * @var string Dernier message d'erreur
+     */
+    private static $lastErrorMessage = false;
 
     /**
      * Constructeur du gestionnaire Git
      *
-     * @param $gitUser Utilisateur du compte Git
+     * @param $gitId Utilisateur du compte Git
      */
-    public function __construct($gitUser)
+    public function __construct($gitId)
     {
-        $this->downloadManager = new DownloadManager();
-        $this->gitUser = $gitUser;
+        $this->downloadManager = new AmfjDownloadManager();
+        $this->gitId = $gitId;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -58,7 +65,7 @@ class GitManager
     public function isUpdateNeeded()
     {
         $result = true;
-        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_'.$this->gitUser);
+        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . $this->gitId);
         if ($lastUpdate !== null) {
             if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
                 return false;
@@ -78,25 +85,20 @@ class GitManager
         $jsonList = $this->downloadRepositoriesList();
         if ($jsonList !== false) {
             $jsonAnswer = \json_decode($jsonList, true);
-            if (\array_key_exists('message', $jsonAnswer) && $jsonAnswer['message'] == 'Not Found') {
-                $result = false;
+            $dataToStore = array();
+            foreach ($jsonAnswer as $repository) {
+                $data = array();
+                $data['name'] = $repository['name'];
+                $data['full_name'] = $repository['full_name'];
+                $data['description'] = $repository['description'];
+                $data['html_url'] = $repository['html_url'];
+                $data['git_id'] = $this->gitId;
+                $data['default_branch'] = $repository['default_branch'];
+                \array_push($dataToStore, $data);
             }
-            else {
-                $dataToStore = array();
-                foreach ($jsonAnswer as $repository) {
-                    $data = array();
-                    $data['name'] = $repository['name'];
-                    $data['full_name'] = $repository['full_name'];
-                    $data['description'] = $repository['description'];
-                    $data['html_url'] = $repository['html_url'];
-                    $data['git_user'] = $this->gitUser;
-                    $data['default_branch'] = $repository['default_branch'];
-                    \array_push($dataToStore, $data);
-                }
-                $this->dataStorage->storeRawData('repo_last_update_'.$this->gitUser, \time());
-                $this->dataStorage->storeJsonData('repo_data_'.$this->gitUser, $dataToStore);
-                $result = true;
-            }
+            $this->dataStorage->storeRawData('repo_last_update_' . $this->gitId, \time());
+            $this->dataStorage->storeJsonData('repo_data_' . $this->gitId, $dataToStore);
+            $result = true;
         }
         return $result;
     }
@@ -109,9 +111,31 @@ class GitManager
     protected function downloadRepositoriesList()
     {
         $result = false;
-        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitUser . '/repos');
-        if (!strstr($content, 'API rate limit exceeded')) {
-            $result = $content;
+        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitId . '/repos?per_page=100');
+        log::add('AlternativeMarketForJeedom', 'debug', $content);
+        // Limite de l'API GitHub atteinte
+        if (\strstr($content, 'API rate limit exceeded')) {
+            $content = $this->downloadManager->downloadContent('https://api.github.com/rate_limit');
+            log::add('AlternativeMarketForJeedom', 'debug', $content);
+            $gitHubLimitData = json_decode($content, true);
+            $refreshDate = date('H:i', $gitHubLimitData['resources']['core']['reset']);
+            static::$lastErrorMessage = 'Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate;
+        } else {
+            // Test si c'est un dépôt d'organisation
+            if (\strstr($content, '"message":"Not Found"')) {
+                // Test d'un téléchargement pour un utilisateur
+                $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitId . '/repos?per_page=100');
+                log::add('AlternativeMarketForJeedom', 'debug', $content);
+                // Test si c'est un dépot d'utilisateur
+                if (\strstr($content, '"message":"Not Found"') || strlen($content) < 10) {
+                    static::$lastErrorMessage = 'Le dépôt ' . $this->gitId . ' n\'existe pas.';
+                    $result = false;
+                } else {
+                    $result = $content;
+                }
+            } else {
+                $result = $content;
+            }
         }
         return $result;
     }
@@ -121,12 +145,25 @@ class GitManager
      *
      * @return bool|array Tableau associatifs contenant les données ou false en cas d'échec
      */
-    public function getRepositoriesList() {
+    public function getRepositoriesList()
+    {
         $result = false;
-        $jsonStrList = $this->dataStorage->getJsonData('repo_data_'.$this->gitUser);
+        $jsonStrList = $this->dataStorage->getJsonData('repo_data_' . $this->gitId);
         if ($jsonStrList !== null) {
             $result = $jsonStrList;
         }
+        return $result;
+    }
+
+    /**
+     * Obtenir le dernier message d'erreur
+     *
+     * @return string Message de l'erreur
+     */
+    public static function getLastErrorMessage()
+    {
+        $result = static::$lastErrorMessage;
+        static::$lastErrorMessage = false;
         return $result;
     }
 }

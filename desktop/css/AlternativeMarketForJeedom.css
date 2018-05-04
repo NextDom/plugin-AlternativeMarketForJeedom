@@ -4,9 +4,8 @@
 
 #market-div {
     margin-top: 2rem;
-    max-width: 1150px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 #admin-buttons {
@@ -20,14 +19,15 @@
 
 #market-div .media {
     position: relative;
-    display: table;
     height: 200px;
     transition: all 0.2s ease;
     overflow: hidden;
     border: 1px solid #ccc;
     margin: 0;
     border-radius: 5px;
-    padding: 1rem;
+    padding: 0.75em;
+    /** Fix pour darksobre **/
+    width: 100%;
 }
 
 #market-div .media .installed-marker {
@@ -56,14 +56,25 @@
     text-align: center;
 }
 
+#market-div .media-body {
+    width: 100%;
+}
+
 #market-div .media-body p {
     text-align: justify;
-    max-height: 6em;
+    height: 6em;
     text-overflow: ellipsis;
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
+    position: relative;
+    line-height: 1.5em;
+    font-size: 1em;
+}
+
+#market-div .media-body p.truncate:after {
+    content: '...';
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 #market-div .media:hover {
@@ -71,17 +82,16 @@
     transform: scale(1.02);
 }
 
-#market-div .media-body button {
-    position: absolute;
-    bottom: 1em;
-    right: 1em;
+#market-div button {
     background-color: #95c12c;
-    color: black;
+    color: white;
     border: none;
     float: right;
-    padding: 0.5em;
-    border-radius: 0.3em;
-    background-image: linear-gradient(to right, #95c12c, #95c12c 50%, #40535e 50%, #40535e);
+    border-top-left-radius: 0.3em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-image: linear-gradient(to right, #40535e, #40535e 50%, #95c12c 50%, #95c12c);
     background-size: 202% 100%;
     background-position: 0 0;
     -webkit-transition: all 0.2s ease;
@@ -89,17 +99,56 @@
     -ms-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
     transition: all 0.2s ease;
+    font-size: 1em;
+    line-height: 2em;
+    padding: 0 1em 0 1em;
 }
 
-#market-div .media:hover .media-body button {
+#market-div .media:hover button {
     background-position: 100% 0;
     color: white;
 }
 
+#market-div .gitid {
+    position: absolute;
+    bottom: 0;
+    background-color: #40535e;
+    line-height: 2em;
+    padding-left: 1em;
+    padding-right: 1em;
+    color: white;
+    left: 0;
+    border-top-right-radius: 5px;
+    font-size: 1em;
+}
+
+#market-dev .media-left {
+    padding-left: 0.25em;
+    padding-right: 1em;
+}
+
 .market-filters .btn-primary,
 #plugin-modal .btn-primary {
-    background-color: #40535e !important;
-    border-color: #40535e !important;
+    background-color: #95c12c !important;
+    border-color: #95c12c !important;
+    background-image: none;
+}
+
+#plugin-modal .btn-success {
+    background-color: #5cb85c !important;
+    border: #5cb85c !important;
+    background-image: none !important;
+}
+
+#plugin-modal .btn-warning {
+    background-color: #f0ad4e !important;
+    border: #f0ad4e !important;
+    background-image: none !important;
+}
+
+#plugin-modal p,
+#plugin-modal h3 {
+    color: black;
 }
 
 #div_pluginAlternativeMarketForJeedomAlert {
@@ -165,11 +214,19 @@
     padding-top: 10px;
 }
 
-#gituser-list li .btn {
+#gitid-list li .btn {
     border: none;
 }
 
 #add-git i {
     font-size: 14px;
     line-height: 20px;
+}
+
+#plugin-modal .hidden-btn {
+    display: none;
+}
+
+#plugin-modal .list-title {
+    font-weight: bold;
 }

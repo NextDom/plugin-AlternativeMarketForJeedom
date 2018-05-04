@@ -20,17 +20,17 @@ require_once('AmfjGitManager.class.php');
 require_once('AmfjDownloadManager.class.php');
 require_once('AmfjMarketItem.class.php');
 
-class Market
+class AmfjMarket
 {
     /**
-     * @var DownloadManager Gestionnaire de téléchargement
+     * @var AmfjDownloadManager Gestionnaire de téléchargement
      */
     private $downloadManager;
 
     /**
      * @var Utilisateur Git des depôts
      */
-    private $gitUser;
+    private $gitId;
 
     /**
      * @var DataStorage Gestionnaire de base de données
@@ -40,12 +40,12 @@ class Market
     /**
      * Constructeur initialisant le gestionnaire de téléchargement
      *
-     * @param $gitUser Utilisateur Git des dépôts
+     * @param $gitId Utilisateur Git des dépôts
      */
-    public function __construct($gitUser)
+    public function __construct($gitId)
     {
-        $this->downloadManager = new DownloadManager();
-        $this->gitUser = $gitUser;
+        $this->downloadManager = new AmfjDownloadManager();
+        $this->gitId = $gitId;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -53,23 +53,28 @@ class Market
      * Met à jour la liste des dépôts
      *
      * @param bool $force Forcer la mise à jour
+     *
+     * @return True si une mise à jour a été réalisée
      */
     public function refresh($force = false)
     {
-        $gitManager = new GitManager($this->gitUser);
+        $result = false;
+        $gitManager = new AmfjGitManager($this->gitId);
         if ($this->downloadManager->isConnected()) {
             $ignoreList = array();
             if ($force || $gitManager->isUpdateNeeded()) {
-                $gitManager->updateRepositoriesList();
-                $ignoreList = array();
-            }
-            else {
+                if (!$gitManager->updateRepositoriesList()) {
+                    $result = false;
+                } else {
+                    $result = true;
+                }
+            } else {
                 $ignoreList = $this->getIgnoreList();
             }
             $repositories = $gitManager->getRepositoriesList();
             foreach ($repositories as $repository) {
                 $repositoryName = $repository['name'];
-                $marketItem = new MarketItem($repository);
+                $marketItem = new AmfjMarketItem($repository);
                 if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
                     if (!$marketItem->refresh($this->downloadManager)) {
                         \array_push($ignoreList, $repositoryName);
@@ -78,6 +83,7 @@ class Market
             }
             $this->saveIgnoreList($ignoreList);
         }
+        return $result;
     }
 
     /**
@@ -88,7 +94,7 @@ class Market
     protected function getIgnoreList()
     {
         $result = array();
-        $jsonList = $this->dataStorage->getJsonData('repo_ignore_'.$this->gitUser);
+        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitId);
         if ($jsonList !== null) {
             $result = $jsonList;
         }
@@ -102,23 +108,23 @@ class Market
      */
     protected function saveIgnoreList($ignoreList)
     {
-        $this->dataStorage->storeJsonData('repo_ignore_'.$this->gitUser, $ignoreList);
+        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitId, $ignoreList);
     }
 
     /**
      * Obtenir la liste des éléments du dépot
      *
-     * @return array Liste des éléments
+     * @return AmfjMarketItem[] Liste des éléments
      */
     public function getItems()
     {
         $result = array();
-        $gitManager = new GitManager($this->gitUser);
+        $gitManager = new AmfjGitManager($this->gitId);
         $repositories = $gitManager->getRepositoriesList();
         $ignoreList = $this->getIgnoreList();
         foreach ($repositories as $repository) {
             if (!\in_array($repository['name'], $ignoreList)) {
-                $marketItem = new MarketItem($repository);
+                $marketItem = new AmfjMarketItem($repository);
                 $marketItem->readCache();
                 array_push($result, $marketItem);
             }

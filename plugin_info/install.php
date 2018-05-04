@@ -19,31 +19,36 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 require_once(dirname(__FILE__) . '/../core/class/AmfjDataStorage.class.php');
 
-function AlternativeMarketForJeedom_install() {
+function AlternativeMarketForJeedom_install()
+{
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->createDataTable();
 
     $pluginExtra = new AlternativeMarketForJeedom();
-    $pluginExtra->setName('plugins-extra');
-    $pluginExtra->setLogicalId('plugins-extra');
+    $pluginExtra->setName(1);
+    $pluginExtra->setLogicalId('Jeedom-Plugins-Extra');
     $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
     $pluginExtra->setConfiguration('github', 'Jeedom-Plugins-Extra');
     $pluginExtra->save();
 
     $jeedom = new AlternativeMarketForJeedom();
-    $jeedom->setName('jeedom');
+    $jeedom->setName(2);
     $jeedom->setLogicalId('jeedom');
     $jeedom->setEqType_name('AlternativeMarketForJeedom');
     $jeedom->setConfiguration('github', 'jeedom');
     $jeedom->save();
+
+    config::save('url::enable', 1);
 }
 
-function AlternativeMarketForJeedom_update() {
-    
+function AlternativeMarketForJeedom_update()
+{
+
 }
 
 
-function AlternativeMarketForJeedom_remove() {
+function AlternativeMarketForJeedom_remove()
+{
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->dropDataTable();
     foreach (eqLogic::byType('AlternativeMarketForJeedom') as $eqLogic) {

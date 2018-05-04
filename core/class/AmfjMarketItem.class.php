@@ -16,7 +16,7 @@
  */
 
 
-class MarketItem
+class AmfjMarketItem
 {
     /**
      * @var int Temps de rafraichissement d'un dépôt
@@ -34,7 +34,7 @@ class MarketItem
     /**
      * @var string Utilisateur GitHub
      */
-    private $gitUser;
+    private $gitId;
     /**
      * @var string Nom complet de son dépôt
      */
@@ -91,11 +91,14 @@ class MarketItem
     /**
      * Constructeur initialisant les informations de base
      *
-     * @param $repositoryInformations Informations obtenus par GitHub
+     * @param $repositoryInformations Informations obtenus par GitHub.
      */
-    public function __construct($repositoryInformations)
+    public function __construct($repositoryInformations = null)
     {
-        $this->initWithGlobalInformations($repositoryInformations);
+        if ($repositoryInformations !== null) {
+            $this->initWithGlobalInformations($repositoryInformations);
+        }
+
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -106,10 +109,12 @@ class MarketItem
      */
     public function initWithGlobalInformations($repositoryInformations)
     {
+        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['name']);
+        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['full_name']);
         $this->gitName = $repositoryInformations['name'];
         $this->fullName = $repositoryInformations['full_name'];
         $this->url = $repositoryInformations['html_url'];
-        $this->gitUser = $repositoryInformations['git_user'];
+        $this->gitId = $repositoryInformations['git_id'];
         $this->description = $repositoryInformations['description'];
         $this->defaultBranch = $repositoryInformations['default_branch'];
     }
@@ -162,7 +167,7 @@ class MarketItem
         $dataArray = array();
         $dataArray['name'] = $this->name;
         $dataArray['gitName'] = $this->gitName;
-        $dataArray['gitUser'] = $this->gitUser;
+        $dataArray['gitId'] = $this->gitId;
         $dataArray['fullName'] = $this->fullName;
         $dataArray['description'] = $this->description;
         $dataArray['url'] = $this->url;
@@ -201,7 +206,7 @@ class MarketItem
         if ($jsonContent !== null) {
             if (\array_key_exists('name', $jsonContent)) $this->name = $jsonContent['name'];
             if (\array_key_exists('gitName', $jsonContent)) $this->gitName = $jsonContent['gitName'];
-            if (\array_key_exists('gitUser', $jsonContent)) $this->gitUser = $jsonContent['gitUser'];
+            if (\array_key_exists('gitId', $jsonContent)) $this->gitId = $jsonContent['gitId'];
             if (\array_key_exists('fullName', $jsonContent)) $this->fullName = $jsonContent['fullName'];
             if (\array_key_exists('description', $jsonContent)) $this->description = $jsonContent['description'];
             if (\array_key_exists('url', $jsonContent)) $this->url = $jsonContent['url'];
@@ -229,15 +234,17 @@ class MarketItem
     public function refresh($downloadManager)
     {
         $result = false;
-        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/'.$this->defaultBranch.'/plugin_info/info.json';
+        $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/info.json';
         $infoJson = $downloadManager->downloadContent($infoJsonUrl);
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
-            $this->addPluginInformations($pluginData);
-            $this->downloadIcon($downloadManager);
-            $this->downloadGitInformations($downloadManager);
-            $this->writeCache();
-            $result = true;
+            if (\is_array($pluginData) && \array_key_exists('id', $pluginData)) {
+                $this->addPluginInformations($pluginData);
+                $this->downloadIcon($downloadManager);
+                $this->branchesList = [];
+                $this->writeCache();
+                $result = true;
+            }
         }
         return $result;
     }
@@ -247,9 +254,10 @@ class MarketItem
      *
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      */
-    public function downloadIcon($downloadManager) {
+    public function downloadIcon($downloadManager)
+    {
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
-        $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/'.$this->defaultBranch.'/plugin_info/' . $this->id . '_icon.png';
+        $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
         $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
         $downloadManager->downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
@@ -262,23 +270,26 @@ class MarketItem
     }
 
     /**
-     * Met à jour les données de Git
+     * Met à jour les données des branches
      *
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      *
      * @return bool True si les données ont été trouvées
      */
-    public function downloadGitInformations($downloadManager) {
-        $baseGitRepoUrl = 'https://api.github.com/repos/'.$this->fullName;
-        $branches = $downloadManager->downloadContent($baseGitRepoUrl.'/branches');
+    public function downloadBranchesInformations($downloadManager)
+    {
+        $result = false;
+        $baseGitRepoUrl = 'https://api.github.com/repos/' . $this->fullName . '/branches';
+        $branches = $downloadManager->downloadContent($baseGitRepoUrl);
         if ($branches !== false) {
             $branches = \json_decode($branches, true);
-            $this->branchesList = array();
+            $this->branchesList = [];
             foreach ($branches as $branch) {
                 array_push($this->branchesList, $branch['name']);
             }
-
+            $result = true;
         }
+        return $result;
     }
 
     /**
@@ -380,8 +391,31 @@ class MarketItem
      *
      * @return string Utilisateur GitHub
      */
-    public function getGitUser()
+    public function getGitId()
     {
-        return $this->gitUser;
+        return $this->gitId;
+    }
+
+    /**
+     * Obtenir la liste des branches du plugin
+     *
+     * @return array Liste des branches
+     */
+    public function getBranchesList()
+    {
+        return $this->branchesList;
+    }
+
+    /**
+     * Définir le nom du complet du dépôt
+     *
+     * @param $fullName Nom complet
+     *
+     * @return Instance de l'objet
+     */
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+        return $this;
     }
 }

@@ -17,9 +17,18 @@
 
 
 require_once 'AmfjMarket.class.php';
+require_once 'AmfjDownloadManager.class.php';
 
-class AjaxParser
+/**
+ * Analyseur des requêtes Ajax
+ */
+class AmfjAjaxParser
 {
+    /**
+     * @var string Message d'erreur
+     */
+    private static $errorMsg;
+
     /**
      * Point d'entrée des requêtes Ajax
      *
@@ -31,10 +40,9 @@ class AjaxParser
      */
     public static function parse($action, $params, $data)
     {
-        $result = false;
         switch ($action) {
-            case 'gitUser':
-                $result = static::gitUser($params, $data);
+            case 'gitId':
+                $result = static::gitId($params, $data);
                 break;
             case 'refresh':
                 $result = static::refresh($params, $data);
@@ -42,6 +50,8 @@ class AjaxParser
             case 'get':
                 $result = static::get($params, $data);
                 break;
+            default :
+                $result = false;
         }
         return $result;
     }
@@ -56,7 +66,6 @@ class AjaxParser
      */
     public static function refresh($params, $data)
     {
-        $result = false;
         switch ($params) {
             case 'list':
                 $result = static::refreshList($data, false);
@@ -64,21 +73,39 @@ class AjaxParser
             case 'list-force':
                 $result = static::refreshList($data, true);
                 break;
+            default :
+                $result = false;
         }
         return $result;
     }
 
+    /**
+     * Rafraichir la liste des dépôts.
+     *
+     * @param array $markets Liste des utilisateur GitHub.
+     * @param bool $force Force la mise à jour.
+     *
+     * @return bool True si une mise à jour a été réalisée ou que la mise à jour n'est pas nécessaire.
+     */
     private static function refreshList($markets, $force)
     {
         $result = false;
         if (is_array($markets)) {
-            foreach ($markets as $git) {
-                $market = new Market($git);
-                $market->refresh($force);
-            }
             $result = true;
+            foreach ($markets as $git) {
+                $market = new AmfjMarket($git);
+                if (!$market->refresh($force)) {
+                    $error = AmfjGitManager::getLastErrorMessage();
+                    // Vérification que c'est une erreur et pas un refresh avant l'heure
+                    if ($error !== false) {
+                        static::$errorMsg = $error;
+                        $result = false;
+                    }
+                }
+            }
+        } else {
+            static::$errorMsg = 'Aucun utilisateur GitHub défini';
         }
-
         return $result;
     }
 
@@ -92,16 +119,24 @@ class AjaxParser
      */
     public static function get($params, $data)
     {
-        $result = false;
         switch ($params) {
             case 'list':
                 if (is_array($data)) {
-                    $result = array();
+                    $result = [];
+                    $idList = [];
+                    $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
                     foreach ($data as $git) {
-                        $market = new Market($git);
+                        $market = new AmfjMarket($git);
                         $items = $market->getItems();
                         foreach ($items as $item) {
-                            array_push($result, $item->getDataInArray());
+                            if ($showDuplicates) {
+                                array_push($result, $item->getDataInArray());
+                            } else {
+                                if (!\in_array($item->getId(), $idList)) {
+                                    array_push($result, $item->getDataInArray());
+                                    array_push($idList, $item->getId());
+                                }
+                            }
                         }
                     }
                     \usort($result, function ($item1, $item2) {
@@ -109,33 +144,63 @@ class AjaxParser
                     });
                 }
                 break;
+            case 'branches':
+                $downloaderManager = new AmfjDownloadManager();
+                $marketItem = new AmfjMarketItem();
+                $marketItem->setFullName($data);
+                $marketItem->readCache();
+                if ($marketItem->downloadBranchesInformations($downloaderManager)) {
+                    $result = $marketItem->getBranchesList();
+                    $marketItem->writeCache();
+                }
+                break;
+            default :
+                $result = false;
         }
         return $result;
     }
 
-    public static function gitUser($params, $data)
+    /**
+     * Gestion des utilisateurs GitHub
+     *
+     * @param string $params Type de modification
+     * @param string $data Nom de l'utilisateur
+     * @return bool True si une action a été effectuée
+     */
+    public static function gitId($params, $data)
     {
-        $result = false;
         switch ($params) {
             case 'add':
                 if ($data != '') {
-                    $gitUser = new AlternativeMarketForJeedom();
-                    $gitUser->setName($data);
-                    $gitUser->setLogicalId($data);
-                    $gitUser->setEqType_name('AlternativeMarketForJeedom');
-                    $gitUser->setConfiguration('github', $data);
-                    $gitUser->save();
+                    $gitId = new AlternativeMarketForJeedom();
+                    $gitId->setName($data);
+                    $gitId->setLogicalId($data);
+                    $gitId->setEqType_name('AlternativeMarketForJeedom');
+                    $gitId->setConfiguration('github', $data);
+                    $gitId->save();
                     $result = true;
                 }
                 break;
             case 'remove':
                 if ($data != '') {
-                    $gitUser = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
-                    $gitUser->remove();
+                    $gitId = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
+                    $gitId->remove();
                     $result = true;
                 }
                 break;
+            default :
+                $result = false;
         }
         return $result;
+    }
+
+    /**
+     * Obtenir le dernier message d'erreur
+     *
+     * @return string Message de l'erreur
+     */
+    public static function getErrorMsg()
+    {
+        return static::$errorMsg;
     }
 }

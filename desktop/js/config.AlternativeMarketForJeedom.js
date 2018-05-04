@@ -1,34 +1,47 @@
+// Point d'entrée du script
 $(document).ready(function () {
     var gitsListUl = $('#config-modal ul');
-    console.log(gitsList);
     for (var gitIndex = 0; gitIndex < gitsList.length; ++gitIndex) {
         var item = $('<li class="list-group-item">' + gitsList[gitIndex] + '</li>');
-        var deleteButton = $('<button class="badge btn btn-danger" data-gituser="' + gitsList[gitIndex] + '">Supprimer</button>');
+        var deleteButton = $('<button class="badge btn btn-danger" data-gitid="' + gitsList[gitIndex] + '">Supprimer</button>');
 
         deleteButton.click(function() {
-            removeGitUser($(this).data('gituser'));
+            removeGitId($(this).data('gitid'));
         });
         item.append(deleteButton);
         gitsListUl.append(item);
     }
-    $('#add-git').click(addGitUser);
+    $('#add-git').click(addGitId);
 });
 
-function addGitUser() {
-    var gitUser = $('#git-user').val();
-    if (gitUser != '') {
-            var data = {action: 'gitUser', params: 'add', data: gitUser};
+/**
+ * Ajouter un utilisateur à la liste
+ */
+function addGitId() {
+    var gitId = $('#git-id').val();
+    if (gitId != '') {
+            var data = {action: 'gitId', params: 'add', data: gitId};
             ajaxQuery(data);
     }
 }
 
-function removeGitUser(gitUser) {
-    if (gitUser != '') {
-        var data = {action: 'gitUser', params: 'remove', data: gitUser};
+/**
+ * Supprimer un utilisateur de la liste
+ *
+ * @param string gitId Nom de l'utilisateur
+ */
+function removeGitId(gitId) {
+    if (gitId != '') {
+        var data = {action: 'gitId', params: 'remove', data: gitId};
         ajaxQuery(data);
     }
 }
 
+/**
+ * Lancer une requête Ajax
+ *
+ * @param data Données de la requête
+ */
 function ajaxQuery(data) {
     $.post({
         url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',

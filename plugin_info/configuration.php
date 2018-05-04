@@ -32,7 +32,13 @@ if (!isConnect()) {
     <div class="form-group">
         <label for="github-user-token" class="col-sm-2 control-label">{{Token GitHub}}</label>
         <div class="col-sm-10">
-            <input type="text" data-l1key="github-user-token" class="configKey form-control" id="github-user-token" />
+            <input type="text" data-l1key="github-user-token" class="configKey form-control" id="github-user-token"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="show-duplicates" class="col-sm-2 control-label">{{Afficher les doublons}}</label>
+        <div class="col-sm-10">
+            <input type="checkbox" class="configKey form-control" id="show-duplicates" data-l1key="show-duplicates"/>
         </div>
     </div>
 </form>
