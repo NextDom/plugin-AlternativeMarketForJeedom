@@ -22,7 +22,6 @@ function initModal() {
         });
     }
 
-    console.log(currentPlugin);
     $('#description-content').text(currentPlugin['description']);
     $('#author .list-info').text(currentPlugin['author']);
     $('#licence .list-info').text(currentPlugin['licence']);
@@ -114,7 +113,7 @@ function installPlugin(branch) {
         },
         dataType: 'json',
         success: function (data, status) {
-//            window.location.replace('/index.php?v=d&p=plugin');
+            window.location.replace('/index.php?v=d&p=plugin');
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);

@@ -25,7 +25,7 @@ require_once('../../core/php/core.inc.php');
 class AmfjMarketTest extends TestCase
 {
     /**
-     * @var Market
+     * @var AmfjMarket
      */
     private $market;
 
@@ -34,7 +34,7 @@ class AmfjMarketTest extends TestCase
     public function setUp()
     {
         DB::init(true);
-        $this->market = new Market('jeedom');
+        $this->market = new AmfjMarket('jeedom');
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
         mkdir('cache');

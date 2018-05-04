@@ -20,7 +20,7 @@ require_once('AmfjGitManager.class.php');
 require_once('AmfjDownloadManager.class.php');
 require_once('AmfjMarketItem.class.php');
 
-class Market
+class AmfjMarket
 {
     /**
      * @var AmfjDownloadManager Gestionnaire de téléchargement
@@ -59,7 +59,7 @@ class Market
     public function refresh($force = false)
     {
         $result = false;
-        $gitManager = new GitManager($this->gitId);
+        $gitManager = new AmfjGitManager($this->gitId);
         if ($this->downloadManager->isConnected()) {
             $ignoreList = array();
             if ($force || $gitManager->isUpdateNeeded()) {
@@ -74,7 +74,7 @@ class Market
             $repositories = $gitManager->getRepositoriesList();
             foreach ($repositories as $repository) {
                 $repositoryName = $repository['name'];
-                $marketItem = new MarketItem($repository);
+                $marketItem = new AmfjMarketItem($repository);
                 if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
                     if (!$marketItem->refresh($this->downloadManager)) {
                         \array_push($ignoreList, $repositoryName);
@@ -114,17 +114,17 @@ class Market
     /**
      * Obtenir la liste des éléments du dépot
      *
-     * @return MarketItem[] Liste des éléments
+     * @return AmfjMarketItem[] Liste des éléments
      */
     public function getItems()
     {
         $result = array();
-        $gitManager = new GitManager($this->gitId);
+        $gitManager = new AmfjGitManager($this->gitId);
         $repositories = $gitManager->getRepositoriesList();
         $ignoreList = $this->getIgnoreList();
         foreach ($repositories as $repository) {
             if (!\in_array($repository['name'], $ignoreList)) {
-                $marketItem = new MarketItem($repository);
+                $marketItem = new AmfjMarketItem($repository);
                 $marketItem->readCache();
                 array_push($result, $marketItem);
             }

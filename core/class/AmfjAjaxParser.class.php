@@ -22,7 +22,7 @@ require_once 'AmfjDownloadManager.class.php';
 /**
  * Analyseur des requêtes Ajax
  */
-class AjaxParser
+class AmfjAjaxParser
 {
     /**
      * @var string Message d'erreur
@@ -93,9 +93,9 @@ class AjaxParser
         if (is_array($markets)) {
             $result = true;
             foreach ($markets as $git) {
-                $market = new Market($git);
+                $market = new AmfjMarket($git);
                 if (!$market->refresh($force)) {
-                    $error = GitManager::getLastErrorMessage();
+                    $error = AmfjGitManager::getLastErrorMessage();
                     // Vérification que c'est une erreur et pas un refresh avant l'heure
                     if ($error !== false) {
                         static::$errorMsg = $error;
@@ -126,7 +126,7 @@ class AjaxParser
                     $idList = [];
                     $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
                     foreach ($data as $git) {
-                        $market = new Market($git);
+                        $market = new AmfjMarket($git);
                         $items = $market->getItems();
                         foreach ($items as $item) {
                             if ($showDuplicates) {
@@ -146,7 +146,7 @@ class AjaxParser
                 break;
             case 'branches':
                 $downloaderManager = new AmfjDownloadManager();
-                $marketItem = new MarketItem();
+                $marketItem = new AmfjMarketItem();
                 $marketItem->setFullName($data);
                 $marketItem->readCache();
                 if ($marketItem->downloadBranchesInformations($downloaderManager)) {

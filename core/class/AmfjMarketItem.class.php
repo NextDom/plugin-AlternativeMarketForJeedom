@@ -16,7 +16,7 @@
  */
 
 
-class MarketItem
+class AmfjMarketItem
 {
     /**
      * @var int Temps de rafraichissement d'un dépôt

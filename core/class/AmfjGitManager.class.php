@@ -22,7 +22,7 @@ require_once('AmfjDataStorage.class.php');
 /**
  * Gestion des informations liées à GitHub
  */
-class GitManager
+class AmfjGitManager
 {
     /**
      * @var int Temps de rafraichissement de la liste des plugins

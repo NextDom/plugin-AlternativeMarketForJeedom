@@ -35,12 +35,12 @@ try {
     $params = init('params');
     $data = init('data');
 
-    $result = AjaxParser::parse($action, $params, $data);
+    $result = AmfjAjaxParser::parse($action, $params, $data);
 
     if ($result !== false) {
         ajax::success($result);
     } else {
-        ajax::error(AjaxParser::getErrorMsg());
+        ajax::error(AmfjAjaxParser::getErrorMsg());
     }
 
     throw new \Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
