@@ -109,7 +109,7 @@
     color: white;
 }
 
-#market-div .gituser {
+#market-div .gitid {
     position: absolute;
     bottom: 0;
     background-color: #40535e;
@@ -209,7 +209,7 @@
     padding-top: 10px;
 }
 
-#gituser-list li .btn {
+#gitid-list li .btn {
     border: none;
 }
 

@@ -30,7 +30,7 @@ class Market
     /**
      * @var Utilisateur Git des depôts
      */
-    private $gitUser;
+    private $gitId;
 
     /**
      * @var DataStorage Gestionnaire de base de données
@@ -40,12 +40,12 @@ class Market
     /**
      * Constructeur initialisant le gestionnaire de téléchargement
      *
-     * @param $gitUser Utilisateur Git des dépôts
+     * @param $gitId Utilisateur Git des dépôts
      */
-    public function __construct($gitUser)
+    public function __construct($gitId)
     {
         $this->downloadManager = new AmfjDownloadManager();
-        $this->gitUser = $gitUser;
+        $this->gitId = $gitId;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -59,7 +59,7 @@ class Market
     public function refresh($force = false)
     {
         $result = false;
-        $gitManager = new GitManager($this->gitUser);
+        $gitManager = new GitManager($this->gitId);
         if ($this->downloadManager->isConnected()) {
             $ignoreList = array();
             if ($force || $gitManager->isUpdateNeeded()) {
@@ -94,7 +94,7 @@ class Market
     protected function getIgnoreList()
     {
         $result = array();
-        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitUser);
+        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitId);
         if ($jsonList !== null) {
             $result = $jsonList;
         }
@@ -108,7 +108,7 @@ class Market
      */
     protected function saveIgnoreList($ignoreList)
     {
-        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitUser, $ignoreList);
+        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitId, $ignoreList);
     }
 
     /**
@@ -119,7 +119,7 @@ class Market
     public function getItems()
     {
         $result = array();
-        $gitManager = new GitManager($this->gitUser);
+        $gitManager = new GitManager($this->gitId);
         $repositories = $gitManager->getRepositoriesList();
         $ignoreList = $this->getIgnoreList();
         foreach ($repositories as $repository) {
