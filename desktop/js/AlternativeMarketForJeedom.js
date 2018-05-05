@@ -125,10 +125,10 @@ function setActive(button, activate) {
 function updateFilteredList() {
     $('#market-div>div').each(function () {
         var hide = false;
-        var dataGitUser = $(this).data('gituser');
+        var dataGitId = $(this).data('gitid');
         var dataCategory = $(this).data('category');
         var dataInstalled = $(this).data('installed');
-        if (filterHiddenSrc.indexOf(dataGitUser) !== -1) {
+        if (filterHiddenSrc.indexOf(dataGitId) !== -1) {
             hide = true;
         }
         if (filterCategory != '' && filterCategory != dataCategory) {
@@ -246,8 +246,8 @@ function getItemHtml(item) {
     if (item['description'] == null) {
         item['description'] = '';
     }
-    if (item['description'].length > 165) {
-        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 165) + '</p>';
+    if (item['description'].length > 160) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 160) + '</p>';
     }
     else {
         descriptionPar = '<p>' + item['description'] + '</p>';
@@ -255,7 +255,7 @@ function getItemHtml(item) {
 
     // Préparation du code
     var result = '' +
-        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gituser="' + item['gitUser'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
+        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gitid="' + item['gitId'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
@@ -271,7 +271,7 @@ function getItemHtml(item) {
         '</div>' +
         '</div>' +
         '<button>' + 'Plus d\'informations' + '</button>' +
-        '<div class="gituser">' + item['gitUser'] + '</div>' +
+        '<div class="gitid">' + item['gitId'] + '</div>' +
         '</div>' +
         '</div>';
     return result;

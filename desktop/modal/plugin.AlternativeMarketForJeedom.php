@@ -57,7 +57,7 @@ if (!isConnect('admin')) {
             <p id="author"><span class="list-title">{{Auteur}}</span> : <span class="list-info"></span></p>
             <p id="licence"><span class="list-title">{{Licence}}</span> : <span class="list-info"></span></p>
             <p id="category"><span class="list-title">{{Catégorie}}</span> : <span class="list-info"></span></p>
-            <p id="gituser"><span class="list-title">{{Utilisateur Git}}</span> : <span class="list-info"></span></p>
+            <p id="gitid"><span class="list-title">{{Identifiant Git}}</span> : <span class="list-info"></span></p>
             <p id="gitrepo"><span class="list-title">{{Dépôt Git}}</span> : <span class="list-info"></span></p>
         </div>
         <div class="col-xs-6">

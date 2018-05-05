@@ -25,7 +25,7 @@ require_once('core/class/AmfjDownloadManager.class.php');
 class AmfjMarketItemTest extends TestCase
 {
     /**
-     * @var MarketItem
+     * @var AmfjMarketItem
      */
     private $marketItem;
 
@@ -43,7 +43,7 @@ class AmfjMarketItemTest extends TestCase
     public function setUp()
     {
         DB::init(true);
-        $this->marketItem = new MarketItem($this->initialData);
+        $this->marketItem = new AmfjMarketItem($this->initialData);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
     }

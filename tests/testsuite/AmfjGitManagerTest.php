@@ -23,13 +23,13 @@ require_once('core/class/AmfjDataStorage.class.php');
 
 define('GITHUB_TEST_REPO', 'jeedom');
 
-class Mocked_GitManager extends GitManager
+class Mocked_GitManager extends AmfjGitManager
 {
     public static $lastErrorMessage;
 
-    public function __construct($user)
+    public function __construct($id)
     {
-        parent::__construct($user);
+        parent::__construct($id);
     }
 
     public function downloadRepositoriesList() {

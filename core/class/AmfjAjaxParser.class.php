@@ -22,7 +22,7 @@ require_once 'AmfjDownloadManager.class.php';
 /**
  * Analyseur des requêtes Ajax
  */
-class AjaxParser
+class AmfjAjaxParser
 {
     /**
      * @var string Message d'erreur
@@ -41,8 +41,8 @@ class AjaxParser
     public static function parse($action, $params, $data)
     {
         switch ($action) {
-            case 'gitUser':
-                $result = static::gitUser($params, $data);
+            case 'gitId':
+                $result = static::gitId($params, $data);
                 break;
             case 'refresh':
                 $result = static::refresh($params, $data);
@@ -93,9 +93,9 @@ class AjaxParser
         if (is_array($markets)) {
             $result = true;
             foreach ($markets as $git) {
-                $market = new Market($git);
+                $market = new AmfjMarket($git);
                 if (!$market->refresh($force)) {
-                    $error = GitManager::getLastErrorMessage();
+                    $error = AmfjGitManager::getLastErrorMessage();
                     // Vérification que c'est une erreur et pas un refresh avant l'heure
                     if ($error !== false) {
                         static::$errorMsg = $error;
@@ -126,7 +126,7 @@ class AjaxParser
                     $idList = [];
                     $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
                     foreach ($data as $git) {
-                        $market = new Market($git);
+                        $market = new AmfjMarket($git);
                         $items = $market->getItems();
                         foreach ($items as $item) {
                             if ($showDuplicates) {
@@ -146,7 +146,7 @@ class AjaxParser
                 break;
             case 'branches':
                 $downloaderManager = new AmfjDownloadManager();
-                $marketItem = new MarketItem();
+                $marketItem = new AmfjMarketItem();
                 $marketItem->setFullName($data);
                 $marketItem->readCache();
                 if ($marketItem->downloadBranchesInformations($downloaderManager)) {
@@ -167,24 +167,24 @@ class AjaxParser
      * @param string $data Nom de l'utilisateur
      * @return bool True si une action a été effectuée
      */
-    public static function gitUser($params, $data)
+    public static function gitId($params, $data)
     {
         switch ($params) {
             case 'add':
                 if ($data != '') {
-                    $gitUser = new AlternativeMarketForJeedom();
-                    $gitUser->setName($data);
-                    $gitUser->setLogicalId($data);
-                    $gitUser->setEqType_name('AlternativeMarketForJeedom');
-                    $gitUser->setConfiguration('github', $data);
-                    $gitUser->save();
+                    $gitId = new AlternativeMarketForJeedom();
+                    $gitId->setName($data);
+                    $gitId->setLogicalId($data);
+                    $gitId->setEqType_name('AlternativeMarketForJeedom');
+                    $gitId->setConfiguration('github', $data);
+                    $gitId->save();
                     $result = true;
                 }
                 break;
             case 'remove':
                 if ($data != '') {
-                    $gitUser = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
-                    $gitUser->remove();
+                    $gitId = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
+                    $gitId->remove();
                     $result = true;
                 }
                 break;
