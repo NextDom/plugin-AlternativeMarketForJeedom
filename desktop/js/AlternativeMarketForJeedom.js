@@ -125,10 +125,10 @@ function setActive(button, activate) {
 function updateFilteredList() {
     $('#market-div>div').each(function () {
         var hide = false;
-        var dataGitId = $(this).data('gitid');
+        var dataSource = $(this).data('source');
         var dataCategory = $(this).data('category');
         var dataInstalled = $(this).data('installed');
-        if (filterHiddenSrc.indexOf(dataGitId) !== -1) {
+        if (filterHiddenSrc.indexOf(dataSource) !== -1) {
             hide = true;
         }
         if (filterCategory != '' && filterCategory != dataCategory) {
@@ -165,7 +165,7 @@ function refresh(force) {
         data: {
             action: 'refresh',
             params: params,
-            data: gitsList
+            data: sourcesList
         },
         dataType: 'json',
         success: function (data, status) {
@@ -192,7 +192,7 @@ function refreshItems() {
         data: {
             action: 'get',
             params: 'list',
-            data: gitsList
+            data: sourcesList
         },
         dataType: 'json',
         success: function (data, status) {
@@ -255,7 +255,7 @@ function getItemHtml(item) {
 
     // Préparation du code
     var result = '' +
-        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-gitid="' + item['gitId'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
+        '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-source="' + item['sourceName'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
@@ -271,7 +271,7 @@ function getItemHtml(item) {
         '</div>' +
         '</div>' +
         '<button>' + 'Plus d\'informations' + '</button>' +
-        '<div class="gitid">' + item['gitId'] + '</div>' +
+        '<div class="gitid">' + item['sourceName'] + '</div>' +
         '</div>' +
         '</div>';
     return result;

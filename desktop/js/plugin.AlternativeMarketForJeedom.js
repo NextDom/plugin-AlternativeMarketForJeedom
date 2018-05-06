@@ -28,6 +28,8 @@ function initModal() {
     $('#category .list-info').text(currentPlugin['category']);
     $('#gitid .list-info').text(currentPlugin['gitId']);
     $('#gitrepo .list-info').text(currentPlugin['gitName']);
+
+// <script>var jeedom_langage = "fr_FR";</script>
     if (currentPlugin['changelogLink'] === null) {
         $('#changelog-link').css('display', 'none');
     }
@@ -59,7 +61,7 @@ function initBranchesUpdate() {
         data: {
             action: 'get',
             params: 'branches',
-            data: currentPlugin['fullName']
+            data: { source: currentPlugin['sourceName'], fullName: currentPlugin['fullName'] }
         },
         dataType: 'json',
         success: function (data, status) {

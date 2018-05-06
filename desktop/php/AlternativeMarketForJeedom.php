@@ -25,11 +25,16 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('AlternativeMarketForJeedom');
 $eqLogics = eqLogic::byType($plugin->getId());
 
-$gitsList = array();
+$sourcesList = array();
 foreach ($eqLogics as $eqLogic) {
-    array_push($gitsList, $eqLogic->getConfiguration()['github']);
+    $source = [];
+    $source['id'] = $eqLogic->getId();
+    $source['name'] = $eqLogic->getName();
+    $source['type'] = $eqLogic->getConfiguration()['type'];
+    $source['data'] = $eqLogic->getConfiguration()['data'];
+    array_push($sourcesList, $source);
 }
-sendVarToJs('gitsList', $gitsList);
+sendVarToJs('sourcesList', $sourcesList);
 
 include_file('desktop', 'AlternativeMarketForJeedom', 'js', 'AlternativeMarketForJeedom');
 include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketForJeedom');
@@ -39,8 +44,8 @@ include_file('core', 'plugin.template', 'js');
 <div class="market-filters row">
     <div id="market-filter-src" class="btn-group col-sm-10">
         <?php foreach ($eqLogics as $eqLogic) {
-            $gitHub = $eqLogic->getConfiguration()['github'];
-            echo '<button type="button" class="btn btn-primary" data-github="' . $gitHub . '">' . $gitHub . '</button >';
+            $name = $eqLogic->getName();
+            echo '<button type="button" class="btn btn-primary" data-github="' . $name . '">' . $name . '</button >';
         }
         ?>
     </div>

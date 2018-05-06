@@ -41,8 +41,8 @@ class AmfjAjaxParser
     public static function parse($action, $params, $data)
     {
         switch ($action) {
-            case 'gitId':
-                $result = static::gitId($params, $data);
+            case 'source':
+                $result = static::source($params, $data);
                 break;
             case 'refresh':
                 $result = static::refresh($params, $data);
@@ -87,13 +87,13 @@ class AmfjAjaxParser
      *
      * @return bool True si une mise à jour a été réalisée ou que la mise à jour n'est pas nécessaire.
      */
-    private static function refreshList($markets, $force)
+    private static function refreshList($sources, $force)
     {
         $result = false;
-        if (is_array($markets)) {
+        if (is_array($sources)) {
             $result = true;
-            foreach ($markets as $git) {
-                $market = new AmfjMarket($git);
+            foreach ($sources as $source) {
+                $market = new AmfjMarket($source);
                 if (!$market->refresh($force)) {
                     $error = AmfjGitManager::getLastErrorMessage();
                     // Vérification que c'est une erreur et pas un refresh avant l'heure
@@ -125,8 +125,8 @@ class AmfjAjaxParser
                     $result = [];
                     $idList = [];
                     $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
-                    foreach ($data as $git) {
-                        $market = new AmfjMarket($git);
+                    foreach ($data as $source) {
+                        $market = new AmfjMarket($source);
                         $items = $market->getItems();
                         foreach ($items as $item) {
                             if ($showDuplicates) {
@@ -145,13 +145,13 @@ class AmfjAjaxParser
                 }
                 break;
             case 'branches':
-                $downloaderManager = new AmfjDownloadManager();
-                $marketItem = new AmfjMarketItem();
-                $marketItem->setFullName($data);
-                $marketItem->readCache();
-                if ($marketItem->downloadBranchesInformations($downloaderManager)) {
-                    $result = $marketItem->getBranchesList();
-                    $marketItem->writeCache();
+                if (is_array($data)) {
+                    $downloaderManager = new AmfjDownloadManager();
+                    $marketItem = AmfjMarketItem::createFromCache($data['sourceName'], $data['fullName']);
+                    if ($marketItem->downloadBranchesInformations($downloaderManager)) {
+                        $result = $marketItem->getBranchesList();
+                        $marketItem->writeCache();
+                    }
                 }
                 break;
             default :
@@ -164,29 +164,26 @@ class AmfjAjaxParser
      * Gestion des utilisateurs GitHub
      *
      * @param string $params Type de modification
-     * @param string $data Nom de l'utilisateur
+     * @param array $data Nom de l'utilisateur
      * @return bool True si une action a été effectuée
      */
-    public static function gitId($params, $data)
+    public static function source($params, array $data)
     {
         switch ($params) {
             case 'add':
-                if ($data != '') {
-                    $gitId = new AlternativeMarketForJeedom();
-                    $gitId->setName($data);
-                    $gitId->setLogicalId($data);
-                    $gitId->setEqType_name('AlternativeMarketForJeedom');
-                    $gitId->setConfiguration('github', $data);
-                    $gitId->save();
-                    $result = true;
-                }
+                $source = new AlternativeMarketForJeedom();
+                $source->setName($data['id']);
+                $source->setLogicalId($data['id']);
+                $source->setEqType_name('AlternativeMarketForJeedom');
+                $source->setConfiguration('type', 'github');
+                $source->setConfiguration('data', $data['id']);
+                $source->save();
+                $result = true;
                 break;
             case 'remove':
-                if ($data != '') {
-                    $gitId = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
-                    $gitId->remove();
-                    $result = true;
-                }
+                $source = eqLogic::byLogicalId($data['id'], 'AlternativeMarketForJeedom');
+                $source->remove();
+                $result = true;
                 break;
             default :
                 $result = false;

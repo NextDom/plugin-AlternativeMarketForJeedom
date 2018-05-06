@@ -24,20 +24,30 @@ function AlternativeMarketForJeedom_install()
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->createDataTable();
 
+    $defaultMarket = new AlternativeMarketForJeedom();
+    $defaultMarket->setName('AlternativeMarket');
+    $defaultMarket->setLogicalId('AlternativeMarket');
+    $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
+    $defaultMarket->setConfiguration('type', 'json');
+    $defaultMarket->setConfiguration('data', 'https://raw.githubusercontent.com/Sylvaner/Ploufplouf/master/plouf.json');
+    $defaultMarket->save();
+    /*
     $pluginExtra = new AlternativeMarketForJeedom();
     $pluginExtra->setName(1);
     $pluginExtra->setLogicalId('Jeedom-Plugins-Extra');
     $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
-    $pluginExtra->setConfiguration('github', 'Jeedom-Plugins-Extra');
+    $pluginExtra->setConfiguration('type', 'github');
+    $pluginExtra->setConfiguration('data', 'Jeedom-Plugins-Extra');
     $pluginExtra->save();
 
     $jeedom = new AlternativeMarketForJeedom();
     $jeedom->setName(2);
     $jeedom->setLogicalId('jeedom');
     $jeedom->setEqType_name('AlternativeMarketForJeedom');
-    $jeedom->setConfiguration('github', 'jeedom');
+    $pluginExtra->setConfiguration('type', 'github');
+    $jeedom->setConfiguration('data', 'jeedom');
     $jeedom->save();
-
+*/
     config::save('url::enable', 1);
 }
 

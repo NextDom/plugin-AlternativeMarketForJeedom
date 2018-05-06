@@ -1,15 +1,18 @@
 // Point d'entrée du script
 $(document).ready(function () {
     var gitsListUl = $('#config-modal ul');
-    for (var gitIndex = 0; gitIndex < gitsList.length; ++gitIndex) {
-        var item = $('<li class="list-group-item">' + gitsList[gitIndex] + '</li>');
-        var deleteButton = $('<button class="badge btn btn-danger" data-gitid="' + gitsList[gitIndex] + '">Supprimer</button>');
+    for (var sourceIndex = 0; sourceIndex < sourcesList.length; ++sourceIndex) {
+        if (sourcesList[sourceIndex]['type'] == 'github') {
+            var item = $('<li class="list-group-item">' + sourcesList[gitIndex]['data'] + '</li>');
+            var deleteButton = $('<button class="badge btn btn-danger" data-gitid="' + sourcesList[sourceIndex]['data'] + '">Supprimer</button>');
 
-        deleteButton.click(function() {
-            removeGitId($(this).data('gitid'));
-        });
-        item.append(deleteButton);
-        gitsListUl.append(item);
+            deleteButton.click(function() {
+                removeGitId($(this).data('gitid'));
+            });
+            item.append(deleteButton);
+            gitsListUl.append(item);
+
+        }
     }
     $('#add-git').click(addGitId);
 });
@@ -20,7 +23,7 @@ $(document).ready(function () {
 function addGitId() {
     var gitId = $('#git-id').val();
     if (gitId != '') {
-            var data = {action: 'gitId', params: 'add', data: gitId};
+            var data = {action: 'source', params: 'add', data: {'type': 'gitId', 'id': gitId}};
             ajaxQuery(data);
     }
 }
@@ -32,7 +35,7 @@ function addGitId() {
  */
 function removeGitId(gitId) {
     if (gitId != '') {
-        var data = {action: 'gitId', params: 'remove', data: gitId};
+        var data = {action: 'source', params: 'remove', data: {'type': 'gitId', 'id': gitId}};
         ajaxQuery(data);
     }
 }

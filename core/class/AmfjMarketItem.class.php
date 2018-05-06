@@ -87,19 +87,39 @@ class AmfjMarketItem
      * @var string Lien vers le changelog
      */
     private $changelogLink;
+    /**
+     * @var string Nom de la source
+     */
+    private $sourceName;
 
     /**
      * Constructeur initialisant les informations de base
      *
      * @param $repositoryInformations Informations obtenus par GitHub.
      */
-    public function __construct($repositoryInformations = null)
+    public function __construct($sourceName)
     {
-        if ($repositoryInformations !== null) {
-            $this->initWithGlobalInformations($repositoryInformations);
-        }
-
         $this->dataStorage = new AmfjDataStorage('amfj');
+        $this->sourceName = $sourceName;
+    }
+
+    public static function createFromGit($sourceName, $repositoryInformations) {
+        $result = new AmfjMarketItem($sourceName);
+        $result->initWithGlobalInformations($repositoryInformations);
+        return $result;
+    }
+
+    public static function createFromCache($sourceName, $fullName) {
+        $result = new AmfjMarketItem($sourceName);
+        $result->setFullName($fullName);
+        $result->readCache();
+        return $result;
+    }
+
+    public static function createFromJson($sourceName, $jsonData, $downloadManager) {
+        $result = new AmfjMarketItem($sourceName);
+        $result->initWithJsonInformations($jsonData, $downloadManager);
+        return $result;
     }
 
     /**
@@ -109,8 +129,6 @@ class AmfjMarketItem
      */
     public function initWithGlobalInformations($repositoryInformations)
     {
-        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['name']);
-        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['full_name']);
         $this->gitName = $repositoryInformations['name'];
         $this->fullName = $repositoryInformations['full_name'];
         $this->url = $repositoryInformations['html_url'];
@@ -136,6 +154,25 @@ class AmfjMarketItem
         if (\array_key_exists('description', $pluginInfo) && $pluginInfo['description'] !== null && $pluginInfo['description'] !== '') {
             $this->description = $pluginInfo['description'];
         }
+    }
+
+    public function initWithJsonInformations($jsonInformations, $downloadManager) {
+        if (\array_key_exists('id', $jsonInformations)) $this->id = $jsonInformations['id'];
+        if (\array_key_exists('repository', $jsonInformations)) $this->gitName = $jsonInformations['repository'];
+        if (\array_key_exists('gitId', $jsonInformations)) {
+            $this->gitId = $jsonInformations['gitId'];
+            $this->fullName = $this->gitId.'/'.$this->gitName;
+        }
+        if (\array_key_exists('name', $jsonInformations)) $this->name = $jsonInformations['name'];
+        if (\array_key_exists('licence', $jsonInformations)) $this->licence = $jsonInformations['licence'];
+        if (\array_key_exists('category', $jsonInformations)) $this->category = $jsonInformations['category'];
+        if (\array_key_exists('documentation', $jsonInformations)) $this->documentationLink = $jsonInformations['documentation'];
+        if (\array_key_exists('changelog', $jsonInformations)) $this->changelogLink = $jsonInformations['changelog'];
+        if (\array_key_exists('author', $jsonInformations)) $this->author = $jsonInformations['author'];
+        if (\array_key_exists('description', $jsonInformations)) $this->description = $jsonInformations['description'];
+        if (\array_key_exists('defaultBranch', $jsonInformations)) $this->defaultBranch = $jsonInformations['defaultBranch'];
+        if (\array_key_exists('branches', $jsonInformations)) $this->branchesList = $jsonInformations['branches'];
+        $this->downloadIcon($downloadManager);
     }
 
     /**
@@ -179,6 +216,7 @@ class AmfjMarketItem
         $dataArray['defaultBranch'] = $this->defaultBranch;
         $dataArray['branchesList'] = $this->branchesList;
         $dataArray['licence'] = $this->licence;
+        $dataArray['sourceName'] = $this->sourceName;
         $dataArray['changelogLink'] = $this->changelogLink;
         $dataArray['documentationLink'] = $this->documentationLink;
         return $dataArray;
@@ -256,8 +294,12 @@ class AmfjMarketItem
      */
     public function downloadIcon($downloadManager)
     {
+        log::add('AlternativeMarketForJeedom', 'debug', 'AAAAA');
+        log::add('AlternativeMarketForJeedom', 'debug', $this->fullName);
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
+        log::add('AlternativeMarketForJeedom', 'debug', $iconFilename);
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
+        log::add('AlternativeMarketForJeedom', 'debug', $iconUrl);
         $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
         $downloadManager->downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {

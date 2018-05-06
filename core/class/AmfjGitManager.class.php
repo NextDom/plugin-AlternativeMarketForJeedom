@@ -25,10 +25,6 @@ require_once('AmfjDataStorage.class.php');
 class AmfjGitManager
 {
     /**
-     * @var int Temps de rafraichissement de la liste des plugins
-     */
-    private $REFRESH_TIME_LIMIT = 86400;
-    /**
      * @var string Utilisateur du dépot
      */
     private $gitId;
@@ -55,23 +51,6 @@ class AmfjGitManager
         $this->downloadManager = new AmfjDownloadManager();
         $this->gitId = $gitId;
         $this->dataStorage = new AmfjDataStorage('amfj');
-    }
-
-    /**
-     * Test si une mise à jour de la liste des dépôts est nécessaire
-     *
-     * @return bool True si une mise à jour est nécessaire
-     */
-    public function isUpdateNeeded()
-    {
-        $result = true;
-        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . $this->gitId);
-        if ($lastUpdate !== null) {
-            if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
-                return false;
-            }
-        }
-        return $result;
     }
 
     /**

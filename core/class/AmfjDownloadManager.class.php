@@ -133,9 +133,7 @@ class AmfjDownloadManager
         $curlSession = curl_init();
         if ($curlSession !== false) {
             \curl_setopt($curlSession, CURLOPT_URL, $url);
-            if (!$binary) {
-                log::add('AlternativeMarketForJeedom', 'debug', $url);
-            }
+            log::add('AlternativeMarketForJeedom', 'debug', $url);
             \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
                 \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
