@@ -86,8 +86,8 @@ class AmfjDownloadManager
     /**
      * Télécharge un fichier binaire
      *
-     * @param $url Lien du fichier
-     * @param $dest Destination du fichier
+     * @param string $url Lien du fichier
+     * @param string $dest Destination du fichier
      */
     public function downloadBinary($url, $dest)
     {

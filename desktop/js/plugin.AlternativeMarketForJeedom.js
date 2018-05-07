@@ -29,7 +29,6 @@ function initModal() {
     $('#gitid .list-info').text(currentPlugin['gitId']);
     $('#gitrepo .list-info').text(currentPlugin['gitName']);
 
-// <script>var jeedom_langage = "fr_FR";</script>
     if (currentPlugin['changelogLink'] === null) {
         $('#changelog-link').css('display', 'none');
     }
@@ -61,7 +60,7 @@ function initBranchesUpdate() {
         data: {
             action: 'get',
             params: 'branches',
-            data: { source: currentPlugin['sourceName'], fullName: currentPlugin['fullName'] }
+            data: {source: currentPlugin['sourceName'], fullName: currentPlugin['fullName']}
         },
         dataType: 'json',
         success: function (data, status) {
@@ -83,7 +82,7 @@ function initBranchesChoice(branchesList) {
         var ulList = $('#install-plugin-advanced .dropdown-menu');
         for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
             var branchName = branchesList[branchIndex];
-            if (branchName != currentPlugin['defaultBranch']) {
+            if (branchName !== currentPlugin['defaultBranch']) {
                 var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchesList[branchIndex] + '</a></li>');
                 liItem.click(function () {
                     installPlugin($(this).data('branch'));

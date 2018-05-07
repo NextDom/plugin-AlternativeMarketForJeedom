@@ -24,7 +24,7 @@ function initFilters() {
         else {
             var itemIndex = -1;
             for (var index = 0; index < filterHiddenSrc.length; ++index) {
-                if (filterHiddenSrc[index] == github) {
+                if (filterHiddenSrc[index] == 'github') {
                     itemIndex = index;
                 }
             }
@@ -37,7 +37,7 @@ function initFilters() {
     });
     $('#market-filter-category').change(function () {
         var selectedCategory = $("#market-filter-category option:selected").val();
-        if (selectedCategory != 'all') {
+        if (selectedCategory !== 'all') {
             filterCategory = selectedCategory;
         }
         else {
@@ -131,16 +131,16 @@ function updateFilteredList() {
         if (filterHiddenSrc.indexOf(dataSource) !== -1) {
             hide = true;
         }
-        if (filterCategory != '' && filterCategory != dataCategory) {
+        if (filterCategory !== '' && filterCategory !== dataCategory) {
             hide = true;
         }
-        if (filterInstalled && dataInstalled == true) {
+        if (filterInstalled && dataInstalled === true) {
             hide = true;
         }
-        if (filterNotInstalled && dataInstalled == false) {
+        if (filterNotInstalled && dataInstalled === false) {
             hide = true;
         }
-        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue) == -1) {
+        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue) === -1) {
             hide = true;
         }
         if (hide) {
@@ -280,11 +280,12 @@ function getItemHtml(item) {
 /**
  * Affiche la fenêtre d'un plugin
  *
- * @param array pluginData Données du plugin
+ * @param pluginData Données du plugin
  */
 function showPluginModal(pluginData) {
-    $('#md_modal').dialog({title: pluginData['name']});
-    $('#md_modal').load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
+    var modal = $('#md_modal');
+    modal.dialog({title: pluginData['name']});
+    modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
 }
 
@@ -292,6 +293,7 @@ function showPluginModal(pluginData) {
  * Affiche la fenêtre de configuration
  */
 function showConfigModal() {
-    $('#md_modal').dialog({title: 'Configuration'});
-    $('#md_modal').load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=config.AlternativeMarketForJeedom').dialog('open');
+    var modal = $('#md_modal');
+    modal.dialog({title: 'Configuration'});
+    modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=config.AlternativeMarketForJeedom').dialog('open');
 }

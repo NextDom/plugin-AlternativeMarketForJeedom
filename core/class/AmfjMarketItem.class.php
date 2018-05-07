@@ -95,7 +95,7 @@ class AmfjMarketItem
     /**
      * Constructeur initialisant les informations de base
      *
-     * @param $repositoryInformations Informations obtenus par GitHub.
+     * @param string $sourceName Nom de la source de l'élément
      */
     public function __construct($sourceName)
     {
@@ -103,20 +103,48 @@ class AmfjMarketItem
         $this->sourceName = $sourceName;
     }
 
-    public static function createFromGit($sourceName, $repositoryInformations) {
+    /**
+     * Créer un élément à partir des données d'un dépôt GitHub
+     *
+     * @param string $sourceName Nom de la source
+     * @param string[] $repositoryInformations Informations du dépôt
+     *
+     * @return AmfjMarketItem Elément créé
+     */
+    public static function createFromGit($sourceName, $repositoryInformations)
+    {
         $result = new AmfjMarketItem($sourceName);
         $result->initWithGlobalInformations($repositoryInformations);
         return $result;
     }
 
-    public static function createFromCache($sourceName, $fullName) {
+    /**
+     * Créer un élément depuis le cache
+     *
+     * @param string $sourceName Nom de la source
+     * @param string $fullName Nom complet
+     *
+     * @return AmfjMarketItem Elément créé
+     */
+    public static function createFromCache($sourceName, $fullName)
+    {
         $result = new AmfjMarketItem($sourceName);
         $result->setFullName($fullName);
         $result->readCache();
         return $result;
     }
 
-    public static function createFromJson($sourceName, $jsonData, $downloadManager) {
+    /**
+     * Créer un élément à partir des données d'un JSON
+     *
+     * @param string $sourceName Nom de la source
+     * @param string[] $jsonData Données de l'élément
+     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
+     *
+     * @return AmfjMarketItem Elément créé
+     */
+    public static function createFromJson($sourceName, $jsonData, $downloadManager)
+    {
         $result = new AmfjMarketItem($sourceName);
         $result->initWithJsonInformations($jsonData, $downloadManager);
         return $result;
@@ -125,7 +153,7 @@ class AmfjMarketItem
     /**
      * Lire les informations obtenus par GitHub
      *
-     * @param $repositoryInformations Informations de GitHub
+     * @param string[] $repositoryInformations Informations de GitHub
      */
     public function initWithGlobalInformations($repositoryInformations)
     {
@@ -140,7 +168,7 @@ class AmfjMarketItem
     /**
      * Ajouter les informations contenu dans le fichier info.json du plugin
      *
-     * @param array $pluginInfo Contenu du fichier info.json
+     * @param string[] $pluginInfo Contenu du fichier info.json
      */
     public function addPluginInformations($pluginInfo)
     {
@@ -156,12 +184,13 @@ class AmfjMarketItem
         }
     }
 
-    public function initWithJsonInformations($jsonInformations, $downloadManager) {
+    public function initWithJsonInformations($jsonInformations, $downloadManager)
+    {
         if (\array_key_exists('id', $jsonInformations)) $this->id = $jsonInformations['id'];
         if (\array_key_exists('repository', $jsonInformations)) $this->gitName = $jsonInformations['repository'];
         if (\array_key_exists('gitId', $jsonInformations)) {
             $this->gitId = $jsonInformations['gitId'];
-            $this->fullName = $this->gitId.'/'.$this->gitName;
+            $this->fullName = $this->gitId . '/' . $this->gitName;
         }
         if (\array_key_exists('name', $jsonInformations)) $this->name = $jsonInformations['name'];
         if (\array_key_exists('licence', $jsonInformations)) $this->licence = $jsonInformations['licence'];
@@ -451,9 +480,9 @@ class AmfjMarketItem
     /**
      * Définir le nom du complet du dépôt
      *
-     * @param $fullName Nom complet
+     * @param string $fullName Nom complet
      *
-     * @return Instance de l'objet
+     * @return AmfjMarketItem Instance de l'objet
      */
     public function setFullName($fullName)
     {

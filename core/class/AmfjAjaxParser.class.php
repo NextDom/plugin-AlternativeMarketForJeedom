@@ -32,9 +32,9 @@ class AmfjAjaxParser
     /**
      * Point d'entrée des requêtes Ajax
      *
-     * @param $action Action de la requête
-     * @param $params Paramètres de la requête
-     * @param $data Données de la requête
+     * @param string $action Action de la requête
+     * @param string $params Paramètres de la requête
+     * @param mixed $data Données de la requête
      *
      * @return array|bool Résultat
      */
@@ -82,7 +82,7 @@ class AmfjAjaxParser
     /**
      * Rafraichir la liste des dépôts.
      *
-     * @param array $markets Liste des utilisateur GitHub.
+     * @param array $sources Liste des utilisateur GitHub.
      * @param bool $force Force la mise à jour.
      *
      * @return bool True si une mise à jour a été réalisée ou que la mise à jour n'est pas nécessaire.
@@ -127,8 +127,10 @@ class AmfjAjaxParser
                     $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
                     foreach ($data as $source) {
                         $market = new AmfjMarket($source);
+                        // Obtenir la liste complète
                         $items = $market->getItems();
                         foreach ($items as $item) {
+                            // Affiche les doublons
                             if ($showDuplicates) {
                                 array_push($result, $item->getDataInArray());
                             } else {
@@ -139,6 +141,7 @@ class AmfjAjaxParser
                             }
                         }
                     }
+                    // Tri par ordre alphabétique
                     \usort($result, function ($item1, $item2) {
                         return $item1['name'] > $item2['name'];
                     });
@@ -150,6 +153,7 @@ class AmfjAjaxParser
                     $marketItem = AmfjMarketItem::createFromCache($data['sourceName'], $data['fullName']);
                     if ($marketItem->downloadBranchesInformations($downloaderManager)) {
                         $result = $marketItem->getBranchesList();
+                        // Sauvegarde la liste des branches téléchargées
                         $marketItem->writeCache();
                     }
                 }

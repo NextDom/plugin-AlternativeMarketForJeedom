@@ -77,6 +77,8 @@ class AmfjGitManager
             }
             $this->dataStorage->storeRawData('repo_last_update_' . $this->gitId, \time());
             $this->dataStorage->storeJsonData('repo_data_' . $this->gitId, $dataToStore);
+            // Efface la liste des dépôts ignorés
+            $this->saveIgnoreList([]);
             $result = true;
         }
         return $result;
@@ -120,6 +122,53 @@ class AmfjGitManager
     }
 
     /**
+     * Mettre à jour les dépôts
+     *
+     * @param string $sourceName Nom de la source
+     * @param array $repositoriesList Liste des dépots
+     * @param bool $force Forcer les mises à jour
+     */
+    public function updateRepositories($sourceName, $repositoriesList, $force)
+    {
+        $ignoreList = $this->getIgnoreList();
+        foreach ($repositoriesList as $repository) {
+            $repositoryName = $repository['name'];
+            $marketItem = AmfjMarketItem::createFromGit($sourceName, $repository);
+            if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
+                if (!$marketItem->refresh($this->downloadManager)) {
+                    \array_push($ignoreList, $repositoryName);
+                }
+            }
+        }
+        $this->saveIgnoreList($ignoreList);
+    }
+
+    /**
+     * Obtenir la liste des dépots ignorés
+     *
+     * @return array|mixed
+     */
+    protected function getIgnoreList()
+    {
+        $result = array();
+        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->source['data']);
+        if ($jsonList !== null) {
+            $result = $jsonList;
+        }
+        return $result;
+    }
+
+    /**
+     * Sauvegarder la liste des dépôts ignorés
+     *
+     * @param array $ignoreList Liste des dépôts ignorés
+     */
+    protected function saveIgnoreList($ignoreList)
+    {
+        $this->dataStorage->storeJsonData('repo_ignore_' . $this->source['data'], $ignoreList);
+    }
+
+    /**
      * Lire le contenu du fichier contenant la liste des dépôts
      *
      * @return bool|array Tableau associatifs contenant les données ou false en cas d'échec
@@ -130,6 +179,27 @@ class AmfjGitManager
         $jsonStrList = $this->dataStorage->getJsonData('repo_data_' . $this->gitId);
         if ($jsonStrList !== null) {
             $result = $jsonStrList;
+        }
+        return $result;
+    }
+
+    /**
+     * Obtenir la liste des plugins
+     *
+     * @param string $sourceName Nom de la source
+     *
+     * @return array Liste des plugins
+     */
+    public function getItems($sourceName)
+    {
+        $result = array();
+        $repositories = $this->getRepositoriesList();
+        $ignoreList = $this->getIgnoreList();
+        foreach ($repositories as $repository) {
+            if (!\in_array($repository['name'], $ignoreList)) {
+                $marketItem = AmfjMarketItem::createFromCache($sourceName, $repository['full_name']);
+                array_push($result, $marketItem);
+            }
         }
         return $result;
     }
