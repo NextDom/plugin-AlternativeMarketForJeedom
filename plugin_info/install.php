@@ -29,7 +29,7 @@ function AlternativeMarketForJeedom_install()
     $defaultMarket->setLogicalId('AlternativeMarket');
     $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
     $defaultMarket->setConfiguration('type', 'json');
-    $defaultMarket->setConfiguration('data', 'https://raw.githubusercontent.com/Sylvaner/Ploufplouf/master/plouf.json');
+    $defaultMarket->setConfiguration('data', 'https://raw.githubusercontent.com/Sylvaner/Ploufplouf/master/result.json');
     $defaultMarket->save();
     /*
     $pluginExtra = new AlternativeMarketForJeedom();
