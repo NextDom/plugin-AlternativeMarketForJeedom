@@ -81,9 +81,11 @@ function initBranchesChoice(branchesList) {
     if (branchesList.length > 1) {
         var ulList = $('#install-plugin-advanced .dropdown-menu');
         for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
-            var branchName = branchesList[branchIndex];
+            console.log(branchesList);
+            console.log(branchesList[branchIndex]);
+            var branchName = branchesList[branchIndex]['name'];
             if (branchName !== currentPlugin['defaultBranch']) {
-                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchesList[branchIndex] + '</a></li>');
+                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchName + '</a></li>');
                 liItem.click(function () {
                     installPlugin($(this).data('branch'));
                 });
