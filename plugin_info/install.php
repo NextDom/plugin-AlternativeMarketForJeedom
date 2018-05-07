@@ -25,8 +25,8 @@ function AlternativeMarketForJeedom_install()
     $dataStorage->createDataTable();
 
     $defaultMarket = new AlternativeMarketForJeedom();
-    $defaultMarket->setName('AlternativeMarket');
-    $defaultMarket->setLogicalId('AlternativeMarket');
+    $defaultMarket->setName('NextDom');
+    $defaultMarket->setLogicalId('NextDom');
     $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
     $defaultMarket->setConfiguration('type', 'json');
     $defaultMarket->setConfiguration('data', 'https://raw.githubusercontent.com/Sylvaner/Ploufplouf/master/result.json');

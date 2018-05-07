@@ -41,4 +41,13 @@ if (!isConnect()) {
             <input type="checkbox" class="configKey form-control" id="show-duplicates" data-l1key="show-duplicates"/>
         </div>
     </div>
+    <div class="form-group">
+        <label for="sources-manager" class="col-sm-2 control-label">{{Gestionnaire de sources}}</label>
+        <div class="col-sm-10">
+            <button id="sources-manager" class="btn btn-primary">{{Gérer}}</button>
+        </div>
+    </div>
 </form>
+
+<?php
+include_file('desktop', 'AlternativeMarketForJeedomConfiguration', 'js', 'AlternativeMarketForJeedom');

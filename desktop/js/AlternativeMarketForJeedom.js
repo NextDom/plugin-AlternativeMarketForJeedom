@@ -16,15 +16,15 @@ $(document).ready(function () {
  */
 function initFilters() {
     $('#market-filter-src button').click(function () {
-        var github = $(this).data('github');
+        var source = $(this).data('source');
         if (isActive($(this))) {
-            filterHiddenSrc.push(github);
+            filterHiddenSrc.push(source);
             setActive($(this), false);
         }
         else {
             var itemIndex = -1;
             for (var index = 0; index < filterHiddenSrc.length; ++index) {
-                if (filterHiddenSrc[index] == 'github') {
+                if (filterHiddenSrc[index] == source) {
                     itemIndex = index;
                 }
             }
@@ -81,9 +81,6 @@ function initFilters() {
     });
     $('#refresh-markets').click(function () {
         refresh(true);
-    });
-    $('#configure-markets').click(function () {
-        showConfigModal();
     });
 }
 
@@ -287,13 +284,4 @@ function showPluginModal(pluginData) {
     modal.dialog({title: pluginData['name']});
     modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
-}
-
-/**
- * Affiche la fenêtre de configuration
- */
-function showConfigModal() {
-    var modal = $('#md_modal');
-    modal.dialog({title: 'Configuration'});
-    modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=config.AlternativeMarketForJeedom').dialog('open');
 }

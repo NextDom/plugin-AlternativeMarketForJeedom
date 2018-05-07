@@ -45,15 +45,12 @@ include_file('core', 'plugin.template', 'js');
     <div id="market-filter-src" class="btn-group col-sm-10">
         <?php foreach ($eqLogics as $eqLogic) {
             $name = $eqLogic->getName();
-            echo '<button type="button" class="btn btn-primary" data-github="' . $name . '">' . $name . '</button >';
+            echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
         }
         ?>
     </div>
     <div class="col-sm-2">
         <div id="admin-buttons" class="btn-group">
-            <button id="configure-markets" class="btn btn-default">
-                <i class="fa fa-plus"></i> Ajouter
-            </button>
             <button id="refresh-markets" class="btn btn-default">
                 <i class="fa fa-refresh"></i>
             </button>

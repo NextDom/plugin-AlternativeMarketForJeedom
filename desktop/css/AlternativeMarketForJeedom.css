@@ -230,3 +230,11 @@
 #plugin-modal .list-title {
     font-weight: bold;
 }
+
+#shortcuts {
+    padding-top: 2em;
+}
+
+#shortcuts button {
+    border-radius: 2em;
+}

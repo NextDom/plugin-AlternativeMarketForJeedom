@@ -18,19 +18,39 @@
 if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }
+$plugin = plugin::byId('AlternativeMarketForJeedom');
+$eqLogics = eqLogic::byType($plugin->getId());
+
+$sourcesList = array();
+foreach ($eqLogics as $eqLogic) {
+    $source = [];
+    $source['id'] = $eqLogic->getId();
+    $source['name'] = $eqLogic->getName();
+    $source['type'] = $eqLogic->getConfiguration()['type'];
+    $source['data'] = $eqLogic->getConfiguration()['data'];
+    array_push($sourcesList, $source);
+}
+sendVarToJs('sourcesList', $sourcesList);
+
+include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketForJeedom');
 ?>
-<div id="div_pluginAlternativeMarketForJeedomAlert"></div>
-<div id="config-modal">
-    <div class="container">
-        <h3>Liste des utilisateur GitHub</h3>
-        <ul id="gitid-list" class="list-group">
-        </ul>
-        <div class="input-group">
-            <input id="git-id" type="text" class="form-control" placeholder="Identifiant GitHub..."/>
-            <span class="input-group-btn">
-            <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
-        </span>
+    <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
+    <div id="config-modal">
+        <div class="container">
+            <h3>Liste des utilisateur GitHub</h3>
+            <ul id="gitid-list" class="list-group">
+            </ul>
+            <div class="input-group">
+                <input id="git-id" type="text" class="form-control" placeholder="Identifiant GitHub..."/>
+                <span class="input-group-btn">
+                    <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
+                </span>
+            </div>
+            <div id="shortcuts">
+                <span>{{Dépôts GitHub : }}</span>
+            </div>
         </div>
     </div>
-</div>
-<script src="plugins/AlternativeMarketForJeedom/desktop/js/config.AlternativeMarketForJeedom.js"></script>
+<?php
+include_file('desktop', 'config.AlternativeMarketForJeedom', 'js', 'AlternativeMarketForJeedom');
+
