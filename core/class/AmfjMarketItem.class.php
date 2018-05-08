@@ -371,7 +371,8 @@ class AmfjMarketItem
     public function isInstalled()
     {
         $result = false;
-        if (\file_exists(\dirname(__FILE__) . '/../../../' . $this->id)) {
+        $updateData = update::byLogicalId($this->id);
+        if ($updateData !== false) {
             $result = true;
         }
         return $result;

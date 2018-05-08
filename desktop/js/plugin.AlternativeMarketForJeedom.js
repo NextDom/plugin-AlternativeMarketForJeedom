@@ -107,9 +107,9 @@ function installPlugin(branch) {
         data: {
             action: 'save',
             // Version de l'installation par URL
-            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
+//            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
             // Version de l'installation par GitHub
-            //update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"'+ currentPlugin['gitName'] +'", "version":"'+ branch +'"},"source":"github"}'
+            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"'+ currentPlugin['gitName'] +'", "version":"'+ branch +'"},"source":"github"}'
 
         },
         dataType: 'json',
