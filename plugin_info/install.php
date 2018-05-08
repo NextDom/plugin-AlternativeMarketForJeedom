@@ -35,7 +35,7 @@ function AlternativeMarketForJeedom_install()
     $defaultMarket->setConfiguration('data', 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/result.json');
     $defaultMarket->save();
 
-    config::save('url::enable', 1);
+    config::save('github::enable', 1);
 }
 
 function AlternativeMarketForJeedom_update()
