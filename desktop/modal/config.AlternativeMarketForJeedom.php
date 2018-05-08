@@ -37,7 +37,7 @@ include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketF
     <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
     <div id="config-modal">
         <div class="container">
-            <h3>Liste des utilisateur GitHub</h3>
+            <h3>Liste des utilisateurs/organisations GitHub</h3>
             <ul id="gitid-list" class="list-group">
             </ul>
             <div class="input-group">
