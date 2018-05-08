@@ -3,6 +3,9 @@ $(document).ready(function () {
     $('#install-plugin').click(function () {
         installPlugin(currentPlugin['defaultBranch']);
     });
+    $('#remove-plugin').click(function() {
+        removePlugin(currentPlugin['id']);
+    });
 });
 
 /**
@@ -115,6 +118,27 @@ function installPlugin(branch) {
         dataType: 'json',
         success: function (data, status) {
             //window.location.replace('/index.php?v=d&p=plugin');
+        },
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        }
+    });
+}
+
+/**
+ * Lance l'installation du plugin
+ */
+function removePlugin(pluginId) {
+    $.post({
+        url: 'core/ajax/update.ajax.php',
+        data: {
+            action: 'remove',
+            id: pluginId
+
+        },
+        dataType: 'json',
+        success: function (data, status) {
+            location.reload();
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);

@@ -32,8 +32,8 @@ if (!isConnect('admin')) {
             </span>
             <span class="button-item">
                 <div id="install-plugin-advanced" class="btn-group hidden-btn">
-                    <button type="button" class="btn btn-lg btn-warning">{{Installation avancée}}</button>
-                    <button type="button" class="btn btn-lg btn-warning dropdown-toggle" data-toggle="dropdown"
+                    <button class="btn btn-lg btn-warning">{{Installation avancée}}</button>
+                    <button class="btn btn-lg btn-warning dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
@@ -44,6 +44,9 @@ if (!isConnect('admin')) {
                 <div id="get-branches-informations">
                     <button type="button" class="btn btn-lg btn-warning"><i class="fa fa-plus"></i></button>
                 </div>
+            </span>
+            <span class="button-item">
+                <button id="remove-plugin" class="btn btn-lg btn-danger">{{Supprimer}}</button>
             </span>
             <div id="description">
                 <h3>{{Description}}</h3>
