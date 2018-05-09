@@ -23,7 +23,7 @@
     transition: all 0.2s ease;
     overflow: hidden;
     border: 1px solid #CCCCCC;
-    background-color: #EEEEEE;
+    background-color: rgba(0, 0, 0, 0.2);
     margin: 0;
     border-radius: 5px;
     padding: 0.75em;
@@ -259,4 +259,25 @@
 
 #shortcuts button {
     border-radius: 2em;
+}
+
+.amfj-toast {
+    position: fixed;
+    top: 200%;
+    right: 2em;
+    background-color: black;
+    color: white;
+    font-size: 1.2em;
+    padding: 0.4em;
+    border-radius: 0.4em;
+    transition: all 0.8s ease;
+    box-shadow: 0.1em 0.1em 0.5em black;
+}
+
+.amfj-toast.showed {
+    top: 5%;
+}
+
+.amfj-toast.eject {
+    right: -20em;
 }

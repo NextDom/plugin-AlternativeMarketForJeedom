@@ -197,7 +197,7 @@ function updatePlugin(id) {
         },
         dataType: 'json',
         success: function (data, status) {
-            location.reload();
+            window.location.href = window.location.href + "&message=0";
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);

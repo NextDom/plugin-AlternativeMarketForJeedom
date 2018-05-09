@@ -36,6 +36,16 @@ foreach ($eqLogics as $eqLogic) {
 }
 sendVarToJs('sourcesList', $sourcesList);
 
+// Affichage d'un message à un utilisateur
+if (isset($_GET['message'])) {
+    $messages = [__('La mise à jour du plugin été effecutée.', __FILE__)];
+
+    $messageIndex = intval($_GET['message']);
+    if ($messageIndex < count($messages)) {
+        sendVarToJs('messageToUser', $messages[$messageIndex]);
+    }
+}
+
 include_file('desktop', 'AlternativeMarketForJeedom', 'js', 'AlternativeMarketForJeedom');
 include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketForJeedom');
 include_file('core', 'plugin.template', 'js');

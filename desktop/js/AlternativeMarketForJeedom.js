@@ -9,6 +9,7 @@ var currentSearchValue = '';
 $(document).ready(function () {
     refresh();
     initFilters();
+    showMessage();
 });
 
 /**
@@ -258,7 +259,7 @@ function getItemHtml(item) {
         result += '<div data-toggle="tooltip" title="Plugin installé" class="installed-marker"><i class="fa fa-check"></i></div>';
     }
     if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
-        result += '<div data-toggle="tooltip" title="Mise à jour disponible" class="update-marker"><i class="fa fa-star"></i></div>';
+        result += '<div data-toggle="tooltip" title="Mise à jour disponible" class="update-marker"><i class="fa fa-download"></i></div>';
     }
     result += '' +
         '<h4>' + title + '</h4>' +
@@ -287,4 +288,18 @@ function showPluginModal(pluginData) {
     modal.dialog({title: pluginData['name']});
     modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
+}
+
+function showMessage() {
+    if (typeof messageToUser !== 'undefined') {
+        var toast = $('<div class="amfj-toast">'+ messageToUser+'</div>');
+        $('main').append(toast);
+        setTimeout(function() {
+            toast.addClass('showed');
+            setTimeout(function() {
+                toast.addClass('eject');
+            }, 3000);
+        }, 1000);
+
+    }
 }
