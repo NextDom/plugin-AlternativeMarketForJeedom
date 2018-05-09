@@ -38,7 +38,7 @@ sendVarToJs('sourcesList', $sourcesList);
 
 // Affichage d'un message à un utilisateur
 if (isset($_GET['message'])) {
-    $messages = [__('La mise à jour du plugin été effecutée.', __FILE__)];
+    $messages = [__('La mise à jour du plugin a été effecutée.', __FILE__)];
 
     $messageIndex = intval($_GET['message']);
     if ($messageIndex < count($messages)) {

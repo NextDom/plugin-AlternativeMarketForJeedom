@@ -256,10 +256,10 @@ function getItemHtml(item) {
         '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-source="' + item['sourceName'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
-        result += '<div data-toggle="tooltip" title="Plugin installé" class="installed-marker"><i class="fa fa-check"></i></div>';
+        result += '<div class="installed-marker"><i data-toggle="tooltip" title="Plugin installé" class="fa fa-check"></i></div>';
     }
     if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
-        result += '<div data-toggle="tooltip" title="Mise à jour disponible" class="update-marker"><i class="fa fa-download"></i></div>';
+        result += '<div class="update-marker"><i data-toggle="tooltip" title="Mise à jour disponible" class="fa fa-download"></i></div>';
     }
     result += '' +
         '<h4>' + title + '</h4>' +
