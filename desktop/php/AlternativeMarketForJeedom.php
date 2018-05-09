@@ -43,9 +43,12 @@ include_file('core', 'plugin.template', 'js');
 ?>
 <div class="market-filters row">
     <div id="market-filter-src" class="btn-group col-sm-10">
-        <?php foreach ($eqLogics as $eqLogic) {
-            $name = $eqLogic->getName();
-            echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
+        <?php
+        if (count($eqLogics) > 1) {
+            foreach ($eqLogics as $eqLogic) {
+                $name = $eqLogic->getName();
+                echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
+            }
         }
         ?>
     </div>
