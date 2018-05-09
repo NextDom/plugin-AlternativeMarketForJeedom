@@ -22,7 +22,8 @@
     height: 200px;
     transition: all 0.2s ease;
     overflow: hidden;
-    border: 1px solid #ccc;
+    border: 1px solid #CCCCCC;
+    background-color: #EEEEEE;
     margin: 0;
     border-radius: 5px;
     padding: 0.75em;
