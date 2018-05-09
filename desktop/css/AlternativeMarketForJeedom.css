@@ -96,7 +96,6 @@
 
 #market-div .media:hover {
     cursor: pointer;
-    transform: scale(1.02);
 }
 
 #market-div button {

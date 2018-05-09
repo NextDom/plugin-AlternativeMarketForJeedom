@@ -63,6 +63,8 @@ function initInstallationButtons() {
         else {
             // Nécessaire si les plugins ont été installés depuis l'URL
             // TODO : Optimiser en supprimant le doublon de code
+            var defaultBranch = currentPlugin['defaultBranch'];
+            $('#default-branch-information').text('Branche ' + defaultBranch);
             $('#update-plugin').hide();
             if (currentPlugin['branchesList'].length > 0) {
                 initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
@@ -153,7 +155,7 @@ function installPlugin(branch) {
         },
         dataType: 'json',
         success: function (data, status) {
-            window.location.replace('/index.php?v=d&p=plugin');
+            window.location.replace('/index.php?v=d&p=plugin&id='+currentPlugin['id']);
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);
