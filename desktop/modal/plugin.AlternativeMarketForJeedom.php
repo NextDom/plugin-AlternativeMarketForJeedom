@@ -27,6 +27,9 @@ if (!isConnect('admin')) {
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9 right-pane">
             <span class="button-item">
+                <button id="update-plugin" class="btn btn-lg btn-primary">{{Mettre à jour}}</button>
+            </span>
+            <span class="button-item">
                 <button id="install-plugin" class="btn btn-lg btn-primary">{{Installer}}</button>
                 <span id="default-branch-information" class="help-block"></span>
             </span>

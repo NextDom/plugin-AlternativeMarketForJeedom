@@ -91,6 +91,10 @@ class AmfjMarketItem
      * @var string Nom de la source
      */
     private $sourceName;
+    /**
+     * @var array Données de Jeedom sur le plugin
+     */
+    private $updateData;
 
     /**
      * Constructeur initialisant les informations de base
@@ -191,6 +195,7 @@ class AmfjMarketItem
         if (\array_key_exists('gitId', $jsonInformations)) {
             $this->gitId = $jsonInformations['gitId'];
             $this->fullName = $this->gitId . '/' . $this->gitName;
+            $this->url = 'https://github.com/' . $this->gitId . '/' . $this->fullName;
         }
         if (\array_key_exists('name', $jsonInformations)) $this->name = $jsonInformations['name'];
         if (\array_key_exists('licence', $jsonInformations)) $this->licence = $jsonInformations['licence'];
@@ -240,7 +245,6 @@ class AmfjMarketItem
         $dataArray['id'] = $this->id;
         $dataArray['author'] = $this->author;
         $dataArray['category'] = $this->category;
-        $dataArray['installed'] = $this->isInstalled();
         $dataArray['iconPath'] = $this->iconPath;
         $dataArray['defaultBranch'] = $this->defaultBranch;
         $dataArray['branchesList'] = $this->branchesList;
@@ -248,6 +252,13 @@ class AmfjMarketItem
         $dataArray['sourceName'] = $this->sourceName;
         $dataArray['changelogLink'] = $this->changelogLink;
         $dataArray['documentationLink'] = $this->documentationLink;
+
+        $this->initUpdateData();
+        $dataArray['installed'] = $this->isInstalled();
+        $dataArray['installedBranchData'] = false;
+        if ($dataArray['installed']) {
+            $dataArray['installedBranchData'] = $this->getInstalledBranchData();
+        }
         return $dataArray;
     }
 
@@ -257,6 +268,8 @@ class AmfjMarketItem
     public function writeCache()
     {
         $dataArray = $this->getDataInArray();
+        unset($dataArray['installed']);
+        unset($dataArray['installedBranchData']);
         $this->dataStorage->storeJsonData('repo_data_' . str_replace('/', '_', $this->fullName), $dataArray);
         $this->dataStorage->storeRawData('repo_last_update_' . str_replace('/', '_', $this->fullName), \time());
     }
@@ -323,12 +336,8 @@ class AmfjMarketItem
      */
     public function downloadIcon($downloadManager)
     {
-        log::add('AlternativeMarketForJeedom', 'debug', 'AAAAA');
-        log::add('AlternativeMarketForJeedom', 'debug', $this->fullName);
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
-        log::add('AlternativeMarketForJeedom', 'debug', $iconFilename);
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
-        log::add('AlternativeMarketForJeedom', 'debug', $iconUrl);
         $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
         $downloadManager->downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
@@ -356,11 +365,22 @@ class AmfjMarketItem
             $branches = \json_decode($branches, true);
             $this->branchesList = [];
             foreach ($branches as $branch) {
-                array_push($this->branchesList, $branch['name']);
+                $branchData = [];
+                $branchData['name'] = $branch['name'];
+                $branchData['hash'] = $branch['commit']['sha'];
+                array_push($this->branchesList, $branchData);
             }
             $result = true;
         }
         return $result;
+    }
+
+    /**
+     * Initialise les données de Jeedom sur le plugin
+     */
+    private function initUpdateData()
+    {
+        $this->updateData = update::byLogicalId($this->id);
     }
 
     /**
@@ -371,9 +391,34 @@ class AmfjMarketItem
     public function isInstalled()
     {
         $result = false;
-        $updateData = update::byLogicalId($this->id);
-        if ($updateData !== false) {
+        if ($this->updateData !== false) {
             $result = true;
+        }
+        return $result;
+    }
+
+    private function getInstalledBranchData()
+    {
+        $result = false;
+        if ($this->updateData !== false) {
+            $configuration = $this->updateData->getConfiguration();
+            if (\is_array($configuration) && \array_key_exists('version', $configuration)) {
+                $result = [];
+                $result['branch'] = $configuration['version'];
+                $result['hash'] = $this->updateData->getLocalVersion();
+                $result['needUpdate'] = false;
+                $result['id'] = $this->updateData->getId();
+                if ($this->updateData->getStatus() === 'update') {
+                    $result['needUpdate'] = true;
+                }
+                else  {
+                    foreach ($this->branchesList as $branch) {
+                        if ($branch['name'] === $result['branch'] && $branch['hash'] !== $result['hash']) {
+                            $result['needUpdate'] = true;
+                        }
+                    }
+                }
+            }
         }
         return $result;
     }
