@@ -37,7 +37,8 @@ class AmfjDownloadManager
     {
         $this->connectionStatus = false;
         $this->testConnection();
-        $this->gitHubToken = config::byKey('github-user-token', 'AlternativeMarketForJeedom');
+        $this->gitHubToken = config::byKey('github::token');
+        log::add('AlternativeMarketForJeedom', 'debug', $this->gitHubToken);
     }
 
     /**

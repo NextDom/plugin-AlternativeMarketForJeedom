@@ -43,7 +43,7 @@ function initInstallationButtons() {
         installPlugin(currentPlugin['defaultBranch']);
     });
     if (currentPlugin['installed']) {
-        $('#remove-plugin').click(function() {
+        $('#remove-plugin').click(function () {
             removePlugin(currentPlugin['id']);
         });
         if (currentPlugin['installedBranchData'] !== false) {
@@ -52,7 +52,7 @@ function initInstallationButtons() {
             $('#default-branch-information').text('Branche ' + installedBranch);
             initBranchesChoice(currentPlugin['branchesList'], installedBranch);
             if (currentPlugin['installedBranchData']['needUpdate'] === true) {
-                $('#update-plugin').click(function() {
+                $('#update-plugin').click(function () {
                     updatePlugin(currentPlugin['installedBranchData']['id']);
                 });
             }
@@ -143,23 +143,16 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
  * Lance l'installation du plugin
  */
 function installPlugin(branch) {
-    $.post({
-        url: 'core/ajax/update.ajax.php',
-        data: {
-            action: 'save',
-            // Version de l'installation par URL
-//            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
-            // Version de l'installation par GitHub
-            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"'+ currentPlugin['gitName'] +'", "version":"'+ branch +'"},"source":"github"}'
 
-        },
-        dataType: 'json',
-        success: function (data, status) {
-            window.location.replace('/index.php?v=d&p=plugin&id='+currentPlugin['id']);
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        }
+    var data = {
+        action: 'save',
+        // Version de l'installation par URL
+//            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
+        // Version de l'installation par GitHub
+        update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"' + currentPlugin['gitName'] + '", "version":"' + branch + '"},"source":"github"}'
+    };
+    ajaxQuery('core/ajax/update.ajax.php', data, function() {
+        window.location.replace('/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
     });
 }
 
@@ -167,20 +160,12 @@ function installPlugin(branch) {
  * Lance l'installation du plugin
  */
 function removePlugin(pluginId) {
-    $.post({
-        url: 'core/ajax/update.ajax.php',
-        data: {
-            action: 'remove',
-            id: pluginId
-
-        },
-        dataType: 'json',
-        success: function (data, status) {
-            location.reload();
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        }
+    var data = {
+        action: 'remove',
+        id: pluginId
+    };
+    ajaxQuery('core/ajax/update.ajax.php', data, function() {
+        window.location.href = window.location.href + "&message=1";
     });
 }
 
@@ -188,16 +173,35 @@ function removePlugin(pluginId) {
  * Lance l'installation du plugin
  */
 function updatePlugin(id) {
-    $.post({
-        url: 'core/ajax/update.ajax.php',
-        data: {
-            action: 'update',
-            id: id
+    var data = {
+        action: 'update',
+        id: id
+    };
+    ajaxQuery('core/ajax/update.ajax.php', data, function() {
+        window.location.href = window.location.href + "&message=0";
+    });
+}
 
-        },
+/**
+ * Lancer une requête Ajax
+ *
+ * @param data Données de la requête
+ */
+function ajaxQuery(url, data, callbackFunc) {
+    $.post({
+        url: url,
+        data: data,
         dataType: 'json',
         success: function (data, status) {
-            window.location.href = window.location.href + "&message=0";
+            // Test si l'appel a échoué
+            if (data.state !== 'ok' || status !== 'success') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+            }
+            else {
+                if (typeof callbackFunc !== "undefined") {
+                    callbackFunc();
+                }
+            }
         },
         error: function (request, status, error) {
             handleAjaxError(request, status, error);

@@ -221,6 +221,7 @@
 #plugin-modal-header .button-item {
     float: left;
     margin-right: 1em;
+    margin-top: 1em;
 }
 
 #plugin-modal-header .btn {
@@ -276,6 +277,7 @@
     border-radius: 0.4em;
     transition: all 0.8s ease;
     box-shadow: 0.1em 0.1em 0.5em black;
+    z-index: 9999;
 }
 
 .amfj-toast.showed {

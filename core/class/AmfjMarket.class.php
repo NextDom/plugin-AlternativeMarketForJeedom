@@ -15,7 +15,6 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 require_once('AmfjGitManager.class.php');
 require_once('AmfjDownloadManager.class.php');
 require_once('AmfjMarketItem.class.php');
@@ -63,10 +62,15 @@ class AmfjMarket
     public function refresh($force = false)
     {
         $result = false;
-        if ($this->source['type'] == 'github') {
-            $result = $this->refreshGitHub($force);
-        } else if ($this->source['type'] == 'json') {
-            $result = $this->refreshJson($force);
+        if ($this->downloadManager->isConnected()) {
+            if ($this->source['type'] == 'github') {
+                $result = $this->refreshGitHub($force);
+            } else if ($this->source['type'] == 'json') {
+                $result = $this->refreshJson($force);
+            }
+        }
+        else {
+            throw new \Exception('Pas de connection internet');
         }
         return $result;
     }
@@ -81,17 +85,15 @@ class AmfjMarket
     {
         $result = false;
         $gitManager = new AmfjGitManager($this->source['data']);
-        if ($this->downloadManager->isConnected()) {
-            if ($force || $this->isUpdateNeeded($this->source['data'])) {
-                if (!$gitManager->updateRepositoriesList()) {
-                    $result = false;
-                } else {
-                    $result = true;
-                }
+        if ($force || $this->isUpdateNeeded($this->source['data'])) {
+            if (!$gitManager->updateRepositoriesList()) {
+                $result = false;
+            } else {
+                $result = true;
             }
-            $repositories = $gitManager->getRepositoriesList();
-            $gitManager->updateRepositories($this->source['name'], $repositories, $force);
         }
+        $repositories = $gitManager->getRepositoriesList();
+        $gitManager->updateRepositories($this->source['name'], $repositories, $force);
         return $result;
     }
 
@@ -105,24 +107,22 @@ class AmfjMarket
     public function refreshJson($force)
     {
         $result = false;
-        if ($this->downloadManager->isConnected()) {
-            $content = null;
-            if ($force || $this->isUpdateNeeded($this->source['name'])) {
-                $content = $this->downloadManager->downloadContent($this->source['data']);
-                if ($content !== false) {
-                    $marketData = json_decode($content, true);
-                    $lastChange = $this->dataStorage->getRawData('repo_last_change_' . $this->source['name']);
-                    if ($lastChange == null || $marketData['version'] > $lastChange) {
-                        foreach ($marketData['plugins'] as $plugin) {
-                            $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin, $this->downloadManager);
-                            $marketItem->writeCache();
-                        }
-                        $result = true;
-                        $this->dataStorage->storeJsonData('repo_data_' . $this->source['name'], $marketData['plugins']);
-                        $this->dataStorage->storeRawData('repo_last_change_' . $this->source['name'], $marketData['version']);
+        $content = null;
+        if ($force || $this->isUpdateNeeded($this->source['name'])) {
+            $content = $this->downloadManager->downloadContent($this->source['data']);
+            if ($content !== false) {
+                $marketData = json_decode($content, true);
+                $lastChange = $this->dataStorage->getRawData('repo_last_change_' . $this->source['name']);
+                if ($lastChange == null || $marketData['version'] > $lastChange) {
+                    foreach ($marketData['plugins'] as $plugin) {
+                        $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin, $this->downloadManager);
+                        $marketItem->writeCache();
                     }
-                    $this->dataStorage->storeRawData('repo_last_update_' . $this->source['name'], \time());
+                    $result = true;
+                    $this->dataStorage->storeJsonData('repo_data_' . $this->source['name'], $marketData['plugins']);
+                    $this->dataStorage->storeRawData('repo_last_change_' . $this->source['name'], $marketData['version']);
                 }
+                $this->dataStorage->storeRawData('repo_last_update_' . $this->source['name'], \time());
             }
         }
         return $result;

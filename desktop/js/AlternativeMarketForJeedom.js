@@ -293,7 +293,7 @@ function showPluginModal(pluginData) {
 function showMessage() {
     if (typeof messageToUser !== 'undefined') {
         var toast = $('<div class="amfj-toast">'+ messageToUser+'</div>');
-        $('main').append(toast);
+        $('#market-div').append(toast);
         setTimeout(function() {
             toast.addClass('showed');
             setTimeout(function() {
