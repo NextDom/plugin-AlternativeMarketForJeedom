@@ -38,7 +38,6 @@ class AmfjDownloadManager
         $this->connectionStatus = false;
         $this->testConnection();
         $this->gitHubToken = config::byKey('github::token');
-        log::add('AlternativeMarketForJeedom', 'debug', $this->gitHubToken);
     }
 
     /**
@@ -75,6 +74,7 @@ class AmfjDownloadManager
      */
     public function downloadContent($url, $binary = false)
     {
+        log::add('AlternativeMarketForJeedom', 'debug', 'Download '.$url);
         $result = false;
         if ($this->isCurlEnabled()) {
             $result = $this->downloadContentWithCurl($url, $binary);
@@ -134,7 +134,6 @@ class AmfjDownloadManager
         $curlSession = curl_init();
         if ($curlSession !== false) {
             \curl_setopt($curlSession, CURLOPT_URL, $url);
-            log::add('AlternativeMarketForJeedom', 'debug', $url);
             \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
                 \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);

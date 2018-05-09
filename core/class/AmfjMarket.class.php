@@ -86,11 +86,7 @@ class AmfjMarket
         $result = false;
         $gitManager = new AmfjGitManager($this->source['data']);
         if ($force || $this->isUpdateNeeded($this->source['data'])) {
-            if (!$gitManager->updateRepositoriesList()) {
-                $result = false;
-            } else {
-                $result = true;
-            }
+            $result = $gitManager->updateRepositoriesList();
         }
         $repositories = $gitManager->getRepositoriesList();
         $gitManager->updateRepositories($this->source['name'], $repositories, $force);

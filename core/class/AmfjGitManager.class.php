@@ -36,10 +36,6 @@ class AmfjGitManager
      * @var DataStorage Gestionnaire de base de données
      */
     private $dataStorage;
-    /**
-     * @var string Dernier message d'erreur
-     */
-    private static $lastErrorMessage = false;
 
     /**
      * Constructeur du gestionnaire Git
@@ -93,24 +89,24 @@ class AmfjGitManager
     {
         $result = false;
         $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitId . '/repos?per_page=100');
-        log::add('AlternativeMarketForJeedom', 'debug', $content);
         // Limite de l'API GitHub atteinte
         if (\strstr($content, 'API rate limit exceeded')) {
             $content = $this->downloadManager->downloadContent('https://api.github.com/rate_limit');
-            log::add('AlternativeMarketForJeedom', 'debug', $content);
             $gitHubLimitData = json_decode($content, true);
             $refreshDate = date('H:i', $gitHubLimitData['resources']['core']['reset']);
-            static::$lastErrorMessage = 'Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate;
-        } else {
+            throw new \Exception('Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate);
+        } elseif (\strstr($content, 'Bad credentials')) {
+            // Le token GitHub n'est pas bon
+            throw new \Exception('Problème de Token GitHub');
+        }
+        else {
             // Test si c'est un dépôt d'organisation
             if (\strstr($content, '"message":"Not Found"')) {
                 // Test d'un téléchargement pour un utilisateur
                 $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitId . '/repos?per_page=100');
-                log::add('AlternativeMarketForJeedom', 'debug', $content);
                 // Test si c'est un dépot d'utilisateur
                 if (\strstr($content, '"message":"Not Found"') || strlen($content) < 10) {
-                    static::$lastErrorMessage = 'Le dépôt ' . $this->gitId . ' n\'existe pas.';
-                    $result = false;
+                    throw new \Exception('Le dépôt ' . $this->gitId . ' n\'existe pas.');
                 } else {
                     $result = $content;
                 }
@@ -201,18 +197,6 @@ class AmfjGitManager
                 array_push($result, $marketItem);
             }
         }
-        return $result;
-    }
-
-    /**
-     * Obtenir le dernier message d'erreur
-     *
-     * @return string Message de l'erreur
-     */
-    public static function getLastErrorMessage()
-    {
-        $result = static::$lastErrorMessage;
-        static::$lastErrorMessage = false;
         return $result;
     }
 }

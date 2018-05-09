@@ -25,11 +25,6 @@ require_once 'AmfjDownloadManager.class.php';
 class AmfjAjaxParser
 {
     /**
-     * @var string Message d'erreur
-     */
-    private static $errorMsg;
-
-    /**
      * Point d'entrée des requêtes Ajax
      *
      * @param string $action Action de la requête
@@ -94,17 +89,10 @@ class AmfjAjaxParser
             $result = true;
             foreach ($sources as $source) {
                 $market = new AmfjMarket($source);
-                if (!$market->refresh($force)) {
-                    $error = AmfjGitManager::getLastErrorMessage();
-                    // Vérification que c'est une erreur et pas un refresh avant l'heure
-                    if ($error !== false) {
-                        static::$errorMsg = $error;
-                        $result = false;
-                    }
-                }
+                $market->refresh($force);
             }
         } else {
-            static::$errorMsg = 'Aucun utilisateur GitHub défini';
+            throw new \Exception('Aucune source configurée');
         }
         return $result;
     }
@@ -193,15 +181,5 @@ class AmfjAjaxParser
                 $result = false;
         }
         return $result;
-    }
-
-    /**
-     * Obtenir le dernier message d'erreur
-     *
-     * @return string Message de l'erreur
-     */
-    public static function getErrorMsg()
-    {
-        return static::$errorMsg;
     }
 }
