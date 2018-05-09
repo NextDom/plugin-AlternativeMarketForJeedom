@@ -43,7 +43,24 @@
 #market-div .media .installed-marker i {
     position: absolute;
     top: -2.3em;
-    left: 0.5em;
+    left: 0.3em;
+    color: white;
+}
+
+#market-div .media .update-marker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-top: 2.5em solid #95c12c;
+    border-left: 2.5em solid transparent;
+}
+
+#market-div .media .update-marker i {
+    position: absolute;
+    top: -2.3em;
+    right: 0.3em;
     color: white;
 }
 

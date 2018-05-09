@@ -257,6 +257,9 @@ function getItemHtml(item) {
     if (item['installed']) {
         result += '<div class="installed-marker"><i class="fa fa-check"></i></div>';
     }
+    if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
+        result += '<div class="update-marker"><i class="fa fa-star"></i></div>';
+    }
     result += '' +
         '<h4>' + title + '</h4>' +
         '<div class="media-content">' +
