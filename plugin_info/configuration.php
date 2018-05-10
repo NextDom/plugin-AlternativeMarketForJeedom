@@ -34,8 +34,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
         <div class="form-group">
             <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
                             class="fa fa-question-circle tooltips"
-                            title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"
-                            style="font-size : 1em;color:grey;"></i></sup></label>
+                            title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"></i></sup></label>
             <div id="div_show-duplicates" class="col-sm-2 tooltips">
                 <input type="checkbox" id="show-duplicates" class="configKey" data-l1key="show-duplicates"
                        placeholder="{{Afficher les doublons}}"/>
