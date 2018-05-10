@@ -39,8 +39,6 @@ try {
 
     if ($result !== false) {
         ajax::success($result);
-    } else {
-        ajax::error(AmfjAjaxParser::getErrorMsg());
     }
 
     throw new \Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));

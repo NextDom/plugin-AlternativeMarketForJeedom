@@ -39,8 +39,8 @@ function getListItem(itemData) {
 function showShortcuts(shortcuts) {
     if (shortcuts.length > 0) {
         for (var shortcutIndex = 0; shortcutIndex < shortcuts.length; ++shortcutIndex) {
-            var item = $('<button class="btn btn-primary">'+ shortcuts[shortcutIndex]+'</button>');
-            item.click(function() {
+            var item = $('<button class="btn btn-primary">' + shortcuts[shortcutIndex] + '</button>');
+            item.click(function () {
                 addGitId($(this).text());
                 $(this).remove();
             });
@@ -61,7 +61,7 @@ function addGitId(gitId) {
     }
     if (gitId !== '') {
         var data = {action: 'source', params: 'add', data: {'type': 'gitId', 'id': gitId}};
-        ajaxQuery(data, function() {
+        ajaxQuery(data, function () {
             var gitsListUl = $('#config-modal ul');
             gitsListUl.append(getListItem(gitId));
         });
@@ -76,9 +76,9 @@ function addGitId(gitId) {
 function removeGitId(gitId) {
     if (gitId !== '') {
         var data = {action: 'source', params: 'remove', data: {'type': 'gitId', 'id': gitId}};
-        ajaxQuery(data, function() {
+        ajaxQuery(data, function () {
             var gitsListUl = $('#config-modal ul');
-            $('#config-modal ul li').each(function() {
+            $('#config-modal ul li').each(function () {
                 if ($(this).text().indexOf(gitId) !== -1) {
                     $(this).remove();
                 }

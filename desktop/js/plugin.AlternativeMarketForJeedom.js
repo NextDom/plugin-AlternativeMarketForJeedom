@@ -46,6 +46,7 @@ function initInstallationButtons() {
         $('#remove-plugin').click(function () {
             removePlugin(currentPlugin['id']);
         });
+        $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         if (currentPlugin['installedBranchData'] !== false) {
             $('#install-plugin').parent().hide();
             var installedBranch = currentPlugin['installedBranchData']['branch'];
@@ -57,7 +58,7 @@ function initInstallationButtons() {
                 });
             }
             else {
-                $('#update-plugin').hide();
+                $('#update-plugin').parent().hide();
             }
         }
         else {
@@ -65,7 +66,8 @@ function initInstallationButtons() {
             // TODO : Optimiser en supprimant le doublon de code
             var defaultBranch = currentPlugin['defaultBranch'];
             $('#default-branch-information').text('Branche ' + defaultBranch);
-            $('#update-plugin').hide();
+            $('#update-plugin').parent().hide();
+            $('#config-plugin').parent().hide();
             if (currentPlugin['branchesList'].length > 0) {
                 initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
             }
@@ -77,8 +79,8 @@ function initInstallationButtons() {
         }
     }
     else {
-        $('#remove-plugin').hide();
-        $('#update-plugin').hide();
+        $('#remove-plugin').parent().hide();
+        $('#update-plugin').parent().hide();
         var defaultBranch = currentPlugin['defaultBranch'];
         $('#default-branch-information').text('Branche ' + defaultBranch);
         if (currentPlugin['branchesList'].length > 0) {
@@ -151,7 +153,7 @@ function installPlugin(branch) {
         // Version de l'installation par GitHub
         update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"' + currentPlugin['gitName'] + '", "version":"' + branch + '"},"source":"github"}'
     };
-    ajaxQuery('core/ajax/update.ajax.php', data, function() {
+    ajaxQuery('core/ajax/update.ajax.php', data, function () {
         window.location.replace('/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
     });
 }
@@ -164,7 +166,7 @@ function removePlugin(pluginId) {
         action: 'remove',
         id: pluginId
     };
-    ajaxQuery('core/ajax/update.ajax.php', data, function() {
+    ajaxQuery('core/ajax/update.ajax.php', data, function () {
         window.location.href = window.location.href + "&message=1";
     });
 }
@@ -177,8 +179,16 @@ function updatePlugin(id) {
         action: 'update',
         id: id
     };
-    ajaxQuery('core/ajax/update.ajax.php', data, function() {
-        window.location.href = window.location.href + "&message=0";
+    ajaxQuery('core/ajax/update.ajax.php', data, function () {
+        var data = {
+            action: 'refresh',
+            params: 'branch-hash',
+            data: [currentPlugin['sourceName'], currentPlugin['fullName']]
+        }
+        // Met à jour les branches
+        ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
+            window.location.href = window.location.href + "&message=0";
+        });
     });
 }
 

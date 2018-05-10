@@ -58,6 +58,8 @@ class AmfjAjaxParser
      * @param mixed $data Données en fonction du paramètre
      *
      * @return bool True si l'action a réussie
+     * 
+     * @throws Exception
      */
     public static function refresh($params, $data)
     {
@@ -67,6 +69,9 @@ class AmfjAjaxParser
                 break;
             case 'list-force':
                 $result = static::refreshList($data, true);
+                break;
+            case 'branch-hash':
+                $result = static::refreshBranchHash($data);
                 break;
             default :
                 $result = false;
@@ -97,6 +102,17 @@ class AmfjAjaxParser
         return $result;
     }
 
+    private static function refreshBranchHash(array $data)
+    {
+        $result = false;
+        if (count($data) == 2) {
+            $marketItem = AmfjMarketItem::createFromCache($data[0], $data[1]);
+            $marketItem->updateBranchDataFromInstalled();
+            $result = true;
+        }
+        return $result;
+    }
+
     /**
      * Obtenir une information
      *
@@ -112,7 +128,7 @@ class AmfjAjaxParser
                 if (is_array($data)) {
                     $result = [];
                     $idList = [];
-                    $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
+                    $showDuplicates = config::byKey('show-duplicates', 'AlternativeMarketForJeedom');
                     foreach ($data as $source) {
                         $market = new AmfjMarket($source);
                         // Obtenir la liste complète

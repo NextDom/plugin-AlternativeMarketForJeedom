@@ -74,7 +74,7 @@ class AmfjDownloadManager
      */
     public function downloadContent($url, $binary = false)
     {
-        log::add('AlternativeMarketForJeedom', 'debug', 'Download '.$url);
+        log::add('AlternativeMarketForJeedom', 'debug', 'Download ' . $url);
         $result = false;
         if ($this->isCurlEnabled()) {
             $result = $this->downloadContentWithCurl($url, $binary);

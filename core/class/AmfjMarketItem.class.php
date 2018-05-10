@@ -410,8 +410,7 @@ class AmfjMarketItem
                 $result['id'] = $this->updateData->getId();
                 if ($this->updateData->getStatus() === 'update') {
                     $result['needUpdate'] = true;
-                }
-                else  {
+                } else {
                     foreach ($this->branchesList as $branch) {
                         if ($branch['name'] === $result['branch'] && $branch['hash'] !== $result['hash']) {
                             $result['needUpdate'] = true;
@@ -421,6 +420,26 @@ class AmfjMarketItem
             }
         }
         return $result;
+    }
+
+    public function updateBranchDataFromInstalled()
+    {
+        $this->initUpdateData();
+        $installedBranch = $this->getInstalledBranchData();
+        $added = false;
+        for ($branchIndex = 0; $branchIndex < count($this->branchesList); ++$branchIndex) {
+            if ($this->branchesList[$branchIndex]['name'] == $installedBranch['branch']) {
+                $this->branchesList[$branchIndex]['hash'] = $installedBranch['hash'];
+                $added = true;
+            }
+        }
+        if ($added === false) {
+            $branch = array();
+            $branch['name'] = $installedBranch['branch'];
+            $branch['hash'] = $installedBranch['hash'];
+            array_push($this->branchesList, $branch);
+        }
+        $this->writeCache();
     }
 
     /**

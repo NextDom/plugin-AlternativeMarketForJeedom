@@ -68,8 +68,7 @@ class AmfjMarket
             } else if ($this->source['type'] == 'json') {
                 $result = $this->refreshJson($force);
             }
-        }
-        else {
+        } else {
             throw new \Exception('Pas de connection internet');
         }
         return $result;

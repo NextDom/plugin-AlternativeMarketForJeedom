@@ -244,8 +244,8 @@ function getItemHtml(item) {
     if (item['description'] == null) {
         item['description'] = '';
     }
-    if (item['description'].length > 160) {
-        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 160) + '</p>';
+    if (item['description'].length > 145) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 145) + '...</p>';
     }
     else {
         descriptionPar = '<p>' + item['description'] + '</p>';
@@ -292,11 +292,11 @@ function showPluginModal(pluginData) {
 
 function showMessage() {
     if (typeof messageToUser !== 'undefined') {
-        var toast = $('<div class="amfj-toast">'+ messageToUser+'</div>');
+        var toast = $('<div class="amfj-toast">' + messageToUser + '</div>');
         $('#market-div').append(toast);
-        setTimeout(function() {
+        setTimeout(function () {
             toast.addClass('showed');
-            setTimeout(function() {
+            setTimeout(function () {
                 toast.addClass('eject');
             }, 3000);
         }, 1000);

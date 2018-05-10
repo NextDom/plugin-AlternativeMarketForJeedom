@@ -98,8 +98,7 @@ class AmfjGitManager
         } elseif (\strstr($content, 'Bad credentials')) {
             // Le token GitHub n'est pas bon
             throw new \Exception('Problème de Token GitHub');
-        }
-        else {
+        } else {
             // Test si c'est un dépôt d'organisation
             if (\strstr($content, '"message":"Not Found"')) {
                 // Test d'un téléchargement pour un utilisateur

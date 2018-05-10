@@ -39,9 +39,9 @@ sendVarToJs('sourcesList', $sourcesList);
 // Affichage d'un message à un utilisateur
 if (isset($_GET['message'])) {
     $messages = [
-            __('La mise à jour du plugin a été effecutée.', __FILE__),
-            __('Le plugin a bien été supprimé', __FILE__)
-        ];
+        __('La mise à jour du plugin a été effecutée.', __FILE__),
+        __('Le plugin a bien été supprimé', __FILE__)
+    ];
 
     $messageIndex = intval($_GET['message']);
     if ($messageIndex < count($messages)) {
