@@ -137,7 +137,9 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
         $('#install-plugin-advanced').css('display', 'block');
     }
     else {
-        $('#get-branches-informations').html('Pas d\'autres branches disponibles');
+        $('#get-branches-informations').css('display', 'none');
+        $('#install-plugin-advanced').css('display', 'block');
+        $('#install-plugin-advanced button').addClass( "disabled" );
     }
 }
 
