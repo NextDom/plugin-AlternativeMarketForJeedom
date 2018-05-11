@@ -53,6 +53,8 @@ class AmfjGitManager
      * Met à jour la liste des dépôts
      *
      * @return bool True si l'opération a réussie
+     *
+     * @throws Exception
      */
     public function updateRepositoriesList()
     {
@@ -84,6 +86,7 @@ class AmfjGitManager
      * Télécharge la liste des dépôts au format JSON
      *
      * @return string|bool Données au format JSON ou False en cas d'échec
+     * @throws Exception
      */
     protected function downloadRepositoriesList()
     {

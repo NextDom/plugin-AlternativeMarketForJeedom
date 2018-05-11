@@ -23,8 +23,12 @@ require_once('../../core/php/core.inc.php');
 
 class Mocked_Amfj_DownloadManager extends AmfjDownloadManager
 {
+    public function downloadContent($url, $binary = false) {
+        return parent::downloadContent($url, $binary);
+    }
+
     public function downloadContentWithCurl($url, $binary = false) {
-        return parent::downloadContentWithCurl($url);
+        return parent::downloadContentWithCurl($url, $binary);
     }
 
     public function downloadContentWithFopen($url) {
@@ -82,8 +86,48 @@ class DownloadManagerTest extends TestCase
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
-    public function testDdwnloadContentWithFopenBadContent() {
+    public function testDownloadContentWithFopenBadContent() {
         $content = $this->downloadManager->downloadContentWithFopen('https://www.google.frrandom');
         $this->assertFalse($content);
+    }
+
+    public function testDownloadWithoutGitHubToken() {
+        config::addKeyToCore('github::token', '');
+        $this->downloadManager = new Mocked_Amfj_DownloadManager();
+        $this->downloadManager->downloadContent('http://github.com/Test/Test');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test', $actions[0]['content']['msg']);
+    }
+
+    public function testDownloadBinaryWithGitHubToken() {
+        config::addKeyToCore('github::token', 'SIMPLECHAIN');
+        $this->downloadManager = new Mocked_Amfj_DownloadManager();
+        $this->downloadManager->downloadContent('http://github.com/Test/Test', true);
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test', $actions[0]['content']['msg']);
+    }
+
+    public function testDownloadWithGitHubTokenSimpleUrl() {
+        config::addKeyToCore('github::token', 'SIMPLECHAIN');
+        $this->downloadManager = new Mocked_Amfj_DownloadManager();
+        $this->downloadManager->downloadContent('http://github.com/Test/Test');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test?access_token=SIMPLECHAIN', $actions[0]['content']['msg']);
+    }
+
+    public function testDownloadWithGitHubTokenComplexUrl() {
+        config::addKeyToCore('github::token', 'SIMPLECHAIN');
+        $this->downloadManager = new Mocked_Amfj_DownloadManager();
+        $this->downloadManager->downloadContent('http://github.com/Test/Test?test=something');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test?test=something&access_token=SIMPLECHAIN', $actions[0]['content']['msg']);
     }
 }

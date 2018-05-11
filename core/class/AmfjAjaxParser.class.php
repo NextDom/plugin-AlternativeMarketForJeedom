@@ -58,7 +58,7 @@ class AmfjAjaxParser
      * @param mixed $data Données en fonction du paramètre
      *
      * @return bool True si l'action a réussie
-     * 
+     *
      * @throws Exception
      */
     public static function refresh($params, $data)

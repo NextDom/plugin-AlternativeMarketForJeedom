@@ -161,12 +161,13 @@ class AmfjMarketItem
      */
     public function initWithGlobalInformations($repositoryInformations)
     {
-        $this->gitName = $repositoryInformations['name'];
-        $this->fullName = $repositoryInformations['full_name'];
-        $this->url = $repositoryInformations['html_url'];
-        $this->gitId = $repositoryInformations['git_id'];
-        $this->description = $repositoryInformations['description'];
-        $this->defaultBranch = $repositoryInformations['default_branch'];
+
+        if (\array_key_exists('name', $repositoryInformations)) $this->gitName = $repositoryInformations['name'];
+        if (\array_key_exists('full_name', $repositoryInformations)) $this->fullName = $repositoryInformations['full_name'];
+        if (\array_key_exists('html_url', $repositoryInformations)) $this->url = $repositoryInformations['html_url'];
+        if (\array_key_exists('git_id', $repositoryInformations)) $this->gitId = $repositoryInformations['git_id'];
+        if (\array_key_exists('description', $repositoryInformations)) $this->description = $repositoryInformations['description'];
+        if (\array_key_exists('default_branch', $repositoryInformations)) $this->defaultBranch = $repositoryInformations['default_branch'];
     }
 
     /**
@@ -222,7 +223,7 @@ class AmfjMarketItem
         $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . \str_replace('/', '_', $repositoryInformations['full_name']));
         if ($lastUpdate !== null) {
             if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
-                return false;
+                $result = false;
             }
         }
         return $result;
@@ -365,10 +366,12 @@ class AmfjMarketItem
             $branches = \json_decode($branches, true);
             $this->branchesList = [];
             foreach ($branches as $branch) {
-                $branchData = [];
-                $branchData['name'] = $branch['name'];
-                $branchData['hash'] = $branch['commit']['sha'];
-                array_push($this->branchesList, $branchData);
+                if (\is_array($branch) && \array_key_exists('name', $branch)) {
+                    $branchData = [];
+                    $branchData['name'] = $branch['name'];
+                    $branchData['hash'] = $branch['commit']['sha'];
+                    array_push($this->branchesList, $branchData);
+                }
             }
             $result = true;
         }

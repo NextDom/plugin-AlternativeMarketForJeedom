@@ -33,10 +33,15 @@ class AmfjDownloadManager
     /**
      * Constructeur testant le statut de la connexion.
      */
-    public function __construct()
+    public function __construct($forceConnectionStatus = null)
     {
-        $this->connectionStatus = false;
-        $this->testConnection();
+        if ($forceConnectionStatus !== null) {
+            $this->connectionStatus = $forceConnectionStatus;
+        }
+        else {
+            $this->connectionStatus = false;
+            $this->testConnection();
+        }
         $this->gitHubToken = config::byKey('github::token');
     }
 
@@ -74,6 +79,15 @@ class AmfjDownloadManager
      */
     public function downloadContent($url, $binary = false)
     {
+        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
+            $toAdd = 'access_token=' . $this->gitHubToken;
+            // Test si un paramètre a déjà été passé
+            if (strpos($url, '?') !== false) {
+                $url = $url . '&' . $toAdd;
+            } else {
+                $url = $url . '?' . $toAdd;
+            }
+        }
         log::add('AlternativeMarketForJeedom', 'debug', 'Download ' . $url);
         $result = false;
         if ($this->isCurlEnabled()) {
@@ -121,15 +135,6 @@ class AmfjDownloadManager
      */
     protected function downloadContentWithCurl($url, $binary = false)
     {
-        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
-            $toAdd = 'access_token=' . $this->gitHubToken;
-            // Test si un paramètre a déjà été passé
-            if (strpos($url, '?') !== false) {
-                $url = $url . '&' . $toAdd;
-            } else {
-                $url = $url . '?' . $toAdd;
-            }
-        }
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {

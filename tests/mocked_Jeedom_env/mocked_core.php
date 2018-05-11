@@ -155,11 +155,3 @@ function sendVarToJs($jsVar, $pluginId)
 {
 
 }
-
-/**
- * Mock de la class eqLogic
- */
-class eqLogic
-{
-
-}

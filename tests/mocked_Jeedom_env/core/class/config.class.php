@@ -127,6 +127,17 @@ class config
     public static $byKeyPluginData = array();
 
     /**
+     * Ajouter une configuration au noyau
+     *
+     * @param $key Clé de la configuration
+     * @param $data Valeur de la configuration
+     */
+    public static function addKeyToCore($key, $data)
+    {
+        config::$byKeyData[$key] = $data;
+    }
+
+    /**
      * Obtenir une information à partir de l'identifiant
      *
      * @param string $key Clé de l'information
@@ -137,7 +148,9 @@ class config
     {
         $result = false;
         if ($plugin == 'core') {
-            $result = config::$byKeyData[$key];
+            if (array_key_exists($key, config::$byKeyData)) {
+                $result = config::$byKeyData[$key];
+            }
         } else {
             if (isset(config::$byKeyPluginData[$plugin])) {
                 $result = config::$byKeyPluginData[$plugin][$key];
