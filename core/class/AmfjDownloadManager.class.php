@@ -29,7 +29,23 @@ class AmfjDownloadManager
      * @var string Token GitHub
      */
     protected $gitHubToken;
-
+    
+    /**
+     * @var string
+     */
+    private $urlForTest = 'www.google.fr';
+    
+    public function getUrlForTest()
+    {
+        return $this->urlForTest;      
+    }
+    
+    public function setUrlForTest($urlForTest)
+    {
+        $this->urlForTest = $urlForTest;
+        return $this;
+    }
+    
     /**
      * Constructeur testant le statut de la connexion.
      */
@@ -50,7 +66,7 @@ class AmfjDownloadManager
      */
     protected function testConnection()
     {
-        $sock = \fsockopen('www.google.fr', 80);
+        $sock = \fsockopen($this->getUrlForTest(), 80);
         if ($sock !== false) {
             $this->connectionStatus = true;
             fclose($sock);
