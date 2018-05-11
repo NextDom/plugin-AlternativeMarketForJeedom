@@ -107,7 +107,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    background-image: linear-gradient(to right, #33B8CC, #33B8CC 50%, #40535e 50%, #40535e);
+    background-image: linear-gradient(to right, #40535e, #40535e 50%, #33B8CC 50%, #33B8CC);
     background-size: 202% 100%;
     background-position: 0 0;
     -webkit-transition: all 0.2s ease;
@@ -148,6 +148,10 @@
     background-color: #33B8CC !important;
     border-color: #33B8CC !important;
     background-image: none;
+}
+
+.market-filters .btn-secondary {
+    color: black;
 }
 
 #plugin-modal .btn-success {

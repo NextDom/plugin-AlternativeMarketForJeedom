@@ -1,8 +1,7 @@
 
 [type="checkbox"][class="configKey"]:not(:checked),
 [type="checkbox"][class="configKey"]:checked {
-    position: absolute;
-    left: -9999px;
+    display: none;
 }
 
 [type="checkbox"][class="configKey"]:not(:checked) + label,

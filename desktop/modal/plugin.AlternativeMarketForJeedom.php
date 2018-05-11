@@ -28,7 +28,7 @@ if (!isConnect('admin')) {
         <div class="col-xs-12 col-sm-8 col-md-9 right-pane">
             <span class="button-item">
                 <button id="update-plugin" class="btn btn btn-primary"><i
-                            class="fa fa-download"></i>{{Mettre à jour}}</button>
+                            class="fa fa-download"></i> {{Mettre à jour}}</button>
             </span>
             <span class="button-item">
                 <button id="install-plugin" class="btn btn btn-primary"><i

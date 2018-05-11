@@ -30,11 +30,21 @@ if (!isConnect()) {
 include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeMarketForJeedom');
 
 ?>
+    <div class="panel panel-info" style="height: 100%;">
+        <div class="panel-heading" role="tab">
+            <h4 class="panel-title">
+                Présentation
+            </h4>
+        </div>
+        <div class="panel-body">
+            Plugin vous permettant d'installer....
+        </div>
+    </div>
     <form class="form-horizontal">
         <div class="form-group">
             <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
                             class="fa fa-question-circle tooltips"
-                            title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"></i></sup></label>
+                            title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"></i></sup> : </label>
             <div id="div_show-duplicates" class="col-sm-2 tooltips">
                 <input type="checkbox" id="show-duplicates" class="configKey" data-l1key="show-duplicates"
                        placeholder="{{Afficher les doublons}}"/>
@@ -42,7 +52,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
             </div>
         </div>
         <div class="form-group">
-            <label for="sources-manager" class="col-sm-4 control-label">{{Gestionnaire de sources}}</label>
+            <label for="sources-manager" class="col-sm-4 control-label">{{Gestionnaire de sources}} : </label>
             <div class="col-sm-2">
                 <button id="sources-manager" class="btn btn-primary"><i class="fa fa-th-large"></i> {{Gérer}}</button>
             </div>
