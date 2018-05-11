@@ -107,7 +107,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    background-image: linear-gradient(to right, #33B8CC, #33B8CC 50%, #95C12B 50%, #95C12B);
+    background-image: linear-gradient(to right, #33B8CC, #33B8CC 50%, #40535e 50%, #40535e);
     background-size: 202% 100%;
     background-position: 0 0;
     -webkit-transition: all 0.2s ease;
@@ -128,7 +128,7 @@
 #market-div .gitid {
     position: absolute;
     bottom: 0;
-    background-color: #40535e;
+    background-color: #33B8CC;
     line-height: 2em;
     padding-left: 1em;
     padding-right: 1em;
