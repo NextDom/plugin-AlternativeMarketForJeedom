@@ -244,8 +244,8 @@ function getItemHtml(item) {
     if (item['description'] == null) {
         item['description'] = '';
     }
-    if (item['description'].length > 145) {
-        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 145) + '...</p>';
+    if (item['description'].length > 155) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 155) + '...</p>';
     }
     else {
         descriptionPar = '<p>' + item['description'] + '</p>';
@@ -293,7 +293,8 @@ function showPluginModal(pluginData) {
 function showMessage() {
     if (typeof messageToUser !== 'undefined') {
         var toast = $('<div class="amfj-toast">' + messageToUser + '</div>');
-        $('#market-div').append(toast);
+        console.log($('#market-div'));
+        $('main').append(toast);
         setTimeout(function () {
             toast.addClass('showed');
             setTimeout(function () {
