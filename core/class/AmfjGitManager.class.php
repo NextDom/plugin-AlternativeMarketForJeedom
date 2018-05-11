@@ -149,7 +149,7 @@ class AmfjGitManager
     protected function getIgnoreList()
     {
         $result = array();
-        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->source['data']);
+        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitId);
         if ($jsonList !== null) {
             $result = $jsonList;
         }
@@ -163,7 +163,7 @@ class AmfjGitManager
      */
     protected function saveIgnoreList($ignoreList)
     {
-        $this->dataStorage->storeJsonData('repo_ignore_' . $this->source['data'], $ignoreList);
+        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitId, $ignoreList);
     }
 
     /**

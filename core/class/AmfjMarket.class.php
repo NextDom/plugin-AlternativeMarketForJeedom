@@ -174,4 +174,10 @@ class AmfjMarket
         }
         return $result;
     }
+
+    public function remove() {
+        $this->dataStorage->remove('repo_ignore_'.$this->source['name']);
+        $this->dataStorage->remove('repo_last_change_'.$this->source['name'].'%');
+        $this->dataStorage->remove('repo_data_'.$this->source['name'].'%');
+    }
 }

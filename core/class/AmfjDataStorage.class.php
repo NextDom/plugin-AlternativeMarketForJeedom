@@ -182,4 +182,9 @@ class AmfjDataStorage
     {
         return \json_decode($this->getRawData($code), true);
     }
+
+    public function remove($code) {
+        $statement = DB::getConnection()->prepare("DELETE FROM `".$this->dataTableName."` WHERE `code` LIKE ?");
+        $statement->execute(array($code));
+    }
 }

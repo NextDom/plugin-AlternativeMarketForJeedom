@@ -194,6 +194,10 @@ class AmfjAjaxParser
             case 'remove':
                 $source = eqLogic::byLogicalId($data['id'], 'AlternativeMarketForJeedom');
                 $source->remove();
+                $sourceConfig = [];
+                $sourceConfig['name'] = $data['id'];
+                $market = new AmfjMarket($sourceConfig);
+                $market->remove();
                 $result = true;
                 break;
             default :
