@@ -31,26 +31,26 @@ foreach ($eqLogics as $eqLogic) {
     array_push($sourcesList, $source);
 }
 sendVarToJs('sourcesList', $sourcesList);
-
-include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketForJeedom');
 ?>
     <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
     <div id="config-modal">
         <div class="container">
-            <h3>Liste des utilisateurs/organisations GitHub</h3>
-            <ul id="gitid-list" class="list-group">
-            </ul>
+            <center><h3>Liste des utilisateurs ou organisations GitHub</h3></center>
+            <label>Ajouter :</label>
             <div class="input-group">
                 <input id="git-id" type="text" class="form-control" placeholder="Identifiant GitHub..."/>
                 <span class="input-group-btn">
                     <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
                 </span>
             </div>
-            <div id="shortcuts">
-                <span>{{Dépôts GitHub : }}</span>
-            </div>
+        </br>
+            <label>Liste des dépots configurés :</label>
+            <ul id="gitid-list" class="list-group">
+            </ul>
+            <label>{{Dépôts GitHub disponibles : }}</label>
+            <div id="shortcuts"></div>
         </div>
     </div>
 <?php
 include_file('desktop', 'config.AlternativeMarketForJeedom', 'js', 'AlternativeMarketForJeedom');
-
+include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketForJeedom');
