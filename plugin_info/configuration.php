@@ -27,18 +27,27 @@ if (!isConnect()) {
     // @codeCoverageIgnoreEnd
 }
 
+include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeMarketForJeedom');
+
 ?>
-<form class="form-horizontal">
-    <div class="form-group">
-        <label for="github-user-token" class="col-sm-2 control-label">{{Token GitHub}}</label>
-        <div class="col-sm-10">
-            <input type="text" data-l1key="github-user-token" class="configKey form-control" id="github-user-token"/>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
+                            class="fa fa-question-circle tooltips"
+                            title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"></i></sup></label>
+            <div id="div_show-duplicates" class="col-sm-2 tooltips">
+                <input type="checkbox" id="show-duplicates" class="configKey" data-l1key="show-duplicates"
+                       placeholder="{{Afficher les doublons}}"/>
+                <label for="show-duplicates"> </label>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="show-duplicates" class="col-sm-2 control-label">{{Afficher les doublons}}</label>
-        <div class="col-sm-10">
-            <input type="checkbox" class="configKey form-control" id="show-duplicates" data-l1key="show-duplicates"/>
+        <div class="form-group">
+            <label for="sources-manager" class="col-sm-4 control-label">{{Gestionnaire de sources}}</label>
+            <div class="col-sm-2">
+                <button id="sources-manager" class="btn btn-primary"><i class="fa fa-th-large"></i> {{Gérer}}</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+
+<?php
+include_file('desktop', 'AlternativeMarketForJeedomConfiguration', 'js', 'AlternativeMarketForJeedom');

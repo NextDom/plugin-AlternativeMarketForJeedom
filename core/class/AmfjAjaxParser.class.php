@@ -25,24 +25,19 @@ require_once 'AmfjDownloadManager.class.php';
 class AmfjAjaxParser
 {
     /**
-     * @var string Message d'erreur
-     */
-    private static $errorMsg;
-
-    /**
      * Point d'entrée des requêtes Ajax
      *
-     * @param $action Action de la requête
-     * @param $params Paramètres de la requête
-     * @param $data Données de la requête
+     * @param string $action Action de la requête
+     * @param string $params Paramètres de la requête
+     * @param mixed $data Données de la requête
      *
      * @return array|bool Résultat
      */
     public static function parse($action, $params, $data)
     {
         switch ($action) {
-            case 'gitId':
-                $result = static::gitId($params, $data);
+            case 'source':
+                $result = static::source($params, $data);
                 break;
             case 'refresh':
                 $result = static::refresh($params, $data);
@@ -63,6 +58,8 @@ class AmfjAjaxParser
      * @param mixed $data Données en fonction du paramètre
      *
      * @return bool True si l'action a réussie
+     *
+     * @throws Exception
      */
     public static function refresh($params, $data)
     {
@@ -73,6 +70,9 @@ class AmfjAjaxParser
             case 'list-force':
                 $result = static::refreshList($data, true);
                 break;
+            case 'branch-hash':
+                $result = static::refreshBranchHash($data);
+                break;
             default :
                 $result = false;
         }
@@ -82,29 +82,33 @@ class AmfjAjaxParser
     /**
      * Rafraichir la liste des dépôts.
      *
-     * @param array $markets Liste des utilisateur GitHub.
+     * @param array $sources Liste des utilisateur GitHub.
      * @param bool $force Force la mise à jour.
      *
      * @return bool True si une mise à jour a été réalisée ou que la mise à jour n'est pas nécessaire.
      */
-    private static function refreshList($markets, $force)
+    private static function refreshList($sources, $force)
     {
         $result = false;
-        if (is_array($markets)) {
+        if (is_array($sources)) {
             $result = true;
-            foreach ($markets as $git) {
-                $market = new AmfjMarket($git);
-                if (!$market->refresh($force)) {
-                    $error = AmfjGitManager::getLastErrorMessage();
-                    // Vérification que c'est une erreur et pas un refresh avant l'heure
-                    if ($error !== false) {
-                        static::$errorMsg = $error;
-                        $result = false;
-                    }
-                }
+            foreach ($sources as $source) {
+                $market = new AmfjMarket($source);
+                $market->refresh($force);
             }
         } else {
-            static::$errorMsg = 'Aucun utilisateur GitHub défini';
+            throw new \Exception('Aucune source configurée');
+        }
+        return $result;
+    }
+
+    private static function refreshBranchHash(array $data)
+    {
+        $result = false;
+        if (count($data) == 2) {
+            $marketItem = AmfjMarketItem::createFromCache($data[0], $data[1]);
+            $marketItem->updateBranchDataFromInstalled();
+            $result = true;
         }
         return $result;
     }
@@ -124,11 +128,13 @@ class AmfjAjaxParser
                 if (is_array($data)) {
                     $result = [];
                     $idList = [];
-                    $showDuplicates = config::byKey('duplicate', 'AlternativeMarketForJeedom');
-                    foreach ($data as $git) {
-                        $market = new AmfjMarket($git);
+                    $showDuplicates = config::byKey('show-duplicates', 'AlternativeMarketForJeedom');
+                    foreach ($data as $source) {
+                        $market = new AmfjMarket($source);
+                        // Obtenir la liste complète
                         $items = $market->getItems();
                         foreach ($items as $item) {
+                            // Affiche les doublons
                             if ($showDuplicates) {
                                 array_push($result, $item->getDataInArray());
                             } else {
@@ -139,19 +145,21 @@ class AmfjAjaxParser
                             }
                         }
                     }
+                    // Tri par ordre alphabétique
                     \usort($result, function ($item1, $item2) {
                         return $item1['name'] > $item2['name'];
                     });
                 }
                 break;
             case 'branches':
-                $downloaderManager = new AmfjDownloadManager();
-                $marketItem = new AmfjMarketItem();
-                $marketItem->setFullName($data);
-                $marketItem->readCache();
-                if ($marketItem->downloadBranchesInformations($downloaderManager)) {
-                    $result = $marketItem->getBranchesList();
-                    $marketItem->writeCache();
+                if (is_array($data)) {
+                    $downloaderManager = new AmfjDownloadManager();
+                    $marketItem = AmfjMarketItem::createFromCache($data['sourceName'], $data['fullName']);
+                    if ($marketItem->downloadBranchesInformations($downloaderManager)) {
+                        $result = $marketItem->getBranchesList();
+                        // Sauvegarde la liste des branches téléchargées
+                        $marketItem->writeCache();
+                    }
                 }
                 break;
             default :
@@ -164,43 +172,30 @@ class AmfjAjaxParser
      * Gestion des utilisateurs GitHub
      *
      * @param string $params Type de modification
-     * @param string $data Nom de l'utilisateur
+     * @param array $data Nom de l'utilisateur
      * @return bool True si une action a été effectuée
      */
-    public static function gitId($params, $data)
+    public static function source($params, array $data)
     {
         switch ($params) {
             case 'add':
-                if ($data != '') {
-                    $gitId = new AlternativeMarketForJeedom();
-                    $gitId->setName($data);
-                    $gitId->setLogicalId($data);
-                    $gitId->setEqType_name('AlternativeMarketForJeedom');
-                    $gitId->setConfiguration('github', $data);
-                    $gitId->save();
-                    $result = true;
-                }
+                $source = new AlternativeMarketForJeedom();
+                $source->setName($data['id']);
+                $source->setLogicalId($data['id']);
+                $source->setEqType_name('AlternativeMarketForJeedom');
+                $source->setConfiguration('type', 'github');
+                $source->setConfiguration('data', $data['id']);
+                $source->save();
+                $result = true;
                 break;
             case 'remove':
-                if ($data != '') {
-                    $gitId = eqLogic::byLogicalId($data, 'AlternativeMarketForJeedom');
-                    $gitId->remove();
-                    $result = true;
-                }
+                $source = eqLogic::byLogicalId($data['id'], 'AlternativeMarketForJeedom');
+                $source->remove();
+                $result = true;
                 break;
             default :
                 $result = false;
         }
         return $result;
-    }
-
-    /**
-     * Obtenir le dernier message d'erreur
-     *
-     * @return string Message de l'erreur
-     */
-    public static function getErrorMsg()
-    {
-        return static::$errorMsg;
     }
 }

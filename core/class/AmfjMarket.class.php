@@ -15,13 +15,16 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 require_once('AmfjGitManager.class.php');
 require_once('AmfjDownloadManager.class.php');
 require_once('AmfjMarketItem.class.php');
 
 class AmfjMarket
 {
+    /**
+     * @var int Temps de rafraichissement de la liste des plugins
+     */
+    private $REFRESH_TIME_LIMIT = 86400;
     /**
      * @var AmfjDownloadManager Gestionnaire de téléchargement
      */
@@ -30,7 +33,7 @@ class AmfjMarket
     /**
      * @var Utilisateur Git des depôts
      */
-    private $gitId;
+    private $source;
 
     /**
      * @var DataStorage Gestionnaire de base de données
@@ -40,12 +43,12 @@ class AmfjMarket
     /**
      * Constructeur initialisant le gestionnaire de téléchargement
      *
-     * @param $gitId Utilisateur Git des dépôts
+     * @param $source Nom de la source
      */
-    public function __construct($gitId)
+    public function __construct($source)
     {
         $this->downloadManager = new AmfjDownloadManager();
-        $this->gitId = $gitId;
+        $this->source = $source;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
 
@@ -59,56 +62,84 @@ class AmfjMarket
     public function refresh($force = false)
     {
         $result = false;
-        $gitManager = new AmfjGitManager($this->gitId);
         if ($this->downloadManager->isConnected()) {
-            $ignoreList = array();
-            if ($force || $gitManager->isUpdateNeeded()) {
-                if (!$gitManager->updateRepositoriesList()) {
-                    $result = false;
-                } else {
-                    $result = true;
-                }
-            } else {
-                $ignoreList = $this->getIgnoreList();
+            if ($this->source['type'] == 'github') {
+                $result = $this->refreshGitHub($force);
+            } else if ($this->source['type'] == 'json') {
+                $result = $this->refreshJson($force);
             }
-            $repositories = $gitManager->getRepositoriesList();
-            foreach ($repositories as $repository) {
-                $repositoryName = $repository['name'];
-                $marketItem = new AmfjMarketItem($repository);
-                if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
-                    if (!$marketItem->refresh($this->downloadManager)) {
-                        \array_push($ignoreList, $repositoryName);
+        } else {
+            throw new \Exception('Pas de connection internet');
+        }
+        return $result;
+    }
+
+    /**
+     * Rafraichir une source GitHub
+     *
+     * @param bool $force Forcer la mise à jour
+     * @return bool True si un rafraichissement a eu lieu
+     */
+    public function refreshGitHub($force)
+    {
+        $result = false;
+        $gitManager = new AmfjGitManager($this->source['data']);
+        if ($force || $this->isUpdateNeeded($this->source['data'])) {
+            $result = $gitManager->updateRepositoriesList();
+        }
+        $repositories = $gitManager->getRepositoriesList();
+        $gitManager->updateRepositories($this->source['name'], $repositories, $force);
+        return $result;
+    }
+
+    /**
+     * Rafraichier une source JSON
+     *
+     * @param bool $force Forcer la mise à jour
+     *
+     * @return bool True si un rafraichissement a eu lieu
+     */
+    public function refreshJson($force)
+    {
+        $result = false;
+        $content = null;
+        if ($force || $this->isUpdateNeeded($this->source['name'])) {
+            $content = $this->downloadManager->downloadContent($this->source['data']);
+            if ($content !== false) {
+                $marketData = json_decode($content, true);
+                $lastChange = $this->dataStorage->getRawData('repo_last_change_' . $this->source['name']);
+                if ($lastChange == null || $marketData['version'] > $lastChange) {
+                    foreach ($marketData['plugins'] as $plugin) {
+                        $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin, $this->downloadManager);
+                        $marketItem->writeCache();
                     }
+                    $result = true;
+                    $this->dataStorage->storeJsonData('repo_data_' . $this->source['name'], $marketData['plugins']);
+                    $this->dataStorage->storeRawData('repo_last_change_' . $this->source['name'], $marketData['version']);
                 }
+                $this->dataStorage->storeRawData('repo_last_update_' . $this->source['name'], \time());
             }
-            $this->saveIgnoreList($ignoreList);
         }
         return $result;
     }
 
     /**
-     * Obtenir la liste des dépots ignorés
+     * Test si une mise à jour de la liste des dépôts est nécessaire
      *
-     * @return array|mixed
+     * @param string $id Identifiant de la liste des dépôts
+     *
+     * @return bool True si une mise à jour est nécessaire
      */
-    protected function getIgnoreList()
+    public function isUpdateNeeded($id)
     {
-        $result = array();
-        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitId);
-        if ($jsonList !== null) {
-            $result = $jsonList;
+        $result = true;
+        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . $id);
+        if ($lastUpdate !== null) {
+            if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
+                return false;
+            }
         }
         return $result;
-    }
-
-    /**
-     * Sauvegarder la liste des dépôts ignorés
-     *
-     * @param array $ignoreList Liste des dépôts ignorés
-     */
-    protected function saveIgnoreList($ignoreList)
-    {
-        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitId, $ignoreList);
     }
 
     /**
@@ -119,15 +150,27 @@ class AmfjMarket
     public function getItems()
     {
         $result = array();
-        $gitManager = new AmfjGitManager($this->gitId);
-        $repositories = $gitManager->getRepositoriesList();
-        $ignoreList = $this->getIgnoreList();
-        foreach ($repositories as $repository) {
-            if (!\in_array($repository['name'], $ignoreList)) {
-                $marketItem = new AmfjMarketItem($repository);
-                $marketItem->readCache();
-                array_push($result, $marketItem);
-            }
+        if ($this->source['type'] == 'github') {
+            $gitManager = new AmfjGitManager($this->source['data']);
+            $result = $gitManager->getItems($this->source['name']);
+        } else if ($this->source['type'] == 'json') {
+            $result = $this->getItemsFromJson();
+        }
+        return $result;
+    }
+
+    /**
+     * Obtenir les éléments d'une source JSON
+     *
+     * @return AmfjMarketItem[] Liste des éléments
+     */
+    public function getItemsFromJson()
+    {
+        $result = array();
+        $plugins = $this->dataStorage->getJsonData('repo_data_' . $this->source['name']);
+        foreach ($plugins as $plugin) {
+            $marketItem = AmfjMarketItem::createFromCache($this->source['name'], $plugin['gitId'] . '/' . $plugin['repository']);
+            array_push($result, $marketItem);
         }
         return $result;
     }

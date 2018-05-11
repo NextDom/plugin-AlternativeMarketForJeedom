@@ -27,13 +27,18 @@ if (!isConnect('admin')) {
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9 right-pane">
             <span class="button-item">
-                <button id="install-plugin" class="btn btn-lg btn-primary">{{Installer}}</button>
+                <button id="update-plugin" class="btn btn btn-primary"><i
+                            class="fa fa-download"></i>{{Mettre à jour}}</button>
+            </span>
+            <span class="button-item">
+                <button id="install-plugin" class="btn btn btn-primary"><i
+                            class="fa fa-download"></i> {{Installer}}</button>
                 <span id="default-branch-information" class="help-block"></span>
             </span>
             <span class="button-item">
                 <div id="install-plugin-advanced" class="btn-group hidden-btn">
-                    <button type="button" class="btn btn-lg btn-warning">{{Installation avancée}}</button>
-                    <button type="button" class="btn btn-lg btn-warning dropdown-toggle" data-toggle="dropdown"
+                    <button class="btn btn btn-warning"><i class="fa fa-download"></i> {{Installation avancée}}</button>
+                    <button class="btn btn btn-warning dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
@@ -42,14 +47,24 @@ if (!isConnect('admin')) {
                     </ul>
                 </div>
                 <div id="get-branches-informations">
-                    <button type="button" class="btn btn-lg btn-warning"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn btn-warning"><i class="fa fa-plus"></i></button>
                 </div>
+            </span>
+            <span class="button-item">
+                <a href="" id="config-plugin" class="btn btn btn-primary"><i class="fa fa-cogs"></i> {{Configurer}}</a>
+            </span>
+            <span class="button-item">
+                <button id="remove-plugin" class="btn btn btn-danger"><i class="fa fa-times"></i> {{Supprimer}}</button>
             </span>
             <div id="description">
                 <h3>{{Description}}</h3>
                 <p id="description-content"></p>
             </div>
-
+            <div id="badges">
+                <span><a id="travis-badge"><img src=""/></a></span>
+                <span><a id="coveralls-badge"><img src=""/></a></span>
+                <span><a id="waffle-badge"><img src=""/></a></span>
+            </div>
         </div>
     </div>
     <div id="plugin-modal-body" class="row">
@@ -70,9 +85,6 @@ if (!isConnect('admin')) {
         </div>
     </div>
     <div id="plugin-modal-footer" class="row">
-        <span><a id="travis-badge"><img src=""/></a></span>
-        <span><a id="coveralls-badge"><img src=""/></a></span>
-        <span><a id="waffle-badge"><img src=""/></a></span>
     </div>
 </div>
 <script src="plugins/AlternativeMarketForJeedom/desktop/js/plugin.AlternativeMarketForJeedom.js"></script>

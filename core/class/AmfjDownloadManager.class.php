@@ -33,11 +33,16 @@ class AmfjDownloadManager
     /**
      * Constructeur testant le statut de la connexion.
      */
-    public function __construct()
+    public function __construct($forceConnectionStatus = null)
     {
-        $this->connectionStatus = false;
-        $this->testConnection();
-        $this->gitHubToken = config::byKey('github-user-token', 'AlternativeMarketForJeedom');
+        if ($forceConnectionStatus !== null) {
+            $this->connectionStatus = $forceConnectionStatus;
+        }
+        else {
+            $this->connectionStatus = false;
+            $this->testConnection();
+        }
+        $this->gitHubToken = config::byKey('github::token');
     }
 
     /**
@@ -74,6 +79,16 @@ class AmfjDownloadManager
      */
     public function downloadContent($url, $binary = false)
     {
+        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
+            $toAdd = 'access_token=' . $this->gitHubToken;
+            // Test si un paramètre a déjà été passé
+            if (strpos($url, '?') !== false) {
+                $url = $url . '&' . $toAdd;
+            } else {
+                $url = $url . '?' . $toAdd;
+            }
+        }
+        log::add('AlternativeMarketForJeedom', 'debug', 'Download ' . $url);
         $result = false;
         if ($this->isCurlEnabled()) {
             $result = $this->downloadContentWithCurl($url, $binary);
@@ -86,8 +101,8 @@ class AmfjDownloadManager
     /**
      * Télécharge un fichier binaire
      *
-     * @param $url Lien du fichier
-     * @param $dest Destination du fichier
+     * @param string $url Lien du fichier
+     * @param string $dest Destination du fichier
      */
     public function downloadBinary($url, $dest)
     {
@@ -120,22 +135,10 @@ class AmfjDownloadManager
      */
     protected function downloadContentWithCurl($url, $binary = false)
     {
-        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
-            $toAdd = 'access_token=' . $this->gitHubToken;
-            // Test si un paramètre a déjà été passé
-            if (strpos($url, '?') !== false) {
-                $url = $url . '&' . $toAdd;
-            } else {
-                $url = $url . '?' . $toAdd;
-            }
-        }
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {
             \curl_setopt($curlSession, CURLOPT_URL, $url);
-            if (!$binary) {
-                log::add('AlternativeMarketForJeedom', 'debug', $url);
-            }
             \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
                 \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);

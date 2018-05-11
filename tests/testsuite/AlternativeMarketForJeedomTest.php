@@ -25,7 +25,6 @@ class AlternativeMarketForJeedomTest extends TestCase
         include_once('core/class/AlternativeMarketForJeedom.class.php');
         $this->assertTrue(class_exists('AlternativeMarketForJeedom'));
         $methods = get_class_methods('AlternativeMarketForJeedom');
-        var_dump($methods);
         $this->assertContains('remove', $methods);
     }
 }

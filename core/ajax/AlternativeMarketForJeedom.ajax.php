@@ -39,12 +39,10 @@ try {
 
     if ($result !== false) {
         ajax::success($result);
-    } else {
-        ajax::error(AmfjAjaxParser::getErrorMsg());
     }
 
     throw new \Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
 } catch (\Exception $e) {
-    ajax::error(displayException($e), $e->getCode());
+    ajax::error(displayExeption($e), $e->getCode());
 }
 
