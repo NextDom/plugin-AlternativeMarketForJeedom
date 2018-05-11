@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once('core/class/AmfjGitManager.class.php');
 require_once('core/class/AmfjDataStorage.class.php');
+require_once('../../core/php/core.inc.php');
 
 define('GITHUB_TEST_REPO', 'jeedom');
 
@@ -83,8 +84,6 @@ class GitManagerTest extends TestCase
 
     public function testUpdateRepositoriesListBadUser()
     {
-        $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
-        $this->gitManager->updateRepositoriesList();
         try {
             $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
             $this->gitManager->updateRepositoriesList();
@@ -92,9 +91,6 @@ class GitManagerTest extends TestCase
         } catch (Exception $e) {
             $this->assertEquals('Le dépôt IHopeThatUserWillNeverExists n\'existe pas.', $e->getMessage());
         }
-        $this->exceptException(Exception::class);
-//        $this->assertFalse($result);
-//        $this->assertNull($this->dataStorage->getRawData('repo_last_update_'.GITHUB_TEST_REPO));
     }
 
     public function testDownloadRepositoriesListGoodUser()
@@ -106,9 +102,14 @@ class GitManagerTest extends TestCase
 
     public function testDownloadRepositoriesListBadUser()
     {
-        $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
-        $result = $this->gitManager->downloadRepositoriesList();
-        $this->assertContains('{"message":"Not Found"', $result);
+        try {
+            $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
+            $this->gitManager->downloadRepositoriesList();
+            $this->fail('Exception non levée avec un mauvais utilisateur');
+        } catch (Exception $e) {
+            $this->assertEquals('Le dépôt IHopeThatUserWillNeverExists n\'existe pas.', $e->getMessage());
+
+        }
     }
 
     public function testReadRepositoriesListWithoutContent()

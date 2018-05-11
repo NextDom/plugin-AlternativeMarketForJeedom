@@ -14,7 +14,6 @@ mkdir -p $MOCKED_ENV/plugins
 rm -fr $MOCKED_ENV/plugins/*
 mkdir $MOCKED_ENV/plugins/$PLUGIN
 mkdir $MOCKED_ENV/plugins/$PLUGIN/tests
-mkdir $MOCKED_ENV/plugins/$PLUGIN/cache
 cp -fr core $MOCKED_ENV/plugins/$PLUGIN
 cp -fr desktop $MOCKED_ENV/plugins/$PLUGIN
 cp -fr plugin_info $MOCKED_ENV/plugins/$PLUGIN

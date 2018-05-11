@@ -58,11 +58,19 @@ class AmfjMarketItemTest extends TestCase
         $this->initialJsonData = json_decode('{"defaultBranch":"master","gitId":"NextDom","repository":"plugin-AndroidRemoteControl","id":"AndroidRemoteControl","name":"AndroidRemoteControl","licence":"AGPL","description":"Plugin pour Android","require":"3.0","category":"multimedia","documentation":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/","changelog":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/fr_FR\/changelog.html","author":"NextDom [Byackee, Slobberbone]","branches":[{"name":"develop","hash":"5fa1e78312068d6c3d6ad91c237400ac5d202f0f"},{"name":"master","hash":"f4e6b46d05261c12366626029475a77d37e50f03"}],"screenshots":["https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot1.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot2.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot3.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot4.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot5.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot6.png"]}', true);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
+        mkdir('cache');
     }
 
     public function tearDown()
     {
         $this->dataStorage->dropDataTable();
+        $filesList = scandir('cache');
+        foreach ($filesList as $file) {
+            if ($file != '.' && $file != '..') {
+                unlink('cache/' . $file);
+            }
+        }
+        rmdir('cache');
     }
 
     public function testCreateFromGit()

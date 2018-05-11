@@ -33,8 +33,13 @@ class AmfjMarketTest extends TestCase
 
     public function setUp()
     {
+        $source = [];
+        $source['type'] = 'github';
+        $source['name'] = 'NextDom';
+        $source['data'] = 'NextDom';
+        update::$byLogicalIdResult = false;
         DB::init(true);
-        $this->market = new AmfjMarket('jeedom');
+        $this->market = new AmfjMarket($source);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
         mkdir('cache');
@@ -66,17 +71,18 @@ class AmfjMarketTest extends TestCase
     {
         $this->dataStorage->storeRawData('repo_ignore_jeedom', '["to_remove"]');
         $this->market->refresh();
-        $ignoreList = $this->dataStorage->getJsonData('repo_ignore_jeedom');
-        $this->assertTrue(in_array('core', $ignoreList));
+        $ignoreList = $this->dataStorage->getJsonData('repo_ignore_NextDom');
+        $this->assertTrue(in_array('AlternativeMarket-Lists', $ignoreList));
         $this->assertFalse(in_array('to_remove', $ignoreList));
-        $lastUpdate = $this->dataStorage->getJsonData('repo_last_update_jeedom');
+        $lastUpdate = $this->dataStorage->getJsonData('repo_last_update_NextDom');
         $this->assertTrue(is_numeric($lastUpdate));
-        $globalRepo = $this->dataStorage->getJsonData('repo_data_jeedom');
+        $globalRepo = $this->dataStorage->getJsonData('repo_data_NextDom');
         $this->assertTrue(is_array($globalRepo));
-        $bleaRepo = $this->dataStorage->getJsonData('repo_data_jeedom_plugin-blea');
-        $homebridgeRepo = $this->dataStorage->getJsonData('repo_data_jeedom_plugin-homebridge');
-        $this->assertTrue(is_array($homebridgeRepo));
-        $this->assertArrayHasKey('fullName', $bleaRepo);
+        sleep(60);
+        $amfjRepo = $this->dataStorage->getJsonData('repo_data_NextDom_AlternativeMarketForJeedom');
+        $optimizeRepo = $this->dataStorage->getJsonData('repo_data_NextDom_plugin-Optimize');
+        $this->assertTrue(is_array($amfjRepo));
+        $this->assertArrayHasKey('fullName', $optimizeRepo);
     }
 
     public function testRefreshWithGitData()
