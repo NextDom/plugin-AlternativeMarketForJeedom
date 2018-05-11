@@ -186,7 +186,7 @@ class AmfjAjaxParser
                 $source->setName($data['id']);
                 $source->setLogicalId($data['id']);
                 $source->setEqType_name('AlternativeMarketForJeedom');
-                $source->setConfiguration('type', 'github');
+                $source->setConfiguration('type', $data['type']);
                 $source->setConfiguration('data', $data['id']);
                 $source->save();
                 $result = true;

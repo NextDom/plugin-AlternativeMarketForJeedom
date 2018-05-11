@@ -56,12 +56,12 @@ function showShortcuts(shortcuts) {
  * Ajouter un utilisateur à la liste
  */
 function addGitId(gitId) {
-    if (typeof gitId === 'undefined') {
+    if (typeof gitId === 'undefined' || typeof gitId !== 'string') {
         gitId = $('#git-id').val();
     }
     if (gitId !== '') {
-        var data = {action: 'source', params: 'add', data: {'type': 'gitId', 'id': gitId}};
-        ajaxQuery(data, function () {
+        var addGitData = {action: 'source', params: 'add', data: {type: 'github', id: gitId}};
+        ajaxQuery(addGitData, function () {
             var gitsListUl = $('#config-modal ul');
             gitsListUl.append(getListItem(gitId));
         });
@@ -75,9 +75,8 @@ function addGitId(gitId) {
  */
 function removeGitId(gitId) {
     if (gitId !== '') {
-        var data = {action: 'source', params: 'remove', data: {'type': 'gitId', 'id': gitId}};
-        ajaxQuery(data, function () {
-            var gitsListUl = $('#config-modal ul');
+        var removeGitData = {action: 'source', params: 'remove', data: {type: 'github', id: gitId}};
+        ajaxQuery(removeGitData, function () {
             $('#config-modal ul li').each(function () {
                 if ($(this).text().indexOf(gitId) !== -1) {
                     $(this).remove();
@@ -92,10 +91,10 @@ function removeGitId(gitId) {
  *
  * @param data Données de la requête
  */
-function ajaxQuery(data, callbackFunc) {
+function ajaxQuery(queryData, callbackFunc) {
     $.post({
         url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
-        data: data,
+        data: queryData,
         dataType: 'json',
         success: function (data, status) {
             // Test si l'appel a échoué
