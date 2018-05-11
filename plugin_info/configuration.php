@@ -40,7 +40,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
             Plugin vous permettant d'installer....
         </div>
     </div>
-    <form class="form-horizontal">
+    <form id="amfj-config" class="form-horizontal">
         <div class="form-group">
             <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
                             class="fa fa-question-circle tooltips"

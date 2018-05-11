@@ -257,20 +257,6 @@
     font-weight: bold;
 }
 
-#shortcuts {
-}
-
-#shortcuts button {
-    border-radius: 2em;
-}
-
-.btn_config_market{
-    background-color: #33B8CC;
-    min-width: 100px;
-    min-height: 100px;
-    margin-right: 10px;
-}
-
 .amfj-toast {
     position: fixed;
     top: 200%;

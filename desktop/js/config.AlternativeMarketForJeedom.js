@@ -1,7 +1,7 @@
 // Point d'entrée du script
 $(document).ready(function () {
     var shortcuts = ['NextDom', 'jeedom'];
-    var shortcutsimg = ['/plugins/AlternativeMarketForJeedom/plugin_info/AlternativeMarketForJeedom_icon.png','https://jeedom.github.io/documentation/img/logo.png'];
+    var shortcutsImg = ['/plugins/AlternativeMarketForJeedom/plugin_info/AlternativeMarketForJeedom_icon.png','/plugins/AlternativeMarketForJeedom/resources/jeedom-logo.png'];
     var gitsListUl = $('#config-modal ul');
     for (var sourceIndex = 0; sourceIndex < sourcesList.length; ++sourceIndex) {
         if (sourcesList[sourceIndex]['type'] === 'github') {
@@ -10,11 +10,12 @@ $(document).ready(function () {
             var indexOfItem = shortcuts.indexOf(sourceData);
             if (indexOfItem !== -1) {
                 shortcuts.splice(indexOfItem, 1);
+                shortcutsImg.splice(indexOfItem, 1);
             }
             gitsListUl.append(item);
         }
     }
-    showShortcuts(shortcuts,shortcutsimg);
+    showShortcuts(shortcuts, shortcutsImg);
     $('#add-git').click(addGitId);
 });
 
@@ -37,15 +38,15 @@ function getListItem(itemData) {
     return item;
 }
 
-function showShortcuts(shortcuts,shortcutsimg) {
+function showShortcuts(shortcuts, shortcutsImg) {
     $('#shortcuts').empty();
     if (shortcuts.length > 0) {
         for (var shortcutIndex = 0; shortcutIndex < shortcuts.length; ++shortcutIndex) {
-            if (shortcutsimg[shortcutIndex] !== ''){
-                var item = $(' <button class="btn btn_config_market"><img width="50px" height="50px" src="' + shortcutsimg[shortcutIndex] + '"/></br><a style="color:#FFF">' + shortcuts[shortcutIndex] + '</a></button> ');
+            if (shortcutsImg[shortcutIndex] !== ''){
+                var item = $(' <button class="btn btn-config-market"><img src="' + shortcutsImg[shortcutIndex] + '"/></br><span>' + shortcuts[shortcutIndex] + '</span></button> ');
             }
             else {
-                var item = $(' <button class="btn btn_config_market"><a style="color:#FFF">' + shortcuts[shortcutIndex] + '</a></button> ');
+                var item = $(' <button class="btn btn-config-market"><span>' + shortcuts[shortcutIndex] + '</span></button> ');
             }
             item.click(function () {
                 addGitId($(this).text());

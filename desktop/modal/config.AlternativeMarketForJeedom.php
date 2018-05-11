@@ -35,7 +35,7 @@ sendVarToJs('sourcesList', $sourcesList);
     <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
     <div id="config-modal">
         <div class="container">
-            <center><h3>Liste des utilisateurs ou organisations GitHub</h3></center>
+            <h3>Liste des utilisateurs ou organisations GitHub</h3>
             <label>Ajouter :</label>
             <div class="input-group">
                 <input id="git-id" type="text" class="form-control" placeholder="Identifiant GitHub..."/>
