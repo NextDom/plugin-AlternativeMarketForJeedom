@@ -101,7 +101,10 @@ class AmfjAjaxParser
         }
         return $result;
     }
-
+    
+    /**
+    * @return bool
+    */
     private static function refreshBranchHash(array $data)
     {
         $result = false;
