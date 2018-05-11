@@ -41,7 +41,7 @@
     left: 0;
     width: 0;
     height: 0;
-    border-top: 3em solid #95C12B;
+    border-top: 3em solid #33B8CC;
     border-right: 3em solid transparent;
 }
 
@@ -58,7 +58,7 @@
     right: 0;
     width: 0;
     height: 0;
-    border-top: 3em solid #95C12B;
+    border-top: 3em solid #33B8CC;
     border-left: 3em solid transparent;
 }
 
@@ -100,7 +100,6 @@
 }
 
 #market-div button {
-    background-color: #95C12B;
     color: white;
     border: none;
     float: right;
@@ -108,7 +107,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    background-image: linear-gradient(to right, #40535e, #40535e 50%, #95C12B 50%, #95C12B);
+    background-image: linear-gradient(to right, #33B8CC, #33B8CC 50%, #95C12B 50%, #95C12B);
     background-size: 202% 100%;
     background-position: 0 0;
     -webkit-transition: all 0.2s ease;
@@ -146,8 +145,8 @@
 
 .market-filters .btn-primary,
 #plugin-modal .btn-primary {
-    background-color: #95C12B !important;
-    border-color: #95C12B !important;
+    background-color: #33B8CC !important;
+    border-color: #33B8CC !important;
     background-image: none;
 }
 
