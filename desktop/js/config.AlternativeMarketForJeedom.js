@@ -1,7 +1,7 @@
 // Point d'entrée du script
 $(document).ready(function () {
     var shortcuts = ['NextDom', 'jeedom'];
-
+    var shortcutsimg = ['/plugins/AlternativeMarketForJeedom/plugin_info/AlternativeMarketForJeedom_icon.png','https://jeedom.github.io/documentation/img/logo.png'];
     var gitsListUl = $('#config-modal ul');
     for (var sourceIndex = 0; sourceIndex < sourcesList.length; ++sourceIndex) {
         if (sourcesList[sourceIndex]['type'] === 'github') {
@@ -14,7 +14,7 @@ $(document).ready(function () {
             gitsListUl.append(item);
         }
     }
-    showShortcuts(shortcuts);
+    showShortcuts(shortcuts,shortcutsimg);
     $('#add-git').click(addGitId);
 });
 
@@ -31,15 +31,22 @@ function getListItem(itemData) {
 
     deleteButton.click(function () {
         removeGitId($(this).data('gitid'));
+
     });
     item.append(deleteButton);
     return item;
 }
 
-function showShortcuts(shortcuts) {
+function showShortcuts(shortcuts,shortcutsimg) {
+    $('#shortcuts').empty();
     if (shortcuts.length > 0) {
         for (var shortcutIndex = 0; shortcutIndex < shortcuts.length; ++shortcutIndex) {
-            var item = $('<button class="btn btn-primary">' + shortcuts[shortcutIndex] + '</button>');
+            if (shortcutsimg[shortcutIndex] !== ''){
+                var item = $(' <button class="btn btn_config_market"><img width="50px" height="50px" src="' + shortcutsimg[shortcutIndex] + '"/></br><a style="color:#FFF">' + shortcuts[shortcutIndex] + '</a></button> ');
+            }
+            else {
+                var item = $(' <button class="btn btn_config_market"><a style="color:#FFF">' + shortcuts[shortcutIndex] + '</a></button> ');
+            }
             item.click(function () {
                 addGitId($(this).text());
                 $(this).remove();
