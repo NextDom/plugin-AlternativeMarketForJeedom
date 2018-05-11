@@ -39,14 +39,16 @@ function initDataModal() {
 }
 
 function initInstallationButtons() {
+    var defaultBranch = currentPlugin['defaultBranch'];
+
     $('#install-plugin').click(function () {
         installPlugin(currentPlugin['defaultBranch']);
     });
     if (currentPlugin['installed']) {
+        $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         $('#remove-plugin').click(function () {
             removePlugin(currentPlugin['id']);
         });
-        $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         if (currentPlugin['installedBranchData'] !== false) {
             $('#install-plugin').parent().hide();
             var installedBranch = currentPlugin['installedBranchData']['branch'];
@@ -64,10 +66,8 @@ function initInstallationButtons() {
         else {
             // Nécessaire si les plugins ont été installés depuis l'URL
             // TODO : Optimiser en supprimant le doublon de code
-            var defaultBranch = currentPlugin['defaultBranch'];
             $('#default-branch-information').text('Branche ' + defaultBranch);
             $('#update-plugin').parent().hide();
-            $('#config-plugin').parent().hide();
             if (currentPlugin['branchesList'].length > 0) {
                 initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
             }
@@ -81,7 +81,7 @@ function initInstallationButtons() {
     else {
         $('#remove-plugin').parent().hide();
         $('#update-plugin').parent().hide();
-        var defaultBranch = currentPlugin['defaultBranch'];
+        $('#config-plugin').parent().hide();
         $('#default-branch-information').text('Branche ' + defaultBranch);
         if (currentPlugin['branchesList'].length > 0) {
             initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
