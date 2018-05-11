@@ -1,30 +1,35 @@
 matrix:
   include:
-    - language: php
-      php: 7.1
-      services:
-       - mysql
-      install:
-       - composer install
-       - mkdir -p build/logs
-       - mysql -e 'CREATE DATABASE jeedom_test;'
-      before_script:
-        - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
-      script:        
-       - cd ${TRAVIS_BUILD_DIR}
-       - ./tests/launch_tests.sh
-      after_script:
-       - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g' clover.xml
-       - php vendor/bin/php-coveralls
-    - language: markdown
-      addons:
-        apt:
-          packages:
-            - aspell
-            - aspell-fr
-      script:
-        - gem install mdl
-        - cd ${TRAVIS_BUILD_DIR}
-        - ./tests/tools/setCustomMDWarnings.sh 
-        - mdl -r $MDLWAR *.md docs/fr_FR/*.md
-        - ./tests/tools/spellCheckMD.sh 
+  - language: php
+    php: 7.1
+    services:
+    - mysql
+    install:
+    - composer install
+    - mkdir -p build/logs
+    - mysql -e 'CREATE DATABASE jeedom_test;'
+    before_script:
+    - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
+    script:
+    - cd ${TRAVIS_BUILD_DIR}
+    - echo ${GITHUB_TOKEN} > .github-token
+    - "./tests/launch_tests.sh"
+    after_script:
+    - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g'
+      clover.xml
+    - php vendor/bin/php-coveralls
+  - language: markdown
+    addons:
+      apt:
+        packages:
+        - aspell
+        - aspell-fr
+    script:
+    - gem install mdl
+    - cd ${TRAVIS_BUILD_DIR}
+    - "./tests/tools/setCustomMDWarnings.sh"
+    - mdl -r $MDLWAR *.md docs/fr_FR/*.md
+    - "./tests/tools/spellCheckMD.sh"
+env:
+  global:
+    secure: Z+HLZdi42TqQPzsZNnBTr+2r5/aB1cB7OOfHfVbimwxL5cmgnH1B2RT4mgl3cnFhqbOF8ZwcfU9Ao1fTXXX313BBnyXt5d5czrjGhCLkD8RP97mVW5PSD1Sa5lYDCUP7699d5nHrrzunzJfbwSRZvYGMMogOiH9FDALLKgA0yhTwZOUY7J0f0Faos4Jv0b9TJ7AZ+avdO/I6WwYay3dNDYvIkdR/YZa7eKwuYm5snf2/cCY4bUrizW5vhog2FdRgwzL6ium0Kn3pMPmu4LxSOEv4qKc1n+LLji34nkgOVHZppj4WpdfZ5QSRajOGuBXo1O2a9wdck47EjXTxuw/hpegH187URQ/SNq/e5DL39hVMfGhz4/3/TosxA6UiTgflgjM1NsW93a0erA8nXCPnIHj4zx6KFWKoQoM7M8s4Z1D+0q7A2lejmzHAEeyj8QU2uUc8RyP5c2iDevf5nfwNVVwhXzBMj7nV2XgGsicMzrvAZIqPR+gmi2gRilXs9AEYCf6vwKCys5Xo0wjreaPVM2kRG9yNASC8JL4m/G95xqoz9iRfoj1M4ffoJIqMN/Ds9ppTUyJMqAY/p+BWbQd1yUqFXlIh+RxuDzfY9U4I7VzO3jYRVzTZLURao2oCD9WQRtuvrPcLEJ9Dn8Xcb6XiLYB0P0TYez8l8OuuiPYfWsc=
