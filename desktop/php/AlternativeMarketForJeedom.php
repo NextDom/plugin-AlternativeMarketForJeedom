@@ -15,7 +15,6 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 require_once __DIR__ . '/../../core/class/AmfjMarket.class.php';
 
 if (!isConnect('admin')) {
@@ -24,6 +23,7 @@ if (!isConnect('admin')) {
 
 $plugin = plugin::byId('AlternativeMarketForJeedom');
 $eqLogics = eqLogic::byType($plugin->getId());
+\usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpFunc'));
 
 $sourcesList = array();
 foreach ($eqLogics as $eqLogic) {

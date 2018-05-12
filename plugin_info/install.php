@@ -29,10 +29,10 @@ function AlternativeMarketForJeedom_install()
     $dataStorage->createDataTable();
 
     $markets = [
-        ['name' => 'NextDom Stable', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/stable-result.json'],
-        ['name' => 'NextDom Unstable', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/unstable-result.json'],
-        ['name' => 'Jeedom', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/jeedom-result.json'],
-        ['name' => 'Autres', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/others-result.json']
+        ['name' => 'NextDom Stable', 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/stable-result.json'],
+        ['name' => 'NextDom Unstable', 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/unstable-result.json'],
+        ['name' => 'Jeedom', 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/jeedom-result.json'],
+        ['name' => 'Autres', 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/others-result.json']
     ];
 
     foreach ($markets as $market) {
@@ -41,6 +41,7 @@ function AlternativeMarketForJeedom_install()
         $defaultMarket->setLogicalId($market['name']);
         $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
         $defaultMarket->setConfiguration('type', 'json');
+        $defaultMarket->setConfiguration('order', $market['order']);
         $defaultMarket->setConfiguration('data', $market['url']);
         $defaultMarket->save();
     }

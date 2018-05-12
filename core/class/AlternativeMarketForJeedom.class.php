@@ -23,5 +23,20 @@ require_once __DIR__ . '/../../../../core/php/core.inc.php';
  */
 class AlternativeMarketForJeedom extends eqLogic
 {
-
+    public static function cmpFunc($obj1, $obj2)
+    {
+        $result = null;
+        $obj1Order = $obj1->getConfiguration()['order'];
+        $obj2Order = $obj2->getConfiguration()['order'];
+        if ($obj1Order == $obj2Order) {
+            $result = 0;
+        } else {
+            if ($obj1Order < $obj2Order) {
+                $result = -1;
+            } else {
+                $result = 1;
+            }
+        }
+        return $result;
+    }
 }
