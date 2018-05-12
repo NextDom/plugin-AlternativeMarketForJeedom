@@ -185,7 +185,7 @@
 }
 
 #plugin-modal-header {
-    height: 20em;
+    min-height: 20em;
 }
 
 #plugin-modal-header > div {
