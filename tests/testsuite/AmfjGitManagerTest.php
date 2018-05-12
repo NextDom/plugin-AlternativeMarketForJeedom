@@ -47,6 +47,10 @@ class GitManagerTest extends TestCase
     public function setUp()
     {
         DB::init(true);
+        if (file_exists('.github-token')) {
+            $token = str_replace("\n", "", file_get_contents('.github-token'));
+            config::addKeyToCore('github::token', $token);
+        }
         $this->gitManager = new Mocked_GitManager(GITHUB_TEST_REPO);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
