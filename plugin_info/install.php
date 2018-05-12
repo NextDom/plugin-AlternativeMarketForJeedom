@@ -28,13 +28,22 @@ function AlternativeMarketForJeedom_install()
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->createDataTable();
 
-    $defaultMarket = new AlternativeMarketForJeedom();
-    $defaultMarket->setName('NextDom Market');
-    $defaultMarket->setLogicalId('NextDom Market');
-    $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
-    $defaultMarket->setConfiguration('type', 'json');
-    $defaultMarket->setConfiguration('data', 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/result.json');
-    $defaultMarket->save();
+    $markets = [
+        ['name' => 'NextDom Stable', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/stable-result.json'],
+        ['name' => 'NextDom Unstable', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/unstable-result.json'],
+        ['name' => 'Jeedom', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/jeedom-result.json'],
+        ['name' => 'Autres', 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/others-result.json']
+    ];
+
+    foreach ($markets as $market) {
+        $defaultMarket = new AlternativeMarketForJeedom();
+        $defaultMarket->setName($market['name']);
+        $defaultMarket->setLogicalId($market['name']);
+        $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
+        $defaultMarket->setConfiguration('type', 'json');
+        $defaultMarket->setConfiguration('data', $market['url']);
+        $defaultMarket->save();
+    }
 
     config::save('github::enable', 1);
 }
