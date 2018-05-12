@@ -22,7 +22,7 @@ require_once('core/class/AmfjGitManager.class.php');
 require_once('core/class/AmfjDataStorage.class.php');
 require_once('../../core/php/core.inc.php');
 
-define('GITHUB_TEST_REPO', 'jeedom');
+define('GITHUB_TEST_REPO', 'NextDom');
 
 class Mocked_GitManager extends AmfjGitManager
 {
