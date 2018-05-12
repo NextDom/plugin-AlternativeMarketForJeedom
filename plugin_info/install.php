@@ -18,6 +18,7 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 require_once(dirname(__FILE__) . '/../core/class/AmfjDataStorage.class.php');
+require_once(dirname(__FILE__) . '/../core/class/AlternativeMarketForJeedom.class.php');
 
 /**
  * Fonction appelée à l'activation du plugin
