@@ -32,7 +32,9 @@ function AlternativeMarketForJeedom_install()
         ['name' => 'NextDom Stable', 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/stable-result.json'],
         ['name' => 'NextDom Unstable', 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/unstable-result.json'],
         ['name' => 'Jeedom', 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/jeedom-result.json'],
-        ['name' => 'Autres', 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/others-result.json']
+        ['name' => 'Lunarok', 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/lunarok-result.json'],
+        ['name' => 'Mika-nt28', 'order' => 5, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/mika-nt28-result.json'],
+        ['name' => 'Autres', 'order' => 6, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/others-result.json']
     ];
 
     foreach ($markets as $market) {
