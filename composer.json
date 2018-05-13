@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-
+        "ext-curl": "*"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "~2.0",
