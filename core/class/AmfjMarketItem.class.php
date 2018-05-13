@@ -105,6 +105,7 @@ class AmfjMarketItem
     {
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->sourceName = $sourceName;
+        $this->iconPath = false;
     }
 
     /**
@@ -207,7 +208,6 @@ class AmfjMarketItem
         if (\array_key_exists('description', $jsonInformations)) $this->description = $jsonInformations['description'];
         if (\array_key_exists('defaultBranch', $jsonInformations)) $this->defaultBranch = $jsonInformations['defaultBranch'];
         if (\array_key_exists('branches', $jsonInformations)) $this->branchesList = $jsonInformations['branches'];
-        $this->downloadIcon();
     }
 
     /**
@@ -337,6 +337,7 @@ class AmfjMarketItem
      */
     public function downloadIcon()
     {
+        log::add('AlternativeMarketForJeedom', 'debug', 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png');
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
         $targetPath = \dirname(__FILE__) . '/../../cache/' . $iconFilename;
@@ -347,6 +348,7 @@ class AmfjMarketItem
         } else {
             $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
         }
+        $this->writeCache();
     }
 
     /**
@@ -555,5 +557,13 @@ class AmfjMarketItem
     {
         $this->fullName = $fullName;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconPath()
+    {
+        return $this->iconPath;
     }
 }

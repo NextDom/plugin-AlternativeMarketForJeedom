@@ -167,8 +167,18 @@ class AmfjAjaxParser
                 break;
             case 'icon':
                 if (is_array($data)) {
-
+                    AmfjDownloadManager::init();
+                    $marketItem = AmfjMarketItem::createFromCache($data['sourceName'], $data['fullName']);
+                    $path = $marketItem->getIconPath();
+                    if ($path !== false) {
+                        $result = $path;
+                    }
+                    else {
+                        $marketItem->downloadIcon();
+                        $result = $marketItem->getIconPath();
+                    }
                 }
+                break;
             default :
                 $result = false;
         }

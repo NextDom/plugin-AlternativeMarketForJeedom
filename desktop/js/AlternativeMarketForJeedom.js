@@ -4,6 +4,7 @@ var filterCategory = '';
 var filterInstalled = false;
 var filterNotInstalled = false;
 var currentSearchValue = '';
+var iconDownloadQueue = [];
 
 // Point d'entrée du script
 $(document).ready(function () {
@@ -217,12 +218,57 @@ function showItems(items) {
     var container = $('#market-div');
     container.empty();
     for (var index = 0; index < items.length; ++index) {
-        container.append(getItemHtml(items[index]));
+        var itemHtmlObj = $(getItemHtml(items[index]));
+        if (items[index]['iconPath'] === false) {
+            iconDownloadQueue.push([items[index], itemHtmlObj]);
+        }
+        container.append(itemHtmlObj);
     }
+    startIconsDownload();
+    $('#jqueryLoadingDiv').hide();
     $('.media').click(function () {
-        showPluginModal($(this).data('plugin'));
+        showPluginModal($(this).data('plugin'), $(this).find('img').attr('src'));
     });
     $('[data-toggle="tooltip"]').tooltip();
+}
+
+function startIconsDownload() {
+    // Lance 5 téléchargement simultanéments
+    for (var i = 0; i < 5; ++i) {
+        iconDownload();
+    }
+}
+
+function iconDownload() {
+    var content = iconDownloadQueue.shift();
+    if (typeof content !== 'undefined') {
+        var itemData = content[0];
+        var itemObj = content[1];
+        $.post({
+            url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
+            data: {
+                action: 'get',
+                params: 'icon',
+                data: {sourceName: itemData['sourceName'], fullName: itemData['fullName']}
+            },
+            dataType: 'json',
+            success: function (iconData, status) {
+                // Test si l'appel a échoué
+                if (iconData.state !== 'ok' || status !== 'success') {
+                    $('#div_alert').showAlert({message: iconData.result, level: 'danger'});
+                }
+                else {
+                    itemObj.find('img').attr('src', iconData['result']);
+                    if (iconDownloadQueue.length > 0) {
+                        iconDownload();
+                    }
+                }
+            },
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            }
+        });
+    }
 }
 
 /**
@@ -251,6 +297,10 @@ function getItemHtml(item) {
         descriptionPar = '<p>' + item['description'] + '</p>';
     }
 
+    var iconPath = item['iconPath'];
+    if (item['iconPath'] === false) {
+        iconPath = 'core/img/no-image-plugin.png';
+    }
     // Préparation du code
     var result = '' +
         '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-source="' + item['sourceName'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
@@ -265,7 +315,7 @@ function getItemHtml(item) {
         '<h4>' + title + '</h4>' +
         '<div class="media-content">' +
         '<div class="media-left">' +
-        '<img src="' + item['iconPath'] + '"/>' +
+        '<img src="' + iconPath + '"/>' +
         '</div>' +
         '<div class="media-body">' +
         descriptionPar +
@@ -283,11 +333,12 @@ function getItemHtml(item) {
  *
  * @param pluginData Données du plugin
  */
-function showPluginModal(pluginData) {
+function showPluginModal(pluginData, iconPath) {
     var modal = $('#md_modal');
     modal.dialog({title: pluginData['name']});
     modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
+    currentPlugin['iconPath'] = iconPath;
 }
 
 function showMessage() {
