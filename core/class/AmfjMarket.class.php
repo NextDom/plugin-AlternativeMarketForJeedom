@@ -65,7 +65,7 @@ class AmfjMarket
         if ($this->downloadManager->isConnected()) {
             if ($this->source['type'] == 'github') {
                 $result = $this->refreshGitHub($force);
-            } else if ($this->source['type'] == 'json') {
+            } elseif ($this->source['type'] == 'json') {
                 $result = $this->refreshJson($force);
             }
         } else {
