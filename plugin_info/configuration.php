@@ -30,6 +30,9 @@ if (!isConnect()) {
 include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeMarketForJeedom');
 
 ?>
+    <div class="alert alert-danger" role="alert">
+        {{L'utilisation de ce plugin et des plugins qu'il installe n'est pas autorisé par la société Jeedom SAS. Si vous avec fait l'acquisition d'un Service Pack, vous ne pourrez demander une assistance en cas de problèmes.}}
+    </div>
     <div class="panel panel-info" style="height: 100%;">
         <div class="panel-heading" role="tab">
             <h4 class="panel-title">
