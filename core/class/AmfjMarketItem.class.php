@@ -144,7 +144,6 @@ class AmfjMarketItem
      *
      * @param string $sourceName Nom de la source
      * @param string[] $jsonData Données de l'élément
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      *
      * @return AmfjMarketItem Elément créé
      */

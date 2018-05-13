@@ -21,22 +21,22 @@ use PHPUnit\Framework\TestCase;
 require_once('core/class/AmfjDownloadManager.class.php');
 require_once('../../core/php/core.inc.php');
 
-class Mocked_Amfj_DownloadManager extends AmfjDownloadManager
+class Mocked_AmfjDownloadManager extends AmfjDownloadManager
 {
-    public function downloadContent($url, $binary = false) {
+    public static function downloadContent($url, $binary = false) {
         return parent::downloadContent($url, $binary);
     }
 
-    public function downloadContentWithCurl($url, $binary = false) {
+    public static function downloadContentWithCurl($url, $binary = false) {
         return parent::downloadContentWithCurl($url, $binary);
     }
 
-    public function downloadContentWithFopen($url) {
+    public static function downloadContentWithFopen($url) {
         return parent::downloadContentWithFopen($url);
     }
 
-    public function setConnectionStatus($status) {
-        $this->connectionStatus = $status;
+    public static function setConnectionStatus($status) {
+        parent::$connectionStatus = $status;
     }
 }
 
@@ -46,55 +46,45 @@ class DownloadManagerTest extends TestCase
 
     public function setUp()
     {
-        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
+        Mocked_AmfjDownloadManager::init();
     }
 
     public function testIsConnected() {
-        $this->assertTrue(AmfjDownloadManager::->isConnected());
+        $this->assertTrue(Mocked_AmfjDownloadManager::isConnected());
     }
 
     public function testIsConnectedWithoutConnection() {
-        AmfjDownloadManager::->setConnectionStatus(false);
-        $this->assertFalse(AmfjDownloadManager::->isConnected());
+        Mocked_AmfjDownloadManager::setConnectionStatus(false);
+        $this->assertFalse(Mocked_AmfjDownloadManager::isConnected());
     }
 
     public function testDownloadContent() {
-        $content = AmfjDownloadManager::->downloadContent('http://www.perdu.com');
+        $content = Mocked_AmfjDownloadManager::downloadContent('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlGoodContent() {
-        $content = AmfjDownloadManager::->downloadContentWithCurl('http://www.perdu.com');
+        $content = Mocked_AmfjDownloadManager::downloadContentWithCurl('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlBadContent() {
-        $content = AmfjDownloadManager::->downloadContentWithCurl('https://www.google.frrandom');
+        $content = Mocked_AmfjDownloadManager::downloadContentWithCurl('https://www.google.frrandom');
         $this->assertFalse($content);
     }
 
     public function testDownloadBinary() {
         system('wget -q https://www.facebook.com/images/fb_icon_325x325.png');
-        AmfjDownloadManager::->downloadBinary('https://www.facebook.com/images/fb_icon_325x325.png', 'test.png');
+        Mocked_AmfjDownloadManager::downloadBinary('https://www.facebook.com/images/fb_icon_325x325.png', 'test.png');
         $this->assertFileEquals('fb_icon_325x325.png', 'test.png');
         unlink('fb_icon_325x325.png');
         unlink('test.png');
     }
 
-    public function testDdwnloadContentWithFopenGoodContent() {
-        $content = AmfjDownloadManager::->downloadContentWithFopen('http://www.perdu.com');
-        $this->assertContains('Perdu sur l\'Internet', $content);
-    }
-
-    public function testDownloadContentWithFopenBadContent() {
-        $content = AmfjDownloadManager::->downloadContentWithFopen('https://www.google.frrandom');
-        $this->assertFalse($content);
-    }
-
     public function testDownloadWithoutGitHubToken() {
         config::addKeyToCore('github::token', '');
-        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
-        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test');
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);
@@ -103,8 +93,8 @@ class DownloadManagerTest extends TestCase
 
     public function testDownloadBinaryWithGitHubToken() {
         config::addKeyToCore('github::token', 'SIMPLECHAIN');
-        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
-        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test', true);
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test', true);
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);
@@ -113,8 +103,8 @@ class DownloadManagerTest extends TestCase
 
     public function testDownloadWithGitHubTokenSimpleUrl() {
         config::addKeyToCore('github::token', 'SIMPLECHAIN');
-        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
-        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test');
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);
@@ -123,8 +113,8 @@ class DownloadManagerTest extends TestCase
 
     public function testDownloadWithGitHubTokenComplexUrl() {
         config::addKeyToCore('github::token', 'SIMPLECHAIN');
-        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
-        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test?test=something');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test?test=something');
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);

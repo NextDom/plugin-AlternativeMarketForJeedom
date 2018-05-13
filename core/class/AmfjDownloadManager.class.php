@@ -29,25 +29,22 @@ class AmfjDownloadManager
      * @var string Token GitHub
      */
     protected static $gitHubToken;
-    
+
     /**
      * @var string
      */
     private static $urlForTest = 'www.google.fr';
 
-    private function __construct()
-    {
-    }
-
     /**
      * Constructeur testant le statut de la connexion.
+     *
+     * @param bool $forceConnectionStatus Booléen pour forcer l'état de la connexion.
      */
     public static function init($forceConnectionStatus = null)
     {
         if ($forceConnectionStatus !== null) {
             self::$connectionStatus = $forceConnectionStatus;
-        }
-        else {
+        } else {
             if (!self::isConnected()) {
                 self::testConnection();
             }
@@ -99,13 +96,7 @@ class AmfjDownloadManager
             }
         }
         log::add('AlternativeMarketForJeedom', 'debug', 'Download ' . $url);
-        $result = false;
-        if (self::isCurlEnabled()) {
-            $result = self::downloadContentWithCurl($url, $binary);
-        } elseif (self::isUrlFopenEnabled()) {
-            $result = self::downloadContentWithFopen($url);
-        }
-        return $result;
+        return self::downloadContentWithCurl($url, $binary);
     }
 
     /**
@@ -123,16 +114,6 @@ class AmfjDownloadManager
         $filePointer = \fopen($dest, 'wb');
         \fwrite($filePointer, $imgData);
         \fclose($filePointer);
-    }
-
-    /**
-     * Test si la fonctionnalité cURL est activée
-     *
-     * @return bool True si la fonctionnalité est activée
-     */
-    protected static function isCurlEnabled()
-    {
-        return function_exists('curl_version');
     }
 
     /**
@@ -158,32 +139,5 @@ class AmfjDownloadManager
             \curl_close($curlSession);
         }
         return $content;
-    }
-
-    /**
-     * Test si fopen peut être utilisé pour télécharger le contenu d'un lien
-     *
-     * @return bool True si c'est possible
-     */
-    protected static function isUrlFopenEnabled()
-    {
-        return \ini_get('allow_fopen_url');
-    }
-
-    /**
-     * Télécharge un contenu à partir de son lien avec la méthode fopen
-     *
-     * @param string $url Lien du contenu à télécharger.
-     *
-     * @return string|bool Données téléchargées ou False en cas d'échec
-     */
-    protected static function downloadContentWithFopen($url)
-    {
-        $result = \file_get_contents($url);
-        if ($result !== fasle){
-             return $result;
-        }  else {
-            return $result;
-        }
     }
 }
