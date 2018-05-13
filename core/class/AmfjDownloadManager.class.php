@@ -179,11 +179,11 @@ class AmfjDownloadManager
      */
     protected static function downloadContentWithFopen($url)
     {
-        try {
-            $result = \file_get_contents($url);
-        } catch (\Exception $e) {
-            $result = false;
+        $result = \file_get_contents($url);
+        if ($result !== fasle){
+             return $result;
+        }  else {
+            return $result;
         }
-        return $result;
     }
 }
