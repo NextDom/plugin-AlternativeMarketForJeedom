@@ -147,10 +147,10 @@ class AmfjMarketItem
      *
      * @return AmfjMarketItem Elément créé
      */
-    public static function createFromJson($sourceName, $jsonData, $downloadManager)
+    public static function createFromJson($sourceName, $jsonData)
     {
         $result = new AmfjMarketItem($sourceName);
-        $result->initWithJsonInformations($jsonData, $downloadManager);
+        $result->initWithJsonInformations($jsonData);
         return $result;
     }
 
@@ -189,7 +189,7 @@ class AmfjMarketItem
         }
     }
 
-    public function initWithJsonInformations($jsonInformations, $downloadManager)
+    public function initWithJsonInformations($jsonInformations)
     {
         if (\array_key_exists('id', $jsonInformations)) $this->id = $jsonInformations['id'];
         if (\array_key_exists('repository', $jsonInformations)) $this->gitName = $jsonInformations['repository'];
@@ -207,7 +207,7 @@ class AmfjMarketItem
         if (\array_key_exists('description', $jsonInformations)) $this->description = $jsonInformations['description'];
         if (\array_key_exists('defaultBranch', $jsonInformations)) $this->defaultBranch = $jsonInformations['defaultBranch'];
         if (\array_key_exists('branches', $jsonInformations)) $this->branchesList = $jsonInformations['branches'];
-        $this->downloadIcon($downloadManager);
+        $this->downloadIcon();
     }
 
     /**
@@ -312,16 +312,16 @@ class AmfjMarketItem
      *
      * @return bool True si la mise à jour a été effectuée.
      */
-    public function refresh($downloadManager)
+    public function refresh()
     {
         $result = false;
         $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/info.json';
-        $infoJson = $downloadManager->downloadContent($infoJsonUrl);
+        $infoJson = AmfjDownloadManager::downloadContent($infoJsonUrl);
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
             if (\is_array($pluginData) && \array_key_exists('id', $pluginData)) {
                 $this->addPluginInformations($pluginData);
-                $this->downloadIcon($downloadManager);
+                $this->downloadIcon();
                 $this->branchesList = [];
                 $this->writeCache();
                 $result = true;
@@ -335,19 +335,18 @@ class AmfjMarketItem
      *
      * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      */
-    public function downloadIcon($downloadManager)
+    public function downloadIcon()
     {
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
-        $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
-        $downloadManager->downloadBinary($iconUrl, $targetPath);
+        $targetPath = \dirname(__FILE__) . '/../../cache/' . $iconFilename;
+        AmfjDownloadManager::downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
-            unlink($targetPath);
+            \unlink($targetPath);
             $this->iconPath = 'core/img/no-image-plugin.png';
         } else {
             $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
         }
-
     }
 
     /**
@@ -357,11 +356,11 @@ class AmfjMarketItem
      *
      * @return bool True si les données ont été trouvées
      */
-    public function downloadBranchesInformations($downloadManager)
+    public function downloadBranchesInformations()
     {
         $result = false;
         $baseGitRepoUrl = 'https://api.github.com/repos/' . $this->fullName . '/branches';
-        $branches = $downloadManager->downloadContent($baseGitRepoUrl);
+        $branches = AmfjDownloadManager::downloadContent($baseGitRepoUrl);
         if ($branches !== false) {
             $branches = \json_decode($branches, true);
             $this->branchesList = [];

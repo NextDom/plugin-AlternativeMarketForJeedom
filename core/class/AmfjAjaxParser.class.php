@@ -156,15 +156,19 @@ class AmfjAjaxParser
                 break;
             case 'branches':
                 if (is_array($data)) {
-                    $downloaderManager = new AmfjDownloadManager();
+                    AmfjDownloadManager::init();
                     $marketItem = AmfjMarketItem::createFromCache($data['sourceName'], $data['fullName']);
-                    if ($marketItem->downloadBranchesInformations($downloaderManager)) {
+                    if ($marketItem->downloadBranchesInformations()) {
                         $result = $marketItem->getBranchesList();
                         // Sauvegarde la liste des branches téléchargées
                         $marketItem->writeCache();
                     }
                 }
                 break;
+            case 'icon':
+                if (is_array($data)) {
+
+                }
             default :
                 $result = false;
         }

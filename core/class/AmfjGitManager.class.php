@@ -29,10 +29,6 @@ class AmfjGitManager
      */
     private $gitId;
     /**
-     * @var AmfjDownloadManager Gestionnaire de téléchargement
-     */
-    private $downloadManager;
-    /**
      * @var DataStorage Gestionnaire de base de données
      */
     private $dataStorage;
@@ -44,7 +40,7 @@ class AmfjGitManager
      */
     public function __construct($gitId)
     {
-        $this->downloadManager = new AmfjDownloadManager();
+        AmfjDownloadManager::init();
         $this->gitId = $gitId;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
@@ -91,10 +87,10 @@ class AmfjGitManager
     protected function downloadRepositoriesList()
     {
         $result = false;
-        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitId . '/repos?per_page=100');
+        $content = AmfjDownloadManager::downloadContent('https://api.github.com/orgs/' . $this->gitId . '/repos?per_page=100');
         // Limite de l'API GitHub atteinte
         if (\strstr($content, 'API rate limit exceeded')) {
-            $content = $this->downloadManager->downloadContent('https://api.github.com/rate_limit');
+            $content = AmfjDownloadManager::downloadContent('https://api.github.com/rate_limit');
             $gitHubLimitData = json_decode($content, true);
             $refreshDate = date('H:i', $gitHubLimitData['resources']['core']['reset']);
             throw new \Exception('Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate);
@@ -105,7 +101,7 @@ class AmfjGitManager
             // Test si c'est un dépôt d'organisation
             if (\strstr($content, '"message":"Not Found"')) {
                 // Test d'un téléchargement pour un utilisateur
-                $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitId . '/repos?per_page=100');
+                $content = AmfjDownloadManager::downloadContent('https://api.github.com/users/' . $this->gitId . '/repos?per_page=100');
                 // Test si c'est un dépot d'utilisateur
                 if (\strstr($content, '"message":"Not Found"') || strlen($content) < 10) {
                     throw new \Exception('Le dépôt ' . $this->gitId . ' n\'existe pas.');
@@ -133,7 +129,7 @@ class AmfjGitManager
             $repositoryName = $repository['name'];
             $marketItem = AmfjMarketItem::createFromGit($sourceName, $repository);
             if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
-                if (!$marketItem->refresh($this->downloadManager)) {
+                if (!$marketItem->refresh()) {
                     \array_push($ignoreList, $repositoryName);
                 }
             }

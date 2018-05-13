@@ -54,7 +54,7 @@ class AmfjMarketItemTest extends TestCase
             $token = str_replace("\n", "", file_get_contents('.github-token'));
             config::addKeyToCore('github::token', $token);
         }
-        $this->downloadManager = new AmfjDownloadManager(true);
+        AmfjDownloadManager:: = new AmfjDownloadManager(true);
         $this->initialJsonData = json_decode('{"defaultBranch":"master","gitId":"NextDom","repository":"plugin-AndroidRemoteControl","id":"AndroidRemoteControl","name":"AndroidRemoteControl","licence":"AGPL","description":"Plugin pour Android","require":"3.0","category":"multimedia","documentation":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/","changelog":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/fr_FR\/changelog.html","author":"NextDom [Byackee, Slobberbone]","branches":[{"name":"develop","hash":"5fa1e78312068d6c3d6ad91c237400ac5d202f0f"},{"name":"master","hash":"f4e6b46d05261c12366626029475a77d37e50f03"}],"screenshots":["https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot1.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot2.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot3.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot4.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot5.png","https:\/\/github.com\/NextDom\/plugin-AndroidRemoteControl\/raw\/master\/docs\/images\/Screenshot6.png"]}', true);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
@@ -92,7 +92,7 @@ class AmfjMarketItemTest extends TestCase
 
     public function testCreateFromJson()
     {
-        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, $this->downloadManager);
+        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, AmfjDownloadManager::);
         $this->assertEquals('NextDom/plugin-AndroidRemoteControl', $marketItem->getFullName());
         $this->assertCount(2, $marketItem->getBranchesList());
         $this->assertEquals('multimedia', $marketItem->getCategory());
@@ -154,7 +154,7 @@ class AmfjMarketItemTest extends TestCase
     public function testWriteCache()
     {
         update::$byLogicalIdResult = false;
-        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, $this->downloadManager);
+        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, AmfjDownloadManager::);
         $marketItem->writeCache();
         $data = $this->dataStorage->getJsonData('repo_data_NextDom_plugin-AndroidRemoteControl');
         $this->assertNotNull($data);
@@ -185,7 +185,7 @@ class AmfjMarketItemTest extends TestCase
 
     public function testDescriptionOverrideWithPluginDescription()
     {
-        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, $this->downloadManager);
+        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, AmfjDownloadManager::);
         $pluginInformations = array(
             'id' => 'Core',
             'name' => 'Core for test',
@@ -200,7 +200,7 @@ class AmfjMarketItemTest extends TestCase
 
     public function testDescriptionOverrideWithoutPluginDescription()
     {
-        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, $this->downloadManager);
+        $marketItem = AmfjMarketItem::createFromJson('Test Market', $this->initialJsonData, AmfjDownloadManager::);
         $pluginInformations = array(
             'id' => 'Core',
             'name' => 'Core for test',
@@ -216,9 +216,9 @@ class AmfjMarketItemTest extends TestCase
     {
         $modifiedData = $this->initialJsonData;
         $modifiedData['branches'] = [];
-        $marketItem = AmfjMarketItem::createFromJson('Test Market', $modifiedData, $this->downloadManager);
+        $marketItem = AmfjMarketItem::createFromJson('Test Market', $modifiedData, AmfjDownloadManager::);
         $marketItem->setFullName('ABadFullName');
-        $marketItem->downloadBranchesInformations($this->downloadManager);
+        $marketItem->downloadBranchesInformations(AmfjDownloadManager::);
         $result = $marketItem->getBranchesList();
         $this->assertCount(0, $result);
     }
@@ -227,8 +227,8 @@ class AmfjMarketItemTest extends TestCase
     {
         $modifiedData = $this->initialJsonData;
         $modifiedData['branches'] = [];
-        $marketItem = AmfjMarketItem::createFromJson('Test Market', $modifiedData, $this->downloadManager);
-        $marketItem->downloadBranchesInformations($this->downloadManager);
+        $marketItem = AmfjMarketItem::createFromJson('Test Market', $modifiedData, AmfjDownloadManager::);
+        $marketItem->downloadBranchesInformations(AmfjDownloadManager::);
         $result = $marketItem->getBranchesList();
         $this->assertCount(2, $result);
     }

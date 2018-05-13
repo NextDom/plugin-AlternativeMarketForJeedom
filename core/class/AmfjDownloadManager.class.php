@@ -23,55 +23,49 @@ class AmfjDownloadManager
     /**
      * @var bool Statut de la connexion
      */
-    protected $connectionStatus;
+    protected static $connectionStatus = false;
 
     /**
      * @var string Token GitHub
      */
-    protected $gitHubToken;
+    protected static $gitHubToken;
     
     /**
      * @var string
      */
-    private $urlForTest = 'www.google.fr';
-    
-    public function getUrlForTest()
+    private static $urlForTest = 'www.google.fr';
+
+    private function __construct()
     {
-        return $this->urlForTest;      
     }
-    
-    public function setUrlForTest($urlForTest)
-    {
-        $this->urlForTest = $urlForTest;
-        return $this;
-    }
-    
+
     /**
      * Constructeur testant le statut de la connexion.
      */
-    public function __construct($forceConnectionStatus = null)
+    public static function init($forceConnectionStatus = null)
     {
         if ($forceConnectionStatus !== null) {
-            $this->connectionStatus = $forceConnectionStatus;
+            self::$connectionStatus = $forceConnectionStatus;
         }
         else {
-            $this->connectionStatus = false;
-            $this->testConnection();
+            if (!self::isConnected()) {
+                self::testConnection();
+            }
         }
-        $this->gitHubToken = config::byKey('github::token');
+        self::$gitHubToken = config::byKey('github::token');
     }
 
     /**
      * Test le statut de la connexion.
      */
-    protected function testConnection()
+    protected static function testConnection()
     {
-        $sock = \fsockopen($this->getUrlForTest(), 80);
+        $sock = \fsockopen(self::$urlForTest, 80);
         if ($sock !== false) {
-            $this->connectionStatus = true;
+            self::$connectionStatus = true;
             fclose($sock);
         } else {
-            $this->connectionStatus = $sock;
+            self::$connectionStatus = $sock;
         }
     }
 
@@ -80,9 +74,9 @@ class AmfjDownloadManager
      *
      * @return bool True si la connexion fonctionne
      */
-    public function isConnected()
+    public static function isConnected()
     {
-        return $this->connectionStatus;
+        return self::$connectionStatus;
     }
 
     /**
@@ -93,10 +87,10 @@ class AmfjDownloadManager
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
-    public function downloadContent($url, $binary = false)
+    public static function downloadContent($url, $binary = false)
     {
-        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
-            $toAdd = 'access_token=' . $this->gitHubToken;
+        if (self::$gitHubToken !== false && self::$gitHubToken != '' && !$binary) {
+            $toAdd = 'access_token=' . self::$gitHubToken;
             // Test si un paramètre a déjà été passé
             if (strpos($url, '?') !== false) {
                 $url = $url . '&' . $toAdd;
@@ -106,10 +100,10 @@ class AmfjDownloadManager
         }
         log::add('AlternativeMarketForJeedom', 'debug', 'Download ' . $url);
         $result = false;
-        if ($this->isCurlEnabled()) {
-            $result = $this->downloadContentWithCurl($url, $binary);
-        } elseif ($this->isUrlFopenEnabled()) {
-            $result = $this->downloadContentWithFopen($url);
+        if (self::isCurlEnabled()) {
+            $result = self::downloadContentWithCurl($url, $binary);
+        } elseif (self::isUrlFopenEnabled()) {
+            $result = self::downloadContentWithFopen($url);
         }
         return $result;
     }
@@ -120,9 +114,9 @@ class AmfjDownloadManager
      * @param string $url Lien du fichier
      * @param string $dest Destination du fichier
      */
-    public function downloadBinary($url, $dest)
+    public static function downloadBinary($url, $dest)
     {
-        $imgData = $this->downloadContent($url, true);
+        $imgData = self::downloadContent($url, true);
         if (\file_exists($dest)) {
             \unlink($dest);
         }
@@ -136,7 +130,7 @@ class AmfjDownloadManager
      *
      * @return bool True si la fonctionnalité est activée
      */
-    protected function isCurlEnabled()
+    protected static function isCurlEnabled()
     {
         return function_exists('curl_version');
     }
@@ -149,7 +143,7 @@ class AmfjDownloadManager
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
-    protected function downloadContentWithCurl($url, $binary = false)
+    protected static function downloadContentWithCurl($url, $binary = false)
     {
         $content = false;
         $curlSession = curl_init();
@@ -171,7 +165,7 @@ class AmfjDownloadManager
      *
      * @return bool True si c'est possible
      */
-    protected function isUrlFopenEnabled()
+    protected static function isUrlFopenEnabled()
     {
         return \ini_get('allow_fopen_url');
     }
@@ -183,7 +177,7 @@ class AmfjDownloadManager
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
-    protected function downloadContentWithFopen($url)
+    protected static function downloadContentWithFopen($url)
     {
         try {
             $result = \file_get_contents($url);

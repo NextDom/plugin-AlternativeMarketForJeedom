@@ -46,55 +46,55 @@ class DownloadManagerTest extends TestCase
 
     public function setUp()
     {
-        $this->downloadManager = new Mocked_Amfj_DownloadManager();
+        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
     }
 
     public function testIsConnected() {
-        $this->assertTrue($this->downloadManager->isConnected());
+        $this->assertTrue(AmfjDownloadManager::->isConnected());
     }
 
     public function testIsConnectedWithoutConnection() {
-        $this->downloadManager->setConnectionStatus(false);
-        $this->assertFalse($this->downloadManager->isConnected());
+        AmfjDownloadManager::->setConnectionStatus(false);
+        $this->assertFalse(AmfjDownloadManager::->isConnected());
     }
 
     public function testDownloadContent() {
-        $content = $this->downloadManager->downloadContent('http://www.perdu.com');
+        $content = AmfjDownloadManager::->downloadContent('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlGoodContent() {
-        $content = $this->downloadManager->downloadContentWithCurl('http://www.perdu.com');
+        $content = AmfjDownloadManager::->downloadContentWithCurl('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlBadContent() {
-        $content = $this->downloadManager->downloadContentWithCurl('https://www.google.frrandom');
+        $content = AmfjDownloadManager::->downloadContentWithCurl('https://www.google.frrandom');
         $this->assertFalse($content);
     }
 
     public function testDownloadBinary() {
         system('wget -q https://www.facebook.com/images/fb_icon_325x325.png');
-        $this->downloadManager->downloadBinary('https://www.facebook.com/images/fb_icon_325x325.png', 'test.png');
+        AmfjDownloadManager::->downloadBinary('https://www.facebook.com/images/fb_icon_325x325.png', 'test.png');
         $this->assertFileEquals('fb_icon_325x325.png', 'test.png');
         unlink('fb_icon_325x325.png');
         unlink('test.png');
     }
 
     public function testDdwnloadContentWithFopenGoodContent() {
-        $content = $this->downloadManager->downloadContentWithFopen('http://www.perdu.com');
+        $content = AmfjDownloadManager::->downloadContentWithFopen('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithFopenBadContent() {
-        $content = $this->downloadManager->downloadContentWithFopen('https://www.google.frrandom');
+        $content = AmfjDownloadManager::->downloadContentWithFopen('https://www.google.frrandom');
         $this->assertFalse($content);
     }
 
     public function testDownloadWithoutGitHubToken() {
         config::addKeyToCore('github::token', '');
-        $this->downloadManager = new Mocked_Amfj_DownloadManager();
-        $this->downloadManager->downloadContent('http://github.com/Test/Test');
+        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
+        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test');
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);
@@ -103,8 +103,8 @@ class DownloadManagerTest extends TestCase
 
     public function testDownloadBinaryWithGitHubToken() {
         config::addKeyToCore('github::token', 'SIMPLECHAIN');
-        $this->downloadManager = new Mocked_Amfj_DownloadManager();
-        $this->downloadManager->downloadContent('http://github.com/Test/Test', true);
+        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
+        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test', true);
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);
@@ -113,8 +113,8 @@ class DownloadManagerTest extends TestCase
 
     public function testDownloadWithGitHubTokenSimpleUrl() {
         config::addKeyToCore('github::token', 'SIMPLECHAIN');
-        $this->downloadManager = new Mocked_Amfj_DownloadManager();
-        $this->downloadManager->downloadContent('http://github.com/Test/Test');
+        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
+        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test');
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);
@@ -123,8 +123,8 @@ class DownloadManagerTest extends TestCase
 
     public function testDownloadWithGitHubTokenComplexUrl() {
         config::addKeyToCore('github::token', 'SIMPLECHAIN');
-        $this->downloadManager = new Mocked_Amfj_DownloadManager();
-        $this->downloadManager->downloadContent('http://github.com/Test/Test?test=something');
+        AmfjDownloadManager:: = new Mocked_Amfj_DownloadManager();
+        AmfjDownloadManager::->downloadContent('http://github.com/Test/Test?test=something');
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
         $this->assertEquals('log_add', $actions[0]['action']);

@@ -25,10 +25,6 @@ class AmfjMarket
      * @var int Temps de rafraichissement de la liste des plugins
      */
     private $REFRESH_TIME_LIMIT = 86400;
-    /**
-     * @var AmfjDownloadManager Gestionnaire de téléchargement
-     */
-    private $downloadManager;
 
     /**
      * @var Utilisateur Git des depôts
@@ -47,7 +43,7 @@ class AmfjMarket
      */
     public function __construct($source)
     {
-        $this->downloadManager = new AmfjDownloadManager();
+        AmfjDownloadManager::init();
         $this->source = $source;
         $this->dataStorage = new AmfjDataStorage('amfj');
     }
@@ -62,7 +58,7 @@ class AmfjMarket
     public function refresh($force = false)
     {
         $result = false;
-        if ($this->downloadManager->isConnected()) {
+        if (AmfjDownloadManager::isConnected()) {
             if ($this->source['type'] == 'github') {
                 $result = $this->refreshGitHub($force);
             } elseif ($this->source['type'] == 'json') {
@@ -104,13 +100,13 @@ class AmfjMarket
         $result = false;
         $content = null;
         if ($force || $this->isUpdateNeeded($this->source['name'])) {
-            $content = $this->downloadManager->downloadContent($this->source['data']);
+            $content = AmfjDownloadManager::downloadContent($this->source['data']);
             if ($content !== false) {
                 $marketData = json_decode($content, true);
                 $lastChange = $this->dataStorage->getRawData('repo_last_change_' . $this->source['name']);
                 if ($lastChange == null || $marketData['version'] > $lastChange) {
                     foreach ($marketData['plugins'] as $plugin) {
-                        $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin, $this->downloadManager);
+                        $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin);
                         $marketItem->writeCache();
                     }
                     $result = true;
