@@ -1,10 +1,9 @@
 // Point d'entrée du script
 $(document).ready(function () {
-    $('#sources-list-save').click(saveSourcesChoices);
     var gitsListUl = $('#gitid-list');
+    var showedGitHubSource = false;
     if (sourcesList.length > 0) {
         for (var sourceIndex = 0; sourceIndex < sourcesList.length; ++sourceIndex) {
-            var showedGitHubSource = false;
             if (sourcesList[sourceIndex]['type'] === 'github') {
                 var sourceData = sourcesList[sourceIndex]['data'];
                 var item = getListItem(sourceData);
@@ -17,6 +16,7 @@ $(document).ready(function () {
         $('#github-list-container').hide();
     }
     $('#add-git').click(addGitId);
+    $('#sources-list-save').click(saveSourcesChoices);
 });
 
 /**
@@ -50,6 +50,7 @@ function addGitId(gitId) {
         ajaxQuery(addGitData, function () {
             var gitsListUl = $('#gitid-list');
             gitsListUl.append(getListItem(gitId));
+            $('#github-list-container').show();
         });
     }
 }
