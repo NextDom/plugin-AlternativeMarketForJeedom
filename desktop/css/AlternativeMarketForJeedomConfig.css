@@ -33,6 +33,20 @@
     transition: background-color .2s;
 }
 
+#sources-list [type="checkbox"]:not(:checked) + label:before,
+#sources-list [type="checkbox"]:checked + label:before {
+    top: -10px;
+}
+
+#sources-list [type="checkbox"]:not(:checked) + label:after,
+#sources-list [type="checkbox"]:checked + label:after {
+    top: -5px;
+}
+
+#sources-list [type="checkbox"]:checked + label:after {
+    top: -5px;
+}
+
 .config-form [type="checkbox"]:not(:checked) + label:after,
 .config-form [type="checkbox"]:checked + label:after {
     width: 20px;
@@ -133,11 +147,6 @@
     margin-top: 1.5em;
 }
 
-#sources-list .list-group-item,
-#sources-list .list-group-item span{
-    height: 50px;
-}
-
 #sources-list .list-button {
     padding: 0;
 }
@@ -148,4 +157,14 @@
     width: 100%;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+#sources-list-save{
+    margin-top: 10px;
+}
+
+.btn-nextdom {
+    color: #fff;
+    background-color: #33B8CC !important;
+    border-color: #33B8CC !important;
 }

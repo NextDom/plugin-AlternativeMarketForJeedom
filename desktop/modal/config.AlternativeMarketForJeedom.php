@@ -49,7 +49,7 @@ sendVarToJs('sourcesList', $sourcesList);
             <ul id="sources-list" class="list-group">
                 <?php foreach ($sourcesList as $source) {
                     if ($source['type'] !== 'github') {
-                        echo '<li class="list-group-item"><span><input id="check-source-'.$source['id'].'" type="checkbox"';
+                        echo '<li class="list-group-item"><span class="pull-right"><input id="check-source-'.$source['id'].'" type="checkbox"';
                         if ($source['enabled'] == 1) {
                             echo ' checked="checked"';
                         }
@@ -57,7 +57,7 @@ sendVarToJs('sourcesList', $sourcesList);
                     }
                 }
                 ?>
-                <li class="list-group-item list-button"><button id="sources-list-save" class="btn btn-primary">{{Sauvegarder}}</button></li>
+                <a class="btn btn-success btn-sm pull-right" id="sources-list-save"><i class="fa fa-check-circle icon-white"></i> Sauvegarder</a>
             </ul>
         </div>
         <div class="container">
@@ -68,7 +68,7 @@ sendVarToJs('sourcesList', $sourcesList);
             <div class="input-group">
                 <input id="git-id" type="text" class="form-control" placeholder="{{Identifiant GitHub..}}"/>
                 <span class="input-group-btn">
-                    <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
+                    <button id="add-git" class="btn btn-nextdom" type="button"><i class="fa fa-plus"></i></button>
                 </span>
             </div>
         </div>
