@@ -82,6 +82,7 @@ class AmfjMarket
     {
         $result = false;
         $gitManager = new AmfjGitManager($this->source['data']);
+        log::add('AlternativeMarketForJeedom', 'debug', 'GITHUB');
         if ($force || $this->isUpdateNeeded($this->source['data'])) {
             $result = $gitManager->updateRepositoriesList();
         }
@@ -173,9 +174,13 @@ class AmfjMarket
         return $result;
     }
 
+    /**
+     * Supprime les informations d'une source
+     */
     public function remove() {
         $this->dataStorage->remove('repo_ignore_'.$this->source['name']);
         $this->dataStorage->remove('repo_last_change_'.$this->source['name'].'%');
         $this->dataStorage->remove('repo_data_'.$this->source['name'].'%');
+        $this->dataStorage->remove('repo_last_update_'.$this->source['name'].'%');
     }
 }

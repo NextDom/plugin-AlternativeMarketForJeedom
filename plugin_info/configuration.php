@@ -43,7 +43,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
             Plugin vous permettant d'installer....
         </div>
     </div>
-    <form id="amfj-config" class="form-horizontal">
+    <form id="amfj-config" class="config-form form-horizontal">
         <div class="form-group">
             <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
                             class="fa fa-question-circle tooltips"
@@ -52,6 +52,16 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
                 <input type="checkbox" id="show-duplicates" class="configKey" data-l1key="show-duplicates"
                        placeholder="{{Afficher les doublons}}"/>
                 <label for="show-duplicates"> </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">{{Filtres des sources}} <sup><i
+                            class="fa fa-question-circle tooltips"
+                            title="{{Afficher les filtres des sources}}"></i></sup> : </label>
+            <div id="div_show-sources-filters" class="col-sm-2 tooltips">
+                <input type="checkbox" id="show-sources-filters" class="configKey" data-l1key="show-sources-filters"
+                       placeholder="{{Afficher les filtres des sources}}"/>
+                <label for="show-sources-filters"> </label>
             </div>
         </div>
         <div class="form-group">

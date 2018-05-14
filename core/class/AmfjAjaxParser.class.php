@@ -46,6 +46,9 @@ class AmfjAjaxParser
             case 'get':
                 $result = static::get($params, $data);
                 break;
+            case 'save':
+                $result = static::save($params, $data);
+                break;
             default :
                 $result = false;
         }
@@ -205,6 +208,7 @@ class AmfjAjaxParser
                 $source->setName($data['id']);
                 $source->setLogicalId($data['id']);
                 $source->setEqType_name('AlternativeMarketForJeedom');
+                $source->setIsEnable(1);
                 $source->setConfiguration('type', $data['type']);
                 $source->setConfiguration('order', 999);
                 $source->setConfiguration('data', $data['id']);
@@ -225,4 +229,27 @@ class AmfjAjaxParser
         }
         return $result;
     }
-}
+
+    /**
+     * Sauvegarde de données
+     *
+     * @param string $params Type de modification
+     * @param array $data Nom de l'utilisateur
+     * @return bool True si une action a été effectuée
+     */
+    public static function save($params, array $data)
+    {
+        switch ($params) {
+            case 'sources':
+                foreach ($data as $source) {
+                    $eqLogicSource = eqLogic::byId($source['id']);
+                    $eqLogicSource->setIsEnable($source['enable']);
+                    $eqLogicSource->save();
+                }
+                $result = true;
+                break;
+            default :
+                $result = false;
+        }
+        return $result;
+    }}

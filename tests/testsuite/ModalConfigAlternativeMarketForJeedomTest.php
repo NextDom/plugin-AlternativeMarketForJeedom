@@ -57,7 +57,7 @@ class ModalConfigAlternativeMarketForJeedomTest extends TestCase
         $this->assertEquals('config.AlternativeMarketForJeedom', $actions[2]['content']['name']);
         $this->assertEquals('include_file', $actions[3]['action']);
         $this->assertEquals('AlternativeMarketForJeedom', $actions[3]['content']['name']);
-        $this->assertContains('shortcuts', $content);
+        $this->assertContains('github-list-container', $content);
         $this->assertContains('div_pluginAlternativeMarketForJeedomAlert', $content);
     }
 }

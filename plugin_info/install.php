@@ -29,12 +29,12 @@ function AlternativeMarketForJeedom_install()
     $dataStorage->createDataTable();
 
     $markets = [
-        ['name' => 'NextDom Stable', 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/stable-result.json'],
-        ['name' => 'NextDom Unstable', 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/unstable-result.json'],
-        ['name' => 'Jeedom', 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/jeedom-result.json'],
-        ['name' => 'Lunarok', 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/lunarok-result.json'],
-        ['name' => 'Mika-nt28', 'order' => 5, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/mika-nt28-result.json'],
-        ['name' => 'Autres', 'order' => 6, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/others-result.json']
+        ['name' => 'NextDom Stable', 'enabled' => 1, 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/stable-result.json'],
+        ['name' => 'NextDom obsolète', 'enabled' => 0, 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/unstable-result.json'],
+        ['name' => 'Lunarok', 'enabled' => 1, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/lunarok-result.json'],
+        ['name' => 'Mika-nt28', 'enabled' => 1, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/mika-nt28-result.json'],
+        ['name' => 'KiwiHC16', 'enabled' => 1, 'order' => 5, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/KiwiHC16-result.json'],
+        ['name' => 'Jeedom', 'enabled' => 1, 'order' => 999, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/jeedom-result.json']
     ];
 
     foreach ($markets as $market) {
@@ -45,6 +45,7 @@ function AlternativeMarketForJeedom_install()
         $defaultMarket->setConfiguration('type', 'json');
         $defaultMarket->setConfiguration('order', $market['order']);
         $defaultMarket->setConfiguration('data', $market['url']);
+        $defaultMarket->setIsEnable($market['enabled']);
         $defaultMarket->save();
     }
 

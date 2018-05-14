@@ -25,20 +25,45 @@ $plugin = plugin::byId('AlternativeMarketForJeedom');
 $eqLogics = eqLogic::byType($plugin->getId());
 
 $sourcesList = array();
+\usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+
 foreach ($eqLogics as $eqLogic) {
     $source = [];
     $source['id'] = $eqLogic->getId();
     $source['name'] = $eqLogic->getName();
     $source['type'] = $eqLogic->getConfiguration()['type'];
     $source['data'] = $eqLogic->getConfiguration()['data'];
+    $source['enabled'] = $eqLogic->getIsEnable();
     array_push($sourcesList, $source);
 }
+
 sendVarToJs('sourcesList', $sourcesList);
+
 ?>
     <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
-    <div id="config-modal">
+    <div id="config-modal" class="config-form">
         <div class="container">
-            <h3>{{Liste des utilisateurs ou organisations GitHub}}</h3>
+            <h3>{{Gestionnaire des sources}}</h3>
+        </div>
+        <div class="container">
+            <ul id="sources-list" class="list-group">
+                <?php foreach ($sourcesList as $source) {
+                    if ($source['type'] !== 'github') {
+                        echo '<li class="list-group-item"><span><input id="check-source-'.$source['id'].'" type="checkbox"';
+                        if ($source['enabled'] == 1) {
+                            echo ' checked="checked"';
+                        }
+                        echo '><label for="check-source-'.$source['id'].'"></label></span><span>'.$source['name'].'</span></li>';
+                    }
+                }
+                ?>
+                <li class="list-group-item list-button"><button id="sources-list-save" class="btn btn-primary">{{Sauvegarder}}</button></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h3>{{Gestionnaire des sources personnalisées}}</h3>
+        </div>
+        <div class="container">
             <label>{{Ajouter : }}</label>
             <div class="input-group">
                 <input id="git-id" type="text" class="form-control" placeholder="{{Identifiant GitHub..}}"/>
@@ -46,12 +71,11 @@ sendVarToJs('sourcesList', $sourcesList);
                     <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
                 </span>
             </div>
-        <br/><!--TODO a enlever-->
+        </div>
+        <div id="github-list-container" class="container">
             <label>{{Liste des dépots configurés : }}</label>
             <ul id="gitid-list" class="list-group">
             </ul>
-            <label>{{Dépôts GitHub disponibles : }}</label>
-            <div id="shortcuts"></div>
         </div>
     </div>
 <?php

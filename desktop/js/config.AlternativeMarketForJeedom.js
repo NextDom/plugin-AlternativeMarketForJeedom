@@ -1,21 +1,21 @@
 // Point d'entrée du script
 $(document).ready(function () {
-    var shortcuts = ['NextDom', 'jeedom'];
-    var shortcutsImg = ['/plugins/AlternativeMarketForJeedom/plugin_info/AlternativeMarketForJeedom_icon.png','/plugins/AlternativeMarketForJeedom/resources/jeedom-logo.png'];
-    var gitsListUl = $('#config-modal ul');
-    for (var sourceIndex = 0; sourceIndex < sourcesList.length; ++sourceIndex) {
-        if (sourcesList[sourceIndex]['type'] === 'github') {
-            var sourceData = sourcesList[sourceIndex]['data'];
-            var item = getListItem(sourceData);
-            var indexOfItem = shortcuts.indexOf(sourceData);
-            if (indexOfItem !== -1) {
-                shortcuts.splice(indexOfItem, 1);
-                shortcutsImg.splice(indexOfItem, 1);
+    $('#sources-list-save').click(saveSourcesChoices);
+    var gitsListUl = $('#gitid-list');
+    if (sourcesList.length > 0) {
+        for (var sourceIndex = 0; sourceIndex < sourcesList.length; ++sourceIndex) {
+            var showedGitHubSource = false;
+            if (sourcesList[sourceIndex]['type'] === 'github') {
+                var sourceData = sourcesList[sourceIndex]['data'];
+                var item = getListItem(sourceData);
+                gitsListUl.append(item);
+                showedGitHubSource = true;
             }
-            gitsListUl.append(item);
         }
     }
-    showShortcuts(shortcuts, shortcutsImg);
+    if (!showedGitHubSource) {
+        $('#github-list-container').hide();
+    }
     $('#add-git').click(addGitId);
 });
 
@@ -38,29 +38,6 @@ function getListItem(itemData) {
     return item;
 }
 
-function showShortcuts(shortcuts, shortcutsImg) {
-    $('#shortcuts').empty();
-    if (shortcuts.length > 0) {
-        for (var shortcutIndex = 0; shortcutIndex < shortcuts.length; ++shortcutIndex) {
-            var item = null;
-            if (shortcutsImg[shortcutIndex] !== ''){
-                item = $(' <button class="btn btn-config-market"><img src="' + shortcutsImg[shortcutIndex] + '"/></br><span>' + shortcuts[shortcutIndex] + '</span></button> ');
-            }
-            else {
-                item = $(' <button class="btn btn-config-market"><span>' + shortcuts[shortcutIndex] + '</span></button> ');
-            }
-            item.click(function () {
-                addGitId($(this).text());
-                $(this).remove();
-            });
-            $('#shortcuts').append(item);
-        }
-    }
-    else {
-        $('#shortcuts').hide();
-    }
-}
-
 /**
  * Ajouter un utilisateur à la liste
  */
@@ -71,7 +48,7 @@ function addGitId(gitId) {
     if (gitId !== '') {
         var addGitData = {action: 'source', params: 'add', data: {type: 'github', id: gitId}};
         ajaxQuery(addGitData, function () {
-            var gitsListUl = $('#config-modal ul');
+            var gitsListUl = $('#gitid-list');
             gitsListUl.append(getListItem(gitId));
         });
     }
@@ -93,6 +70,22 @@ function removeGitId(gitId) {
             });
         });
     }
+}
+
+function saveSourcesChoices() {
+    var inputsList = $('#sources-list input').toArray();
+    var result = [];
+    for (var i = 0; i < inputsList.length; ++i) {
+        var item = $(inputsList[i]);
+        var itemId = item.attr('id').substr(13);
+        var enable = 0;
+
+        if (item.is(':checked')) {
+            enable = 1;
+        }
+        result.push({id: itemId, enable: enable});
+    }
+    ajaxQuery({action: 'save', params: 'sources', data: result});
 }
 
 /**
@@ -121,3 +114,4 @@ function ajaxQuery(queryData, callbackFunc) {
         }
     });
 }
+

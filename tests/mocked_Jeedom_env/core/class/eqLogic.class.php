@@ -59,4 +59,12 @@ class eqLogic
     public static function byType($typeId) {
         return [];
     }
+
+    public function setIsEnable($isEnable) {
+
+    }
+
+    public function getIsEnable() {
+        return true;
+    }
 }

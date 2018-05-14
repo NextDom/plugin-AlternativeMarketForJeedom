@@ -24,7 +24,7 @@ if (!isConnect('admin')) {
 }
 
 $plugin = plugin::byId('AlternativeMarketForJeedom');
-$eqLogics = eqLogic::byType($plugin->getId());
+$eqLogics = eqLogic::byType($plugin->getId(), true);
 \usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpByOrder'));
 
 $sourcesList = array();
@@ -59,7 +59,7 @@ include_file('core', 'plugin.template', 'js');
 <div class="market-filters row">
     <div id="market-filter-src" class="btn-group col-sm-10">
         <?php
-        if (count($eqLogics) > 1) {
+        if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) {
             foreach ($eqLogics as $eqLogic) {
                 $name = $eqLogic->getName();
                 echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
