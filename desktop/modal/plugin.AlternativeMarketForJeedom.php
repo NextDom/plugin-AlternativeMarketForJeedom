@@ -15,6 +15,8 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
+include_file('core', 'authentification', 'php');
+
 if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }
@@ -87,4 +89,5 @@ if (!isConnect('admin')) {
     <div id="plugin-modal-footer" class="row">
     </div>
 </div>
-<script src="plugins/AlternativeMarketForJeedom/desktop/js/plugin.AlternativeMarketForJeedom.js"></script>
+<?php
+include_file('desktop', 'plugin.AlternativeMarketForJeedom', 'js', 'AlternativeMarketForJeedom');

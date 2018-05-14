@@ -17,6 +17,8 @@
 
 require_once __DIR__ . '/../../core/class/AmfjMarket.class.php';
 
+include_file('core', 'authentification', 'php');
+
 if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }

@@ -15,9 +15,12 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
+include_file('core', 'authentification', 'php');
+
 if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }
+
 $plugin = plugin::byId('AlternativeMarketForJeedom');
 $eqLogics = eqLogic::byType($plugin->getId());
 
@@ -35,16 +38,16 @@ sendVarToJs('sourcesList', $sourcesList);
     <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
     <div id="config-modal">
         <div class="container">
-            <h3>Liste des utilisateurs ou organisations GitHub</h3>
-            <label>Ajouter :</label>
+            <h3>{{Liste des utilisateurs ou organisations GitHub}}</h3>
+            <label>{{Ajouter : }}</label>
             <div class="input-group">
-                <input id="git-id" type="text" class="form-control" placeholder="Identifiant GitHub..."/>
+                <input id="git-id" type="text" class="form-control" placeholder="{{Identifiant GitHub..}}"/>
                 <span class="input-group-btn">
                     <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
                 </span>
             </div>
         </br>
-            <label>Liste des dépots configurés :</label>
+            <label>{{Liste des dépots configurés : }}</label>
             <ul id="gitid-list" class="list-group">
             </ul>
             <label>{{Dépôts GitHub disponibles : }}</label>
