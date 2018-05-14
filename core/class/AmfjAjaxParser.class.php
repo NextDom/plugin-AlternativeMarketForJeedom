@@ -210,7 +210,7 @@ class AmfjAjaxParser
                 $source->setEqType_name('AlternativeMarketForJeedom');
                 $source->setIsEnable(1);
                 $source->setConfiguration('type', $data['type']);
-                $source->setConfiguration('order', 999);
+                $source->setConfiguration('order', 888);
                 $source->setConfiguration('data', $data['id']);
                 $source->save();
                 $result = true;
