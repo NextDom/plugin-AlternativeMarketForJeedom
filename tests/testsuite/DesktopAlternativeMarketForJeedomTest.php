@@ -69,4 +69,16 @@ class DesktopAlternativeMarketForJeedomTest extends TestCase
         $content = ob_get_clean();
         $this->assertNotContains('<button type="button" class="btn btn-primary" data-source="', $content);
     }
+
+    public function testWithMessage() {
+        $_GET['message'] = 0;
+        ob_start();
+        include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
+        ob_get_clean();
+        $actions = MockedActions::get();
+        $this->assertCount(6, $actions);
+        $this->assertEquals('sendVarToJs', $actions[2]['action']);
+        $this->assertEquals('messageToUser', $actions[2]['content']['var']);
+        $this->assertContains('mise à jour', $actions[2]['content']['value']);
+    }
 }

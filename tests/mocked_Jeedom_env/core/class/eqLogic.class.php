@@ -22,6 +22,8 @@ class eqLogic
 {
     public $name;
 
+    public $configuration = array();
+
     public function save() {
         MockedActions::add('eqLogic_save', $this->name);
     }
@@ -34,6 +36,10 @@ class eqLogic
         $this->name = $name;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
     public function setLogicalId($logicalId) {
 
     }
@@ -42,8 +48,12 @@ class eqLogic
 
     }
 
-    public function setConfiguration($configuration) {
+    public function setConfiguration($key, $configuration) {
+        $this->configuration[$key] = $configuration;
+    }
 
+    public function getConfiguration() {
+        return $this->configuration;
     }
 
     public static function byType() {
