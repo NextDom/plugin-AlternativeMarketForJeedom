@@ -25,7 +25,7 @@ if (!isConnect('admin')) {
 
 $plugin = plugin::byId('AlternativeMarketForJeedom');
 $eqLogics = eqLogic::byType($plugin->getId());
-\usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpFunc'));
+\usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpByOrder'));
 
 $sourcesList = array();
 foreach ($eqLogics as $eqLogic) {

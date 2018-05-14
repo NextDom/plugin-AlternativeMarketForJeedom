@@ -29,14 +29,14 @@ class AmfjGitManager
      */
     private $gitId;
     /**
-     * @var DataStorage Gestionnaire de base de données
+     * @var AmfjDataStorage Gestionnaire de base de données
      */
     private $dataStorage;
 
     /**
      * Constructeur du gestionnaire Git
      *
-     * @param $gitId Utilisateur du compte Git
+     * @param string $gitId Utilisateur du compte Git
      */
     public function __construct($gitId)
     {

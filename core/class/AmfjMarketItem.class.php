@@ -60,7 +60,7 @@ class AmfjMarketItem
      */
     private $category;
     /**
-     * @var DataStorage Gestionnaire de base de données
+     * @var AmfjDataStorage Gestionnaire de base de données
      */
     private $dataStorage;
     /**
@@ -212,7 +212,7 @@ class AmfjMarketItem
     /**
      * Test si une mise à jour est nécessaire
      *
-     * @param $repositoryInformations Informations de GitHub
+     * @param array $repositoryInformations Informations de GitHub
      *
      * @return bool True si une mise à jour est nécessaire
      */
@@ -307,8 +307,6 @@ class AmfjMarketItem
     /**
      * Met à jour les données de l'élement
      *
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
-     *
      * @return bool True si la mise à jour a été effectuée.
      */
     public function refresh()
@@ -331,8 +329,6 @@ class AmfjMarketItem
 
     /**
      * Télécharge l'icône du plugin
-     *
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      */
     public function downloadIcon()
     {
@@ -352,8 +348,6 @@ class AmfjMarketItem
 
     /**
      * Met à jour les données des branches
-     *
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      *
      * @return bool True si les données ont été trouvées
      */

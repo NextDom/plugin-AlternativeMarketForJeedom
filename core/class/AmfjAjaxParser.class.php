@@ -32,6 +32,7 @@ class AmfjAjaxParser
      * @param mixed $data Données de la requête
      *
      * @return array|bool Résultat
+     * @throws Exception
      */
     public static function parse($action, $params, $data)
     {
@@ -86,6 +87,7 @@ class AmfjAjaxParser
      * @param bool $force Force la mise à jour.
      *
      * @return bool True si une mise à jour a été réalisée ou que la mise à jour n'est pas nécessaire.
+     * @throws Exception
      */
     private static function refreshList($sources, $force)
     {
@@ -103,7 +105,9 @@ class AmfjAjaxParser
     }
     
     /**
-    * @return bool
+     * Rafraichir le hash de la branch à partir des données de Jeedom.
+     *
+    * @return bool True si le rafraichissement à été effectué
     */
     private static function refreshBranchHash(array $data)
     {
@@ -126,6 +130,7 @@ class AmfjAjaxParser
      */
     public static function get($params, $data)
     {
+        $result = false;
         switch ($params) {
             case 'list':
                 if (is_array($data)) {

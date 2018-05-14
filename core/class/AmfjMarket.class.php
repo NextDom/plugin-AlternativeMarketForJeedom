@@ -27,19 +27,19 @@ class AmfjMarket
     private $REFRESH_TIME_LIMIT = 86400;
 
     /**
-     * @var Utilisateur Git des depôts
+     * @var string Utilisateur Git des depôts
      */
     private $source;
 
     /**
-     * @var DataStorage Gestionnaire de base de données
+     * @var AmfjDataStorage Gestionnaire de base de données
      */
     private $dataStorage;
 
     /**
      * Constructeur initialisant le gestionnaire de téléchargement
      *
-     * @param $source Nom de la source
+     * @param array $source Nom de la source
      */
     public function __construct($source)
     {
@@ -54,6 +54,7 @@ class AmfjMarket
      * @param bool $force Forcer la mise à jour
      *
      * @return True si une mise à jour a été réalisée
+     * @throws Exception
      */
     public function refresh($force = false)
     {
@@ -75,6 +76,7 @@ class AmfjMarket
      *
      * @param bool $force Forcer la mise à jour
      * @return bool True si un rafraichissement a eu lieu
+     * @throws Exception
      */
     public function refreshGitHub($force)
     {

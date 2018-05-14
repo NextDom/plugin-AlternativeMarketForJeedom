@@ -25,7 +25,7 @@ if (!isConnect('admin')) {
 <div id="plugin-modal">
     <div id="plugin-modal-header" class="row">
         <div class="col-xs-12 col-sm-4 col-md-3 left-pane">
-            <img id="plugin-icon"/>
+            <img id="plugin-icon" src=""/>
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9 right-pane">
             <span class="button-item">

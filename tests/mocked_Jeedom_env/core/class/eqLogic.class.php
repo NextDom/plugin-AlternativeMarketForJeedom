@@ -56,7 +56,7 @@ class eqLogic
         return $this->configuration;
     }
 
-    public static function byType() {
+    public static function byType($typeId) {
         return [];
     }
 }

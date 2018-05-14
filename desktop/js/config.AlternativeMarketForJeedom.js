@@ -42,11 +42,12 @@ function showShortcuts(shortcuts, shortcutsImg) {
     $('#shortcuts').empty();
     if (shortcuts.length > 0) {
         for (var shortcutIndex = 0; shortcutIndex < shortcuts.length; ++shortcutIndex) {
+            var item = null;
             if (shortcutsImg[shortcutIndex] !== ''){
-                var item = $(' <button class="btn btn-config-market"><img src="' + shortcutsImg[shortcutIndex] + '"/></br><span>' + shortcuts[shortcutIndex] + '</span></button> ');
+                item = $(' <button class="btn btn-config-market"><img src="' + shortcutsImg[shortcutIndex] + '"/></br><span>' + shortcuts[shortcutIndex] + '</span></button> ');
             }
             else {
-                var item = $(' <button class="btn btn-config-market"><span>' + shortcuts[shortcutIndex] + '</span></button> ');
+                item = $(' <button class="btn btn-config-market"><span>' + shortcuts[shortcutIndex] + '</span></button> ');
             }
             item.click(function () {
                 addGitId($(this).text());

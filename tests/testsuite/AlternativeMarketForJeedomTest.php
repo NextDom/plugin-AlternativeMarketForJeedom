@@ -46,7 +46,7 @@ class AlternativeMarketForJeedomTest extends TestCase
             $testObj->setConfiguration('order', $data['order']);
             \array_push($listEqLogic, $testObj);
         }
-        \usort($listEqLogic, array('AlternativeMarketForJeedom', 'cmpFunc'));
+        \usort($listEqLogic, array('AlternativeMarketForJeedom', 'cmpByOrder'));
         $this->assertEquals('obj4', $listEqLogic[0]->getName());
         $this->assertEquals('obj3', $listEqLogic[2]->getName());
         $this->assertEquals('obj1', $listEqLogic[4]->getName());

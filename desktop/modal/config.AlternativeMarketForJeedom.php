@@ -46,7 +46,7 @@ sendVarToJs('sourcesList', $sourcesList);
                     <button id="add-git" class="btn btn-primary" type="button"><i class="fa fa-plus"></i></button>
                 </span>
             </div>
-        </br>
+        <br/><!--TODO a enlever-->
             <label>{{Liste des dépots configurés : }}</label>
             <ul id="gitid-list" class="list-group">
             </ul>
