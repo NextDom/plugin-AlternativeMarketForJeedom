@@ -153,5 +153,5 @@ function displayException($exceptionMsg)
 
 function sendVarToJs($jsVar, $pluginId)
 {
-
+    MockedActions::add('sendVarToJs', array('var' => $jsVar, 'pluginId' => $pluginId));
 }

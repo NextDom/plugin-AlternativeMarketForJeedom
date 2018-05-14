@@ -48,15 +48,17 @@ class DesktopAlternativeMarketForJeedomTest extends TestCase
         include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
         $actions = MockedActions::get();
-        $this->assertCount(4, $actions);
+        $this->assertCount(5, $actions);
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
-        $this->assertEquals('include_file', $actions[1]['action']);
-        $this->assertEquals('AlternativeMarketForJeedom', $actions[1]['content']['name']);
+        $this->assertEquals('sendVarToJs', $actions[1]['action']);
+        $this->assertEquals('sourcesList', $actions[1]['content']['var']);
         $this->assertEquals('include_file', $actions[2]['action']);
         $this->assertEquals('AlternativeMarketForJeedom', $actions[2]['content']['name']);
         $this->assertEquals('include_file', $actions[3]['action']);
-        $this->assertEquals('plugin.template', $actions[3]['content']['name']);
+        $this->assertEquals('AlternativeMarketForJeedom', $actions[3]['content']['name']);
+        $this->assertEquals('include_file', $actions[4]['action']);
+        $this->assertEquals('plugin.template', $actions[4]['content']['name']);
         $this->assertContains('market-filters', $content);
         $this->assertContains('market-filter-category', $content);
     }
