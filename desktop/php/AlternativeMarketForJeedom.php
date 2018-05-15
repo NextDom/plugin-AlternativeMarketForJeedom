@@ -69,8 +69,9 @@ include_file('core', 'plugin.template', 'js');
     </div>
     <div class="col-sm-2">
         <div id="admin-buttons" class="btn-group">
+            <a href="index.php?v=d&p=plugin&id=AlternativeMarketForJeedom" class="btn btn-primary"><i class="fa fa-wrench"></i> {{Configurer}}</a>
             <button id="refresh-markets" class="btn btn-primary">
-                {{Rafraîchir}} <i class="fa fa-refresh"></i>
+                <i class="fa fa-refresh"></i> {{Rafraîchir}}
             </button>
         </div>
     </div>
