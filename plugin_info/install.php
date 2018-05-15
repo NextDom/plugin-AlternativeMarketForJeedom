@@ -29,10 +29,12 @@ function AlternativeMarketForJeedom_install()
     $dataStorage->createDataTable();
 
     $markets = [
-        ['name' => 'NextDom Stable', 'enabled' => 1, 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/stable.json'],
-        ['name' => 'NextDom obsolète', 'enabled' => 0, 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/unstable.json'],
-        ['name' => 'Lunarok', 'enabled' => 1, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok.json'],
-        ['name' => 'Mika-nt28', 'enabled' => 1, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28.json'],
+        ['name' => 'NextDom Stable', 'enabled' => 1, 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-stable.json'],
+        ['name' => 'NextDom draft', 'enabled' => 0, 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-draft.json'],
+        ['name' => 'Lunarok', 'enabled' => 1, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-stable.json'],
+        ['name' => 'Lunarok draft', 'enabled' => 0, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-draft.json'],
+        ['name' => 'Mika-nt28', 'enabled' => 1, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-stable.json'],
+        ['name' => 'Mika-nt28 draft', 'enabled' => 0, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-draft.json'],
         ['name' => 'KiwiHC16', 'enabled' => 1, 'order' => 5, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/KiwiHC16.json'],
         ['name' => 'Jeedom', 'enabled' => 1, 'order' => 999, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/jeedom.json']
     ];

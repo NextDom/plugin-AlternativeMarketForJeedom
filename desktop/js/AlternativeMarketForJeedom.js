@@ -342,9 +342,9 @@ function showPluginModal(pluginData, iconPath) {
 }
 
 function showMessage() {
-    if (typeof messageToUser !== 'undefined') {
+    if (typeof messageToUser !== 'undefined' && messageToUser !== '') {
         var toast = $('<div class="amfj-toast">' + messageToUser + '</div>');
-        console.log($('#market-div'));
+        messageToUser = '';
         $('main').append(toast);
         setTimeout(function () {
             toast.addClass('showed');
