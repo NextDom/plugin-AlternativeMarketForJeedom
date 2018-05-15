@@ -37,10 +37,13 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
         <div class="panel-heading" role="tab">
             <h4 class="panel-title">
                 Présentation
+                <a class="btn btn-primary btn-xs pull-right" id="btn-nextdom-info" target="_blank" href="https://nextdom.github.io/"><i class="fa fa-info-circle"></i> Pour en savoir plus</a>
             </h4>
         </div>
         <div class="panel-body">
-            Plugin vous permettant d'installer....
+            Ce plugin mis à disposition par l'équipe NextDom vous permet d'accéder à une multitude de plugins développés pour la solution Jeedom. 
+</br>
+En plus du dépot officiel NextDom contenant des plugins développés et validés par l'équipe, ce plugin vous permet d'ajouter n'importe quelle source en provenance de GitHub.
         </div>
     </div>
     <form id="amfj-config" class="config-form form-horizontal">
