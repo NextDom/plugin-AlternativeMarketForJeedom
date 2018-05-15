@@ -25,10 +25,10 @@ if (!isConnect('admin')) {
 <div id="disclaimer-modal">
     <div class="alert alert-danger" role="alert">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <i class="fa fa-5x fa-exclamation-triangle"></i>
             </div>
-            <div class="col-md-10">
+            <div class="col-md-11">
                 <p>{{L'utilisation de ce plugin et des plugins qu'il installe n'a aucun lien avec la société Jeedom SAS. Si vous avez fait l'acquisition d'un Service Pack, la société Jeedom SAS pourra vous refuser le support.}}</p>
             </div>
         </div>
