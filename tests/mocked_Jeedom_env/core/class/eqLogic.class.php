@@ -29,7 +29,7 @@ class eqLogic
     }
 
     public function remove() {
-
+        MockedActions::add('eqLogic_remove', $this->name);
     }
 
     public function setName($name) {
@@ -58,6 +58,10 @@ class eqLogic
 
     public static function byType($typeId) {
         return [];
+    }
+
+    public static function byLogicalId($logicalId) {
+        return new eqLogic();
     }
 
     public function setIsEnable($isEnable) {

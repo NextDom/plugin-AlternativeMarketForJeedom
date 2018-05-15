@@ -233,8 +233,8 @@ function showItems(items) {
 }
 
 function startIconsDownload() {
-    // Lance 5 téléchargement simultanéments
-    for (var i = 0; i < 5; ++i) {
+    // Lance 3 téléchargement simultanéments
+    for (var i = 0; i < 3; ++i) {
         iconDownload();
     }
 }

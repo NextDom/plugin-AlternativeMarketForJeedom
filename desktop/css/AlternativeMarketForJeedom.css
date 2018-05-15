@@ -108,6 +108,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
+    z-index: 1;
     background-image: linear-gradient(to right, #40535e, #40535e 50%, #33B8CC 50%, #33B8CC);
     background-size: 202% 100%;
     background-position: 0 0;
