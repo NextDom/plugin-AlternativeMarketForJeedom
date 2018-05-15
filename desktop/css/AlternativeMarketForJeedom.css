@@ -199,7 +199,7 @@
     clear: both;
 }
 
-#plugin-modal-header .left-pane {
+#plugin-modal-header {
     background-color: #FFFFFF;
 }
 
@@ -207,10 +207,6 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
-
-#plugin-modal-header .right-pane {
-    background-color: #FFFFFF;
 }
 
 #plugin-modal-header .left-pane img {

@@ -36,6 +36,12 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
 ?>
     <form id="amfj-config" class="config-form form-horizontal">
         <div class="form-group">
+            <div class="col-sm-4 control-label"></div>
+            <div class="col-sm-4">
+                <button id="show-disclaimer-modal" class="btn btn-primary"><i class="fa fa-info-circle"></i> {{Informations}}</button>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
                             class="fa fa-question-circle tooltips"
                             title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"></i></sup> : </label>

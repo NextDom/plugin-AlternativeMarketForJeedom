@@ -4,6 +4,9 @@ $(document).ready(function () {
         showConfigModal();
         return false;
     });
+    $('#show-disclaimer-modal').click(function() {
+        showModal('Informations', 'disclaimer');
+    });
     if (showDisclaimer || parseInt(showDisclaimer) == 1) {
         showModal('Informations', 'disclaimer');
     }
