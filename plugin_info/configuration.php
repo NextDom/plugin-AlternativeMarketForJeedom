@@ -77,3 +77,4 @@ En plus du dépot officiel NextDom contenant des plugins développés et validé
 
 <?php
 include_file('desktop', 'AlternativeMarketForJeedomConfiguration', 'js', 'AlternativeMarketForJeedom');
+include_file('desktop', 'AlternativeMarketForJeedomConfiguration', 'css', 'AlternativeMarketForJeedom');
