@@ -168,3 +168,26 @@
     background-color: #33B8CC !important;
     border-color: #33B8CC !important;
 }
+
+#disclaimer-modal .alert .col-md-2 {
+    text-align: right;
+}
+
+#disclaimer-modal .alert .row {
+    display: table;
+}
+
+#disclaimer-modal .alert .row>div {
+    display: table-cell;
+    float: none;
+    vertical-align: middle;
+}
+
+#choices-row button {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+    height: 2.2em;
+    font-size: 1.5em;
+}

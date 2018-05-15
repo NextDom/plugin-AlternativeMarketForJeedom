@@ -52,6 +52,7 @@ function AlternativeMarketForJeedom_install()
     }
 
     config::save('github::enable', 1);
+    config::save('show-disclaimer', true, 'AlternativeMarketForJeedom');
 }
 
 function AlternativeMarketForJeedom_update()

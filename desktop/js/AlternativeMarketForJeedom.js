@@ -10,7 +10,6 @@ var iconDownloadQueue = [];
 $(document).ready(function () {
     refresh();
     initFilters();
-    showMessage();
 });
 
 /**
@@ -339,19 +338,4 @@ function showPluginModal(pluginData, iconPath) {
     modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
     currentPlugin['iconPath'] = iconPath;
-}
-
-function showMessage() {
-    if (typeof messageToUser !== 'undefined' && messageToUser !== '') {
-        var toast = $('<div class="amfj-toast">' + messageToUser + '</div>');
-        messageToUser = '';
-        $('main').append(toast);
-        setTimeout(function () {
-            toast.addClass('showed');
-            setTimeout(function () {
-                toast.addClass('eject');
-            }, 3000);
-        }, 1000);
-
-    }
 }

@@ -47,7 +47,7 @@ if (isset($_GET['message'])) {
 
     $messageIndex = intval($_GET['message']);
     if ($messageIndex < count($messages)) {
-        sendVarToJs('messageToUser', $messages[$messageIndex]);
+        message::add('AlternativeMarketForJeedom', $messages[$messageIndex], null, null);
     }
 }
 
@@ -57,7 +57,7 @@ include_file('core', 'plugin.template', 'js');
 
 ?>
 <div class="market-filters row">
-    <div id="market-filter-src" class="btn-group col-sm-10">
+    <div id="market-filter-src" class="btn-group col-sm-8">
         <?php
         if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) {
             foreach ($eqLogics as $eqLogic) {
@@ -67,9 +67,10 @@ include_file('core', 'plugin.template', 'js');
         }
         ?>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-4">
         <div id="admin-buttons" class="btn-group">
-            <a href="index.php?v=d&p=plugin&id=AlternativeMarketForJeedom" class="btn btn-primary"><i class="fa fa-wrench"></i> {{Configurer}}</a>
+            <a href="index.php?v=d&p=plugin&id=AlternativeMarketForJeedom" class="btn btn-primary"><i
+                        class="fa fa-wrench"></i> {{Configurer}}</a>
             <button id="refresh-markets" class="btn btn-primary">
                 <i class="fa fa-refresh"></i> {{Rafraîchir}}
             </button>

@@ -257,25 +257,3 @@
 #plugin-modal .list-title {
     font-weight: bold;
 }
-
-.amfj-toast {
-    position: fixed;
-    top: 200%;
-    right: 2em;
-    background-color: black;
-    color: white;
-    font-size: 1.2em;
-    padding: 0.4em;
-    border-radius: 0.4em;
-    transition: all 0.8s ease;
-    box-shadow: 0.1em 0.1em 0.5em black;
-    z-index: 9999;
-}
-
-.amfj-toast.showed {
-    top: 5%;
-}
-
-.amfj-toast.eject {
-    right: -20em;
-}
