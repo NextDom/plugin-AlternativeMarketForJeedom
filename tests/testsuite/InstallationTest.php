@@ -39,15 +39,17 @@ class InstallationTest extends TestCase
     {
         AlternativeMarketForJeedom_install();
         $actions = MockedActions::get();
-        $this->assertCount(9, $actions);
+        $this->assertCount(12, $actions);
         $this->assertEquals('query_execute', $actions[0]['action']);
         $this->assertEquals('query_execute', $actions[1]['action']);
         $this->assertContains("CREATE TABLE `data_amfj`", $actions[1]['content']['query']);
         $this->assertEquals('eqLogic_save', $actions[2]['action']);
         $this->assertEquals('NextDom Stable', $actions[2]['content']);
-        $this->assertEquals('save', $actions[8]['action']);
-        $this->assertEquals('github::enable', $actions[8]['content']['key']);
-        $this->assertEquals(1, $actions[8]['content']['data']);
+        $this->assertEquals('save', $actions[11]['action']);
+        $this->assertEquals('github::enable', $actions[10]['content']['key']);
+        $this->assertEquals(1, $actions[10]['content']['data']);
+        $this->assertEquals('show-disclaimer', $actions[11]['content']['key']);
+        $this->assertEquals(true, $actions[11]['content']['data']);
     }
 
     public function testRemove()

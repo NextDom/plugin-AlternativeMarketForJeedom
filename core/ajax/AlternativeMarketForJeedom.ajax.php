@@ -31,6 +31,7 @@ try {
 
     ajax::init();
 
+    // Récupération des données envoyées
     $action = init('action');
     $params = init('params');
     $data = init('data');

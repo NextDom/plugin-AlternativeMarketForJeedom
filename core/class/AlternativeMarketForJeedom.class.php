@@ -23,6 +23,14 @@ require_once __DIR__ . '/../../../../core/php/core.inc.php';
  */
 class AlternativeMarketForJeedom extends eqLogic
 {
+    /**
+     * Compare deux objets en fonction de la valeur 'order'
+     *
+     * @param AlternativeMarketForJeedom $obj1 Premier objet à comparer
+     * @param AlternativeMarketForJeedom $obj2 Deuxième objet à comparer
+     *
+     * @return int|null 0 si =, -1 si $obj1 < $obj2, 1 si $obj1 > $obj2
+     */
     public static function cmpByOrder($obj1, $obj2)
     {
         $result = null;

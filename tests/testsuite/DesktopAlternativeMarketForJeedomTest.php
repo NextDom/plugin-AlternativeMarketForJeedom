@@ -77,8 +77,7 @@ class DesktopAlternativeMarketForJeedomTest extends TestCase
         ob_get_clean();
         $actions = MockedActions::get();
         $this->assertCount(6, $actions);
-        $this->assertEquals('sendVarToJs', $actions[2]['action']);
-        $this->assertEquals('messageToUser', $actions[2]['content']['var']);
-        $this->assertContains('mise à jour', $actions[2]['content']['value']);
+        $this->assertEquals('message_add', $actions[2]['action']);
+        $this->assertContains('mise à jour', $actions[2]['content']['message']);
     }
 }
