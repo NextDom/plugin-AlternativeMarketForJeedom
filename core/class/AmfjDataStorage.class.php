@@ -19,6 +19,9 @@
 require_once __DIR__ . '/../../../../core/config/common.config.php';
 require_once __DIR__ . '/../../../../core/class/DB.class.php';
 
+/**
+ * Classe de gestion du stockage des données
+ */
 class AmfjDataStorage
 {
     /**

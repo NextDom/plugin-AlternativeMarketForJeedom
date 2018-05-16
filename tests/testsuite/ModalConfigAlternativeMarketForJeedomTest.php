@@ -21,10 +21,30 @@ use PHPUnit\Framework\TestCase;
 require_once('../../core/php/core.inc.php');
 require_once('core/class/AlternativeMarketForJeedom.class.php');
 
+class EqLogicTest extends eqLogic {
+    public function __construct($id, $name, $configuration, $isEnable)
+    {
+        $this->setId($id);
+        $this->setName($name);
+        $this->configuration = $configuration;
+        $this->isEnable = $isEnable;
+    }
+}
+
 class ModalConfigAlternativeMarketForJeedomTest extends TestCase
 {
+    public $sources;
+
     protected function setUp()
     {
+        $this->sources = [];
+        array_push($this->sources, new EqLogicTest(1, 'GitHub Enabled', array('type' => 'github', 'data' => '', 'order' => 1), true));
+        array_push($this->sources, new EqLogicTest(2, 'GitHub Disabled', array('type' => 'github', 'data' => '', 'order' => 2), false));
+        array_push($this->sources, new EqLogicTest(3, 'Json Enabled', array('type' => 'json', 'data' => '', 'order' => 3), true));
+        array_push($this->sources, new EqLogicTest(4, 'Json Disabled', array('type' => 'json', 'data' => '', 'order' => 4), false));
+        array_push($this->sources, new EqLogicTest(60, 'Another Json Enabled', array('type' => 'json', 'data' => '', 'order' => 6), true));
+        eqLogic::$byTypeAnswer = $this->sources;
+
     }
 
     protected function tearDown()
@@ -59,5 +79,31 @@ class ModalConfigAlternativeMarketForJeedomTest extends TestCase
         $this->assertEquals('AlternativeMarketForJeedom', $actions[3]['content']['name']);
         $this->assertContains('github-list-container', $content);
         $this->assertContains('div_pluginAlternativeMarketForJeedomAlert', $content);
+    }
+
+    public function testEnabledDisabled() {
+        ob_start();
+        include(dirname(__FILE__) . '/../desktop/modal/config.AlternativeMarketForJeedom.php');
+        $content = ob_get_clean();
+
+        $this->assertContains('id="check-source-3" type="checkbox" checked="checked">', $content);
+        $this->assertContains('id="check-source-4" type="checkbox">', $content);
+        $this->assertContains('id="check-source-60" type="checkbox" checked="checked">', $content);
+    }
+
+    public function testSourcesList() {
+        ob_start();
+        include(dirname(__FILE__) . '/../desktop/modal/config.AlternativeMarketForJeedom.php');
+        $content = ob_get_clean();
+        $actions = MockedActions::get();
+
+        $this->assertEquals('sendVarToJs', $actions[1]['action']);
+        $this->assertEquals('sourcesList', $actions[1]['content']['var']);
+        $sourcesList = $actions[1]['content']['value'];
+        $this->assertCount(5, $sourcesList);
+        $this->assertEquals('GitHub Enabled', $sourcesList[0]['name']);
+        $this->assertEquals('GitHub Disabled', $sourcesList[1]['name']);
+        $this->assertEquals('json', $sourcesList[2]['type']);
+        $this->assertEquals('json', $sourcesList[3]['type']);
     }
 }

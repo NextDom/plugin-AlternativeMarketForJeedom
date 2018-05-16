@@ -33,7 +33,7 @@ foreach ($eqLogics as $eqLogic) {
     $source['name'] = $eqLogic->getName();
     $source['type'] = $eqLogic->getConfiguration()['type'];
     $source['data'] = $eqLogic->getConfiguration()['data'];
-    $source['enabled'] = $eqLogick->getIsEnable();
+    $source['enabled'] = $eqLogic->getIsEnable();
     array_push($sourcesList, $source);
 }
 

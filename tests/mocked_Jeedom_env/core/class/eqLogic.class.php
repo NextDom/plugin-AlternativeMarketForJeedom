@@ -20,9 +20,15 @@ require_once('../../mocked_core.php');
 
 class eqLogic
 {
+    public $id;
+
     public $name;
 
-    public $configuration = array();
+    public $configuration = [];
+
+    public static $byTypeAnswer = [];
+
+    public $isEnable = true;
 
     public function save() {
         MockedActions::add('eqLogic_save', $this->name);
@@ -57,7 +63,7 @@ class eqLogic
     }
 
     public static function byType($typeId) {
-        return [];
+        return self::$byTypeAnswer;
     }
 
     public static function byLogicalId($logicalId) {
@@ -65,10 +71,26 @@ class eqLogic
     }
 
     public function setIsEnable($isEnable) {
-
+        $this->isEnable = $isEnable;
     }
 
     public function getIsEnable() {
-        return true;
+        return $this->isEnable;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }

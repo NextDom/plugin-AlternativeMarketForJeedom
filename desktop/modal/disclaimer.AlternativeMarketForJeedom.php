@@ -36,16 +36,16 @@ if (!isConnect('admin')) {
     <div class="panel panel-info" style="height: 100%;">
         <div class="panel-heading" role="tab">
             <h4 class="panel-title">
-                Présentation
+                {{Présentation}}
             </h4>
         </div>
         <div class="panel-body">
-            <p><b>Alternative Market For Jeedom</b> vous permettra d'installer des plugins directement depuis les sources des développeurs.</p>
-            <p>Ceci vous permettra : </p>
+            <p><b>{{Alternative Market For Jeedom<}}/b> vous permettra d'installer des plugins directement depuis les sources des développeurs.</p>
+            <p>Ceci vous donnera la possibilité de : </p>
             <ul>
-                <li>D'accéder à des versions en développement de plugins,</li>
-                <li>D'installer des plugins de développeurs gardant leur indépendance,</li>
-                <li>D'installer des plugins ne respectant pas la charte du Market Jeedom.</li>
+                <li>Accéder à des versions en développement de plugins,</li>
+                <li>Installer des plugins de développeurs gardant leur indépendance,</li>
+                <li>Installer des plugins ne respectant pas la charte du Market Jeedom.</li>
             </ul>
         </div>
     </div>
