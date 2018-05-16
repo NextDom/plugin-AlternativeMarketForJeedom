@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 require_once('../../core/php/core.inc.php');
 require_once('core/class/AlternativeMarketForJeedom.class.php');
 
-class ModalPluginAlternativeMarketForJeedomTest extends TestCase
+class ModalDisclaimerAlternativeMarketForJeedomTest extends TestCase
 {
     protected function setUp()
     {
