@@ -37,9 +37,6 @@ class AmfjAjaxParser
     public static function parse($action, $params, $data)
     {
         switch ($action) {
-            case 'source':
-                $result = static::source($params, $data);
-                break;
             case 'refresh':
                 $result = static::refresh($params, $data);
                 break;
@@ -48,6 +45,9 @@ class AmfjAjaxParser
                 break;
             case 'save':
                 $result = static::save($params, $data);
+                break;
+            case 'source':
+                $result = static::source($params, $data);
                 break;
             default :
                 $result = false;
