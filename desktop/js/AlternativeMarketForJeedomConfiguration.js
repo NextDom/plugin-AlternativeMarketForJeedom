@@ -6,6 +6,7 @@ $(document).ready(function () {
     });
     $('#show-disclaimer-modal').click(function() {
         showModal('Informations', 'disclaimer');
+        return false;
     });
     if (showDisclaimer || parseInt(showDisclaimer) == 1) {
         showModal('Informations', 'disclaimer');

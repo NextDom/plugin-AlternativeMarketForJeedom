@@ -200,6 +200,7 @@ function refreshItems() {
             }
             else {
                 showItems(data['result']);
+                updateFilteredList();
             }
         },
         error: function (request, status, error) {

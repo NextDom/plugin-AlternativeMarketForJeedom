@@ -177,10 +177,18 @@
     display: table;
 }
 
-#disclaimer-modal .alert .row>div {
+#disclaimer-modal .alert .row>span {
     display: table-cell;
     float: none;
     vertical-align: middle;
+}
+
+#disclaimer-modal .alert i {
+    padding-left: 0.2em;
+}
+
+#disclaimer-modal .alert p {
+    padding-left: 2em;
 }
 
 #choices-row button {
