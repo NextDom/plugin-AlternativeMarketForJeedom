@@ -19,6 +19,9 @@
 require_once __DIR__ . '/../../../../core/config/common.config.php';
 require_once __DIR__ . '/../../../../core/class/DB.class.php';
 
+/**
+ * Classe de gestion du stockage des données
+ */
 class AmfjDataStorage
 {
     /**
@@ -181,5 +184,10 @@ class AmfjDataStorage
     public function getJsonData($code)
     {
         return \json_decode($this->getRawData($code), true);
+    }
+
+    public function remove($code) {
+        $statement = DB::getConnection()->prepare("DELETE FROM `".$this->dataTableName."` WHERE `code` LIKE ?");
+        $statement->execute(array($code));
     }
 }

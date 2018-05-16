@@ -31,6 +31,7 @@ try {
 
     ajax::init();
 
+    // Récupération des données envoyées
     $action = init('action');
     $params = init('params');
     $data = init('data');
@@ -39,12 +40,15 @@ try {
 
     if ($result !== false) {
         ajax::success($result);
-    } else {
-        ajax::error(AmfjAjaxParser::getErrorMsg());
     }
 
     throw new \Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
 } catch (\Exception $e) {
-    ajax::error(displayException($e), $e->getCode());
+    if (function_exists('displayException')) {
+        ajax::error(displayException($e), $e->getCode());
+    }
+    else {
+        ajax::error(displayExeption($e), $e->getCode());
+    }
 }
 

@@ -18,27 +18,41 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 require_once(dirname(__FILE__) . '/../core/class/AmfjDataStorage.class.php');
+require_once(dirname(__FILE__) . '/../core/class/AlternativeMarketForJeedom.class.php');
 
+/**
+ * Fonction appelée à l'activation du plugin
+ */
 function AlternativeMarketForJeedom_install()
 {
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->createDataTable();
 
-    $pluginExtra = new AlternativeMarketForJeedom();
-    $pluginExtra->setName(1);
-    $pluginExtra->setLogicalId('Jeedom-Plugins-Extra');
-    $pluginExtra->setEqType_name('AlternativeMarketForJeedom');
-    $pluginExtra->setConfiguration('github', 'Jeedom-Plugins-Extra');
-    $pluginExtra->save();
+    $markets = [
+        ['name' => 'NextDom Stable', 'enabled' => 1, 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-stable.json'],
+        ['name' => 'NextDom draft', 'enabled' => 0, 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-draft.json'],
+        ['name' => 'Lunarok', 'enabled' => 1, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-stable.json'],
+        ['name' => 'Lunarok draft', 'enabled' => 0, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-draft.json'],
+        ['name' => 'Mika-nt28', 'enabled' => 1, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-stable.json'],
+        ['name' => 'Mika-nt28 draft', 'enabled' => 0, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-draft.json'],
+        ['name' => 'KiwiHC16', 'enabled' => 1, 'order' => 5, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/KiwiHC16.json'],
+        ['name' => 'Jeedom', 'enabled' => 1, 'order' => 999, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/jeedom.json']
+    ];
 
-    $jeedom = new AlternativeMarketForJeedom();
-    $jeedom->setName(2);
-    $jeedom->setLogicalId('jeedom');
-    $jeedom->setEqType_name('AlternativeMarketForJeedom');
-    $jeedom->setConfiguration('github', 'jeedom');
-    $jeedom->save();
+    foreach ($markets as $market) {
+        $defaultMarket = new AlternativeMarketForJeedom();
+        $defaultMarket->setName($market['name']);
+        $defaultMarket->setLogicalId($market['name']);
+        $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
+        $defaultMarket->setConfiguration('type', 'json');
+        $defaultMarket->setConfiguration('order', $market['order']);
+        $defaultMarket->setConfiguration('data', $market['url']);
+        $defaultMarket->setIsEnable($market['enabled']);
+        $defaultMarket->save();
+    }
 
-    config::save('url::enable', 1);
+    config::save('github::enable', 1);
+    config::save('show-disclaimer', true, 'AlternativeMarketForJeedom');
 }
 
 function AlternativeMarketForJeedom_update()
@@ -46,7 +60,9 @@ function AlternativeMarketForJeedom_update()
 
 }
 
-
+/**
+ * Fonction appelée à la désactivation du plugin
+ */
 function AlternativeMarketForJeedom_remove()
 {
     $dataStorage = new AmfjDataStorage('amfj');

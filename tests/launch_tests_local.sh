@@ -20,6 +20,7 @@ cp -fr plugin_info $MOCKED_ENV/plugins/$PLUGIN
 cp -fr tests/testsuite/* $MOCKED_ENV/plugins/$PLUGIN/tests
 cp -fr tests/phpunit_local.xml $MOCKED_ENV/plugins/$PLUGIN/phpunit.xml
 cp -fr vendor $MOCKED_ENV/plugins/$PLUGIN
+cp -fr .github-token $MOCKED_ENV/plugins/$PLUGIN
 
 cd $MOCKED_ENV/plugins/$PLUGIN
 

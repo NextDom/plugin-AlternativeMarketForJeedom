@@ -42,9 +42,19 @@ class AmfjAjaxTest extends TestCase
         $this->assertEquals('ajax_error', $actions[1]['action']);
     }
 
+    public function testBadAction() {
+        JeedomVars::$initAnswers = array('action' => 'bad_action', 'params' => 'list', 'data' => array());
+        include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
+        $actions = MockedActions::get();
+        $this->assertCount(3, $actions);
+        $this->assertEquals('include_file', $actions[0]['action']);
+        $this->assertEquals('authentification', $actions[0]['content']['name']);
+        $this->assertEquals('ajax_init', $actions[1]['action']);
+        $this->assertEquals('ajax_error', $actions[2]['action']);
+    }
+
     public function testConnected()
     {
-        scenario::init();
         JeedomVars::$initAnswers = array('action' => 'get', 'params' => 'list', 'data' => array());
         include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
         $actions = MockedActions::get();
@@ -54,5 +64,18 @@ class AmfjAjaxTest extends TestCase
         $this->assertEquals('ajax_init', $actions[1]['action']);
         $this->assertEquals('ajax_success', $actions[2]['action']);
         // Ajax error est appelé quand même par la version mocké
+    }
+
+    public function testGoodAction() {
+        JeedomVars::$initAnswers = array('action' => 'source', 'params' => 'add', 'data' => array('id' => 'NextDom', 'type' => 'github'));
+        include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
+        $actions = MockedActions::get();
+        $this->assertCount(5, $actions);
+        $this->assertEquals('include_file', $actions[0]['action']);
+        $this->assertEquals('authentification', $actions[0]['content']['name']);
+        $this->assertEquals('ajax_init', $actions[1]['action']);
+        $this->assertEquals('eqLogic_save', $actions[2]['action']);
+        $this->assertEquals('NextDom', $actions[2]['content']);
+        $this->assertEquals('ajax_success', $actions[3]['action']);
     }
 }

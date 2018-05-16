@@ -60,7 +60,7 @@ class AmfjMarketItem
      */
     private $category;
     /**
-     * @var DataStorage Gestionnaire de base de données
+     * @var AmfjDataStorage Gestionnaire de base de données
      */
     private $dataStorage;
     /**
@@ -87,42 +87,93 @@ class AmfjMarketItem
      * @var string Lien vers le changelog
      */
     private $changelogLink;
+    /**
+     * @var string Nom de la source
+     */
+    private $sourceName;
+    /**
+     * @var array Données de Jeedom sur le plugin
+     */
+    private $updateData;
 
     /**
      * Constructeur initialisant les informations de base
      *
-     * @param $repositoryInformations Informations obtenus par GitHub.
+     * @param string $sourceName Nom de la source de l'élément
      */
-    public function __construct($repositoryInformations = null)
+    public function __construct($sourceName)
     {
-        if ($repositoryInformations !== null) {
-            $this->initWithGlobalInformations($repositoryInformations);
-        }
-
         $this->dataStorage = new AmfjDataStorage('amfj');
+        $this->sourceName = $sourceName;
+        $this->iconPath = false;
+    }
+
+    /**
+     * Créer un élément à partir des données d'un dépôt GitHub
+     *
+     * @param string $sourceName Nom de la source
+     * @param string[] $repositoryInformations Informations du dépôt
+     *
+     * @return AmfjMarketItem Elément créé
+     */
+    public static function createFromGit($sourceName, $repositoryInformations)
+    {
+        $result = new AmfjMarketItem($sourceName);
+        $result->initWithGlobalInformations($repositoryInformations);
+        return $result;
+    }
+
+    /**
+     * Créer un élément depuis le cache
+     *
+     * @param string $sourceName Nom de la source
+     * @param string $fullName Nom complet
+     *
+     * @return AmfjMarketItem Elément créé
+     */
+    public static function createFromCache($sourceName, $fullName)
+    {
+        $result = new AmfjMarketItem($sourceName);
+        $result->setFullName($fullName);
+        $result->readCache();
+        return $result;
+    }
+
+    /**
+     * Créer un élément à partir des données d'un JSON
+     *
+     * @param string $sourceName Nom de la source
+     * @param string[] $jsonData Données de l'élément
+     *
+     * @return AmfjMarketItem Elément créé
+     */
+    public static function createFromJson($sourceName, $jsonData)
+    {
+        $result = new AmfjMarketItem($sourceName);
+        $result->initWithJsonInformations($jsonData);
+        return $result;
     }
 
     /**
      * Lire les informations obtenus par GitHub
      *
-     * @param $repositoryInformations Informations de GitHub
+     * @param string[] $repositoryInformations Informations de GitHub
      */
     public function initWithGlobalInformations($repositoryInformations)
     {
-        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['name']);
-        log::add('AlternativeMarketForJeedom', 'debug', 'B'.$repositoryInformations['full_name']);
-        $this->gitName = $repositoryInformations['name'];
-        $this->fullName = $repositoryInformations['full_name'];
-        $this->url = $repositoryInformations['html_url'];
-        $this->gitId = $repositoryInformations['git_id'];
-        $this->description = $repositoryInformations['description'];
-        $this->defaultBranch = $repositoryInformations['default_branch'];
+
+        if (\array_key_exists('name', $repositoryInformations)) $this->gitName = $repositoryInformations['name'];
+        if (\array_key_exists('full_name', $repositoryInformations)) $this->fullName = $repositoryInformations['full_name'];
+        if (\array_key_exists('html_url', $repositoryInformations)) $this->url = $repositoryInformations['html_url'];
+        if (\array_key_exists('git_id', $repositoryInformations)) $this->gitId = $repositoryInformations['git_id'];
+        if (\array_key_exists('description', $repositoryInformations)) $this->description = $repositoryInformations['description'];
+        if (\array_key_exists('default_branch', $repositoryInformations)) $this->defaultBranch = $repositoryInformations['default_branch'];
     }
 
     /**
      * Ajouter les informations contenu dans le fichier info.json du plugin
      *
-     * @param array $pluginInfo Contenu du fichier info.json
+     * @param string[] $pluginInfo Contenu du fichier info.json
      */
     public function addPluginInformations($pluginInfo)
     {
@@ -138,10 +189,30 @@ class AmfjMarketItem
         }
     }
 
+    public function initWithJsonInformations($jsonInformations)
+    {
+        if (\array_key_exists('id', $jsonInformations)) $this->id = $jsonInformations['id'];
+        if (\array_key_exists('repository', $jsonInformations)) $this->gitName = $jsonInformations['repository'];
+        if (\array_key_exists('gitId', $jsonInformations)) {
+            $this->gitId = $jsonInformations['gitId'];
+            $this->fullName = $this->gitId . '/' . $this->gitName;
+            $this->url = 'https://github.com/' . $this->gitId . '/' . $this->fullName;
+        }
+        if (\array_key_exists('name', $jsonInformations)) $this->name = $jsonInformations['name'];
+        if (\array_key_exists('licence', $jsonInformations)) $this->licence = $jsonInformations['licence'];
+        if (\array_key_exists('category', $jsonInformations)) $this->category = $jsonInformations['category'];
+        if (\array_key_exists('documentation', $jsonInformations)) $this->documentationLink = $jsonInformations['documentation'];
+        if (\array_key_exists('changelog', $jsonInformations)) $this->changelogLink = $jsonInformations['changelog'];
+        if (\array_key_exists('author', $jsonInformations)) $this->author = $jsonInformations['author'];
+        if (\array_key_exists('description', $jsonInformations)) $this->description = $jsonInformations['description'];
+        if (\array_key_exists('defaultBranch', $jsonInformations)) $this->defaultBranch = $jsonInformations['defaultBranch'];
+        if (\array_key_exists('branches', $jsonInformations)) $this->branchesList = $jsonInformations['branches'];
+    }
+
     /**
      * Test si une mise à jour est nécessaire
      *
-     * @param $repositoryInformations Informations de GitHub
+     * @param array $repositoryInformations Informations de GitHub
      *
      * @return bool True si une mise à jour est nécessaire
      */
@@ -151,7 +222,7 @@ class AmfjMarketItem
         $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . \str_replace('/', '_', $repositoryInformations['full_name']));
         if ($lastUpdate !== null) {
             if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
-                return false;
+                $result = false;
             }
         }
         return $result;
@@ -174,13 +245,20 @@ class AmfjMarketItem
         $dataArray['id'] = $this->id;
         $dataArray['author'] = $this->author;
         $dataArray['category'] = $this->category;
-        $dataArray['installed'] = $this->isInstalled();
         $dataArray['iconPath'] = $this->iconPath;
         $dataArray['defaultBranch'] = $this->defaultBranch;
         $dataArray['branchesList'] = $this->branchesList;
         $dataArray['licence'] = $this->licence;
+        $dataArray['sourceName'] = $this->sourceName;
         $dataArray['changelogLink'] = $this->changelogLink;
         $dataArray['documentationLink'] = $this->documentationLink;
+
+        $this->initUpdateData();
+        $dataArray['installed'] = $this->isInstalled();
+        $dataArray['installedBranchData'] = false;
+        if ($dataArray['installed']) {
+            $dataArray['installedBranchData'] = $this->getInstalledBranchData();
+        }
         return $dataArray;
     }
 
@@ -190,6 +268,8 @@ class AmfjMarketItem
     public function writeCache()
     {
         $dataArray = $this->getDataInArray();
+        unset($dataArray['installed']);
+        unset($dataArray['installedBranchData']);
         $this->dataStorage->storeJsonData('repo_data_' . str_replace('/', '_', $this->fullName), $dataArray);
         $this->dataStorage->storeRawData('repo_last_update_' . str_replace('/', '_', $this->fullName), \time());
     }
@@ -227,20 +307,18 @@ class AmfjMarketItem
     /**
      * Met à jour les données de l'élement
      *
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
-     *
      * @return bool True si la mise à jour a été effectuée.
      */
-    public function refresh($downloadManager)
+    public function refresh()
     {
         $result = false;
         $infoJsonUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/info.json';
-        $infoJson = $downloadManager->downloadContent($infoJsonUrl);
+        $infoJson = AmfjDownloadManager::downloadContent($infoJsonUrl);
         if (strpos($infoJson, '404: Not Found') === false) {
             $pluginData = \json_decode($infoJson, true);
             if (\is_array($pluginData) && \array_key_exists('id', $pluginData)) {
                 $this->addPluginInformations($pluginData);
-                $this->downloadIcon($downloadManager);
+                $this->downloadIcon();
                 $this->branchesList = [];
                 $this->writeCache();
                 $result = true;
@@ -251,45 +329,55 @@ class AmfjMarketItem
 
     /**
      * Télécharge l'icône du plugin
-     *
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
      */
-    public function downloadIcon($downloadManager)
+    public function downloadIcon()
     {
+        log::add('AlternativeMarketForJeedom', 'debug', 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png');
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
-        $targetPath = dirname(__FILE__) . '/../../cache/' . $iconFilename;
-        $downloadManager->downloadBinary($iconUrl, $targetPath);
+        $targetPath = \dirname(__FILE__) . '/../../cache/' . $iconFilename;
+        AmfjDownloadManager::downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
-            unlink($targetPath);
+            \unlink($targetPath);
             $this->iconPath = 'core/img/no-image-plugin.png';
         } else {
             $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
         }
-
+        $this->writeCache();
     }
 
     /**
      * Met à jour les données des branches
      *
-     * @param AmfjDownloadManager $downloadManager Gestionnaire de téléchargement
-     *
      * @return bool True si les données ont été trouvées
      */
-    public function downloadBranchesInformations($downloadManager)
+    public function downloadBranchesInformations()
     {
         $result = false;
         $baseGitRepoUrl = 'https://api.github.com/repos/' . $this->fullName . '/branches';
-        $branches = $downloadManager->downloadContent($baseGitRepoUrl);
+        $branches = AmfjDownloadManager::downloadContent($baseGitRepoUrl);
         if ($branches !== false) {
             $branches = \json_decode($branches, true);
             $this->branchesList = [];
             foreach ($branches as $branch) {
-                array_push($this->branchesList, $branch['name']);
+                if (\is_array($branch) && \array_key_exists('name', $branch)) {
+                    $branchData = [];
+                    $branchData['name'] = $branch['name'];
+                    $branchData['hash'] = $branch['commit']['sha'];
+                    array_push($this->branchesList, $branchData);
+                }
             }
             $result = true;
         }
         return $result;
+    }
+
+    /**
+     * Initialise les données de Jeedom sur le plugin
+     */
+    private function initUpdateData()
+    {
+        $this->updateData = update::byLogicalId($this->id);
     }
 
     /**
@@ -300,10 +388,55 @@ class AmfjMarketItem
     public function isInstalled()
     {
         $result = false;
-        if (\file_exists(\dirname(__FILE__) . '/../../../' . $this->id)) {
+        if ($this->updateData !== false) {
             $result = true;
         }
         return $result;
+    }
+
+    private function getInstalledBranchData()
+    {
+        $result = false;
+        if ($this->updateData !== false) {
+            $configuration = $this->updateData->getConfiguration();
+            if (\is_array($configuration) && \array_key_exists('version', $configuration)) {
+                $result = [];
+                $result['branch'] = $configuration['version'];
+                $result['hash'] = $this->updateData->getLocalVersion();
+                $result['needUpdate'] = false;
+                $result['id'] = $this->updateData->getId();
+                if ($this->updateData->getStatus() === 'update') {
+                    $result['needUpdate'] = true;
+                } else {
+                    foreach ($this->branchesList as $branch) {
+                        if ($branch['name'] === $result['branch'] && $branch['hash'] !== $result['hash']) {
+                            $result['needUpdate'] = true;
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function updateBranchDataFromInstalled()
+    {
+        $this->initUpdateData();
+        $installedBranch = $this->getInstalledBranchData();
+        $added = false;
+        for ($branchIndex = 0; $branchIndex < count($this->branchesList); ++$branchIndex) {
+            if ($this->branchesList[$branchIndex]['name'] == $installedBranch['branch']) {
+                $this->branchesList[$branchIndex]['hash'] = $installedBranch['hash'];
+                $added = true;
+            }
+        }
+        if ($added === false) {
+            $branch = array();
+            $branch['name'] = $installedBranch['branch'];
+            $branch['hash'] = $installedBranch['hash'];
+            array_push($this->branchesList, $branch);
+        }
+        $this->writeCache();
     }
 
     /**
@@ -409,13 +542,21 @@ class AmfjMarketItem
     /**
      * Définir le nom du complet du dépôt
      *
-     * @param $fullName Nom complet
+     * @param string $fullName Nom complet
      *
-     * @return Instance de l'objet
+     * @return AmfjMarketItem Instance de l'objet
      */
     public function setFullName($fullName)
     {
         $this->fullName = $fullName;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconPath()
+    {
+        return $this->iconPath;
     }
 }

@@ -22,12 +22,17 @@
     height: 200px;
     transition: all 0.2s ease;
     overflow: hidden;
-    border: 1px solid #ccc;
+    border: 1px solid #CCCCCC;
+    background-color: rgba(220, 220, 220, 0.2);
     margin: 0;
     border-radius: 5px;
-    padding: 0.75em;
+    padding: 1.2em;
     /** Fix pour darksobre **/
     width: 100%;
+}
+
+#market-div .media-left {
+    margin-right: 1em;
 }
 
 #market-div .media .installed-marker {
@@ -36,15 +41,36 @@
     left: 0;
     width: 0;
     height: 0;
-    border-top: 2.5em solid #95c12c;
-    border-right: 2.5em solid transparent;
+    border-top: 3em solid #33B8CC;
+    border-right: 3em solid transparent;
 }
 
 #market-div .media .installed-marker i {
     position: absolute;
-    top: -2.3em;
+    top: -2.5em;
     left: 0.5em;
     color: white;
+}
+
+#market-div .media .update-marker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-top: 3em solid #33B8CC;
+    border-left: 3em solid transparent;
+}
+
+#market-div .media .update-marker i {
+    position: absolute;
+    top: -2.5em;
+    right: 0.5em;
+    color: white;
+}
+
+.ui-tooltip {
+    transform: translateY(-4.5em);
 }
 
 #market-div .media img {
@@ -54,6 +80,7 @@
 #market-div .media h4 {
     text-transform: capitalize;
     text-align: center;
+    margin-top: 0 !important;
 }
 
 #market-div .media-body {
@@ -63,27 +90,17 @@
 #market-div .media-body p {
     text-align: justify;
     height: 6em;
-    text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
     line-height: 1.5em;
     font-size: 1em;
 }
 
-#market-div .media-body p.truncate:after {
-    content: '...';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-
 #market-div .media:hover {
     cursor: pointer;
-    transform: scale(1.02);
 }
 
 #market-div button {
-    background-color: #95c12c;
     color: white;
     border: none;
     float: right;
@@ -91,7 +108,8 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    background-image: linear-gradient(to right, #40535e, #40535e 50%, #95c12c 50%, #95c12c);
+    z-index: 1;
+    background-image: linear-gradient(to right, #40535e, #40535e 50%, #33B8CC 50%, #33B8CC);
     background-size: 202% 100%;
     background-position: 0 0;
     -webkit-transition: all 0.2s ease;
@@ -112,7 +130,7 @@
 #market-div .gitid {
     position: absolute;
     bottom: 0;
-    background-color: #40535e;
+    background-color: #33B8CC;
     line-height: 2em;
     padding-left: 1em;
     padding-right: 1em;
@@ -122,16 +140,19 @@
     font-size: 1em;
 }
 
-#market-dev .media-left {
-    padding-left: 0.25em;
-    padding-right: 1em;
+#market-div .media-left {
+    padding-right: 1.2em;
 }
 
 .market-filters .btn-primary,
 #plugin-modal .btn-primary {
-    background-color: #95c12c !important;
-    border-color: #95c12c !important;
+    background-color: #33B8CC !important;
+    border-color: #33B8CC !important;
     background-image: none;
+}
+
+.market-filters .btn-secondary {
+    color: black;
 }
 
 #plugin-modal .btn-success {
@@ -165,7 +186,7 @@
 }
 
 #plugin-modal-header {
-    height: 20em;
+    min-height: 20em;
 }
 
 #plugin-modal-header > div {
@@ -174,10 +195,11 @@
 }
 
 #plugin-modal-header #description {
+    padding-top: 1em;
     clear: both;
 }
 
-#plugin-modal-header .left-pane {
+#plugin-modal-header {
     background-color: #FFFFFF;
 }
 
@@ -187,11 +209,7 @@
     margin-right: auto;
 }
 
-#plugin-modal-header .right-pane {
-    background-color: #FFFFFF;
-}
-
-#plugin-modal-header img {
+#plugin-modal-header .left-pane img {
     margin-top: 1em;
     width: 14em;
 }
@@ -199,6 +217,7 @@
 #plugin-modal-header .button-item {
     float: left;
     margin-right: 1em;
+    margin-top: 1em;
 }
 
 #plugin-modal-header .btn {
@@ -212,6 +231,10 @@
 #plugin-modal-body,
 #plugin-modal-footer {
     padding-top: 10px;
+}
+
+#plugin-modal .right-pane .help-block {
+    color: #c0c0c0;
 }
 
 #gitid-list li .btn {

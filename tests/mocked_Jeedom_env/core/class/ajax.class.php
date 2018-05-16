@@ -27,8 +27,8 @@ class ajax
     /**
      * Renvoie une confirmation de la requête.
      */
-    public static function success()
+    public static function success($value)
     {
-        MockedActions::add('ajax_success');
+        MockedActions::add('ajax_success', $value);
     }
 }

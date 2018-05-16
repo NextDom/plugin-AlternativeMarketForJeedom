@@ -25,59 +25,32 @@ require_once('AmfjDataStorage.class.php');
 class AmfjGitManager
 {
     /**
-     * @var int Temps de rafraichissement de la liste des plugins
-     */
-    private $REFRESH_TIME_LIMIT = 86400;
-    /**
      * @var string Utilisateur du dépot
      */
     private $gitId;
     /**
-     * @var AmfjDownloadManager Gestionnaire de téléchargement
-     */
-    private $downloadManager;
-    /**
-     * @var DataStorage Gestionnaire de base de données
+     * @var AmfjDataStorage Gestionnaire de base de données
      */
     private $dataStorage;
-    /**
-     * @var string Dernier message d'erreur
-     */
-    private static $lastErrorMessage = false;
 
     /**
      * Constructeur du gestionnaire Git
      *
-     * @param $gitId Utilisateur du compte Git
+     * @param string $gitId Utilisateur du compte Git
      */
     public function __construct($gitId)
     {
-        $this->downloadManager = new AmfjDownloadManager();
+        AmfjDownloadManager::init();
         $this->gitId = $gitId;
         $this->dataStorage = new AmfjDataStorage('amfj');
-    }
-
-    /**
-     * Test si une mise à jour de la liste des dépôts est nécessaire
-     *
-     * @return bool True si une mise à jour est nécessaire
-     */
-    public function isUpdateNeeded()
-    {
-        $result = true;
-        $lastUpdate = $this->dataStorage->getRawData('repo_last_update_' . $this->gitId);
-        if ($lastUpdate !== null) {
-            if (\time() - $lastUpdate < $this->REFRESH_TIME_LIMIT) {
-                return false;
-            }
-        }
-        return $result;
     }
 
     /**
      * Met à jour la liste des dépôts
      *
      * @return bool True si l'opération a réussie
+     *
+     * @throws Exception
      */
     public function updateRepositoriesList()
     {
@@ -98,6 +71,8 @@ class AmfjGitManager
             }
             $this->dataStorage->storeRawData('repo_last_update_' . $this->gitId, \time());
             $this->dataStorage->storeJsonData('repo_data_' . $this->gitId, $dataToStore);
+            // Efface la liste des dépôts ignorés
+            $this->saveIgnoreList([]);
             $result = true;
         }
         return $result;
@@ -107,29 +82,29 @@ class AmfjGitManager
      * Télécharge la liste des dépôts au format JSON
      *
      * @return string|bool Données au format JSON ou False en cas d'échec
+     * @throws Exception
      */
     protected function downloadRepositoriesList()
     {
         $result = false;
-        $content = $this->downloadManager->downloadContent('https://api.github.com/orgs/' . $this->gitId . '/repos?per_page=100');
-        log::add('AlternativeMarketForJeedom', 'debug', $content);
+        $content = AmfjDownloadManager::downloadContent('https://api.github.com/orgs/' . $this->gitId . '/repos?per_page=100');
         // Limite de l'API GitHub atteinte
         if (\strstr($content, 'API rate limit exceeded')) {
-            $content = $this->downloadManager->downloadContent('https://api.github.com/rate_limit');
-            log::add('AlternativeMarketForJeedom', 'debug', $content);
+            $content = AmfjDownloadManager::downloadContent('https://api.github.com/rate_limit');
             $gitHubLimitData = json_decode($content, true);
             $refreshDate = date('H:i', $gitHubLimitData['resources']['core']['reset']);
-            static::$lastErrorMessage = 'Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate;
+            throw new \Exception('Limite de l\'API GitHub atteinte. Le rafraichissement sera accessible à ' . $refreshDate);
+        } elseif (\strstr($content, 'Bad credentials')) {
+            // Le token GitHub n'est pas bon
+            throw new \Exception('Problème de Token GitHub');
         } else {
             // Test si c'est un dépôt d'organisation
             if (\strstr($content, '"message":"Not Found"')) {
                 // Test d'un téléchargement pour un utilisateur
-                $content = $this->downloadManager->downloadContent('https://api.github.com/users/' . $this->gitId . '/repos?per_page=100');
-                log::add('AlternativeMarketForJeedom', 'debug', $content);
+                $content = AmfjDownloadManager::downloadContent('https://api.github.com/users/' . $this->gitId . '/repos?per_page=100');
                 // Test si c'est un dépot d'utilisateur
                 if (\strstr($content, '"message":"Not Found"') || strlen($content) < 10) {
-                    static::$lastErrorMessage = 'Le dépôt ' . $this->gitId . ' n\'existe pas.';
-                    $result = false;
+                    throw new \Exception('Le dépôt ' . $this->gitId . ' n\'existe pas.');
                 } else {
                     $result = $content;
                 }
@@ -138,6 +113,53 @@ class AmfjGitManager
             }
         }
         return $result;
+    }
+
+    /**
+     * Mettre à jour les dépôts
+     *
+     * @param string $sourceName Nom de la source
+     * @param array $repositoriesList Liste des dépots
+     * @param bool $force Forcer les mises à jour
+     */
+    public function updateRepositories($sourceName, $repositoriesList, $force)
+    {
+        $ignoreList = $this->getIgnoreList();
+        foreach ($repositoriesList as $repository) {
+            $repositoryName = $repository['name'];
+            $marketItem = AmfjMarketItem::createFromGit($sourceName, $repository);
+            if (($force || $marketItem->isNeedUpdate($repository)) && !\in_array($repositoryName, $ignoreList)) {
+                if (!$marketItem->refresh()) {
+                    \array_push($ignoreList, $repositoryName);
+                }
+            }
+        }
+        $this->saveIgnoreList($ignoreList);
+    }
+
+    /**
+     * Obtenir la liste des dépots ignorés
+     *
+     * @return array|mixed
+     */
+    protected function getIgnoreList()
+    {
+        $result = array();
+        $jsonList = $this->dataStorage->getJsonData('repo_ignore_' . $this->gitId);
+        if ($jsonList !== null) {
+            $result = $jsonList;
+        }
+        return $result;
+    }
+
+    /**
+     * Sauvegarder la liste des dépôts ignorés
+     *
+     * @param array $ignoreList Liste des dépôts ignorés
+     */
+    protected function saveIgnoreList($ignoreList)
+    {
+        $this->dataStorage->storeJsonData('repo_ignore_' . $this->gitId, $ignoreList);
     }
 
     /**
@@ -156,14 +178,23 @@ class AmfjGitManager
     }
 
     /**
-     * Obtenir le dernier message d'erreur
+     * Obtenir la liste des plugins
      *
-     * @return string Message de l'erreur
+     * @param string $sourceName Nom de la source
+     *
+     * @return array Liste des plugins
      */
-    public static function getLastErrorMessage()
+    public function getItems($sourceName)
     {
-        $result = static::$lastErrorMessage;
-        static::$lastErrorMessage = false;
+        $result = array();
+        $repositories = $this->getRepositoriesList();
+        $ignoreList = $this->getIgnoreList();
+        foreach ($repositories as $repository) {
+            if (!\in_array($repository['name'], $ignoreList)) {
+                $marketItem = AmfjMarketItem::createFromCache($sourceName, $repository['full_name']);
+                array_push($result, $marketItem);
+            }
+        }
         return $result;
     }
 }

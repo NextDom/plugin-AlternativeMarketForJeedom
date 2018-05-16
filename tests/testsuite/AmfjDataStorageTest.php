@@ -212,4 +212,13 @@ class AmfjDataStorageTest extends TestCase
         $this->assertContains('SELECT', $actions[0]['content']['query']);
         $this->assertEquals(array('something' => 'is_that'), $result);
     }
+
+    public function testRemove()
+    {
+        $result = $this->dataStorage->remove('a_code');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('query_execute', $actions[0]['action']);
+        $this->assertContains('DELETE FROM ', $actions[0]['content']['query']);
+    }
 }

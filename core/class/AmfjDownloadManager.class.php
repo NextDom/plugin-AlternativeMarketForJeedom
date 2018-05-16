@@ -23,34 +23,46 @@ class AmfjDownloadManager
     /**
      * @var bool Statut de la connexion
      */
-    protected $connectionStatus;
+    protected static $connectionStatus = false;
 
     /**
      * @var string Token GitHub
      */
-    protected $gitHubToken;
+    protected static $gitHubToken;
+
+    /**
+     * @var string
+     */
+    private static $urlForTest = 'www.google.fr';
 
     /**
      * Constructeur testant le statut de la connexion.
+     *
+     * @param bool $forceConnectionStatus Booléen pour forcer l'état de la connexion.
      */
-    public function __construct()
+    public static function init($forceConnectionStatus = null)
     {
-        $this->connectionStatus = false;
-        $this->testConnection();
-        $this->gitHubToken = config::byKey('github-user-token', 'AlternativeMarketForJeedom');
+        if ($forceConnectionStatus !== null) {
+            self::$connectionStatus = $forceConnectionStatus;
+        } else {
+            if (!self::isConnected()) {
+                self::testConnection();
+            }
+        }
+        self::$gitHubToken = config::byKey('github::token');
     }
 
     /**
      * Test le statut de la connexion.
      */
-    protected function testConnection()
+    protected static function testConnection()
     {
-        $sock = \fsockopen('www.google.fr', 80);
+        $sock = \fsockopen(self::$urlForTest, 80);
         if ($sock !== false) {
-            $this->connectionStatus = true;
+            self::$connectionStatus = true;
             fclose($sock);
         } else {
-            $this->connectionStatus = $sock;
+            self::$connectionStatus = $sock;
         }
     }
 
@@ -59,9 +71,9 @@ class AmfjDownloadManager
      *
      * @return bool True si la connexion fonctionne
      */
-    public function isConnected()
+    public static function isConnected()
     {
-        return $this->connectionStatus;
+        return self::$connectionStatus;
     }
 
     /**
@@ -72,42 +84,36 @@ class AmfjDownloadManager
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
-    public function downloadContent($url, $binary = false)
+    public static function downloadContent($url, $binary = false)
     {
-        $result = false;
-        if ($this->isCurlEnabled()) {
-            $result = $this->downloadContentWithCurl($url, $binary);
-        } elseif ($this->isUrlFopenEnabled()) {
-            $result = $this->downloadContentWithFopen($url);
+        if (self::$gitHubToken !== false && self::$gitHubToken != '' && !$binary) {
+            $toAdd = 'access_token=' . self::$gitHubToken;
+            // Test si un paramètre a déjà été passé
+            if (strpos($url, '?') !== false) {
+                $url = $url . '&' . $toAdd;
+            } else {
+                $url = $url . '?' . $toAdd;
+            }
         }
-        return $result;
+        log::add('AlternativeMarketForJeedom', 'debug', 'Download ' . $url);
+        return self::downloadContentWithCurl($url, $binary);
     }
 
     /**
      * Télécharge un fichier binaire
      *
-     * @param $url Lien du fichier
-     * @param $dest Destination du fichier
+     * @param string $url Lien du fichier
+     * @param string $dest Destination du fichier
      */
-    public function downloadBinary($url, $dest)
+    public static function downloadBinary($url, $dest)
     {
-        $imgData = $this->downloadContent($url, true);
+        $imgData = self::downloadContent($url, true);
         if (\file_exists($dest)) {
             \unlink($dest);
         }
         $filePointer = \fopen($dest, 'wb');
         \fwrite($filePointer, $imgData);
         \fclose($filePointer);
-    }
-
-    /**
-     * Test si la fonctionnalité cURL est activée
-     *
-     * @return bool True si la fonctionnalité est activée
-     */
-    protected function isCurlEnabled()
-    {
-        return function_exists('curl_version');
     }
 
     /**
@@ -118,24 +124,12 @@ class AmfjDownloadManager
      *
      * @return string|bool Données téléchargées ou False en cas d'échec
      */
-    protected function downloadContentWithCurl($url, $binary = false)
+    protected static function downloadContentWithCurl($url, $binary = false)
     {
-        if ($this->gitHubToken !== false && $this->gitHubToken != '' && !$binary) {
-            $toAdd = 'access_token=' . $this->gitHubToken;
-            // Test si un paramètre a déjà été passé
-            if (strpos($url, '?') !== false) {
-                $url = $url . '&' . $toAdd;
-            } else {
-                $url = $url . '?' . $toAdd;
-            }
-        }
         $content = false;
         $curlSession = curl_init();
         if ($curlSession !== false) {
             \curl_setopt($curlSession, CURLOPT_URL, $url);
-            if (!$binary) {
-                log::add('AlternativeMarketForJeedom', 'debug', $url);
-            }
             \curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
             if ($binary) {
                 \curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
@@ -145,32 +139,5 @@ class AmfjDownloadManager
             \curl_close($curlSession);
         }
         return $content;
-    }
-
-    /**
-     * Test si fopen peut être utilisé pour télécharger le contenu d'un lien
-     *
-     * @return bool True si c'est possible
-     */
-    protected function isUrlFopenEnabled()
-    {
-        return \ini_get('allow_fopen_url');
-    }
-
-    /**
-     * Télécharge un contenu à partir de son lien avec la méthode fopen
-     *
-     * @param string $url Lien du contenu à télécharger.
-     *
-     * @return string|bool Données téléchargées ou False en cas d'échec
-     */
-    protected function downloadContentWithFopen($url)
-    {
-        try {
-            $result = \file_get_contents($url);
-        } catch (\Exception $e) {
-            $result = false;
-        }
-        return $result;
     }
 }

@@ -7,10 +7,12 @@ Partiellement réalisé
  - Intégration Travis
  - Téléchargement et installation
  - Détecter les plugin déjà installés
-
-TODO : 
  - Amélioration graphique
- - Optimisation
  - Icone
- - Traduction
  - Gestion des versions
+ 
+TODO : 
+ - Optimisation
+ - Traduction
+ - Mise à jour
+ - Suppression

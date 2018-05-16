@@ -20,8 +20,9 @@ use PHPUnit\Framework\TestCase;
 
 require_once('core/class/AmfjGitManager.class.php');
 require_once('core/class/AmfjDataStorage.class.php');
+require_once('../../core/php/core.inc.php');
 
-define('GITHUB_TEST_REPO', 'jeedom');
+define('GITHUB_TEST_REPO', 'NextDom');
 
 class Mocked_GitManager extends AmfjGitManager
 {
@@ -32,7 +33,8 @@ class Mocked_GitManager extends AmfjGitManager
         parent::__construct($id);
     }
 
-    public function downloadRepositoriesList() {
+    public function downloadRepositoriesList()
+    {
         return parent::downloadRepositoriesList();
     }
 }
@@ -45,6 +47,10 @@ class GitManagerTest extends TestCase
     public function setUp()
     {
         DB::init(true);
+        if (file_exists('.github-token')) {
+            $token = str_replace("\n", "", file_get_contents('.github-token'));
+            config::addKeyToCore('github::token', $token);
+        }
         $this->gitManager = new Mocked_GitManager(GITHUB_TEST_REPO);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
@@ -55,65 +61,79 @@ class GitManagerTest extends TestCase
         $this->dataStorage->dropDataTable();
     }
 
-    public function testIsUpdateNeededWithoutFile()
-    {
-        $this->assertTrue($this->gitManager->isUpdateNeeded());
-    }
+    /*
+        public function testIsUpdateNeededWithoutFile()
+        {
+            $this->assertTrue($this->gitManager->isUpdateNeeded());
+        }
 
-    public function testIsUpdateNeededWithRecentCall()
-    {
-        $this->dataStorage->storeRawData('repo_last_update_'.GITHUB_TEST_REPO, time() - 200);
-        $this->assertFalse($this->gitManager->isUpdateNeeded());
-    }
+        public function testIsUpdateNeededWithRecentCall()
+        {
+            $this->dataStorage->storeRawData('repo_last_update_'.GITHUB_TEST_REPO, time() - 200);
+            $this->assertFalse($this->gitManager->isUpdateNeeded());
+        }
 
-    public function testIsUpdateNeededWithOldCall()
-    {
-        $this->dataStorage->storeRawData('repo_last_update_'.GITHUB_TEST_REPO, time() - 360000);
-        $this->assertTrue($this->gitManager->isUpdateNeeded());
-    }
-
+        public function testIsUpdateNeededWithOldCall()
+        {
+            $this->dataStorage->storeRawData('repo_last_update_'.GITHUB_TEST_REPO, time() - 360000);
+            $this->assertTrue($this->gitManager->isUpdateNeeded());
+        }
+    */
     public function testUpdateRepositoriesListGoodUser()
     {
         $result = $this->gitManager->updateRepositoriesList();
         $this->assertTrue($result);
-        $this->assertNotNull($this->dataStorage->getRawData('repo_last_update_'.GITHUB_TEST_REPO));
+        $this->assertNotNull($this->dataStorage->getRawData('repo_last_update_' . GITHUB_TEST_REPO));
     }
 
     public function testUpdateRepositoriesListBadUser()
     {
-        $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
-        $result = $this->gitManager->updateRepositoriesList();
-        $this->assertFalse($result);
-        $this->assertNull($this->dataStorage->getRawData('repo_last_update_'.GITHUB_TEST_REPO));
+        try {
+            $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
+            $this->gitManager->updateRepositoriesList();
+            $this->fail('Exception non levée avec un mauvais utilisateur');
+        } catch (Exception $e) {
+            $this->assertEquals('Le dépôt IHopeThatUserWillNeverExists n\'existe pas.', $e->getMessage());
+        }
     }
 
-    public function testDownloadRepositoriesListGoodUser() {
+    public function testDownloadRepositoriesListGoodUser()
+    {
         $result = $this->gitManager->downloadRepositoriesList();
         $this->assertNotFalse($result);
-        $this->assertContains('"owner":{"login":"'.GITHUB_TEST_REPO, $result);
+        $this->assertContains('"owner":{"login":"' . GITHUB_TEST_REPO, $result);
     }
 
-    public function testDownloadRepositoriesListBadUser() {
-        $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
-        $result = $this->gitManager->downloadRepositoriesList();
-        $this->assertContains('{"message":"Not Found"', $result);
+    public function testDownloadRepositoriesListBadUser()
+    {
+        try {
+            $this->gitManager = new Mocked_GitManager('IHopeThatUserWillNeverExists');
+            $this->gitManager->downloadRepositoriesList();
+            $this->fail('Exception non levée avec un mauvais utilisateur');
+        } catch (Exception $e) {
+            $this->assertEquals('Le dépôt IHopeThatUserWillNeverExists n\'existe pas.', $e->getMessage());
+
+        }
     }
 
-    public function testReadRepositoriesListWithoutContent() {
+    public function testReadRepositoriesListWithoutContent()
+    {
         $result = $this->gitManager->getRepositoriesList();
         $this->assertFalse($result);
     }
 
-    public function testReadRepositoriesListWithBadContent() {
-        $this->dataStorage->storeRawData('repo_last_update_'.GITHUB_TEST_REPO, time());
-        $this->dataStorage->storeRawData('repo_data_'.GITHUB_TEST_REPO, 'test');
+    public function testReadRepositoriesListWithBadContent()
+    {
+        $this->dataStorage->storeRawData('repo_last_update_' . GITHUB_TEST_REPO, time());
+        $this->dataStorage->storeRawData('repo_data_' . GITHUB_TEST_REPO, 'test');
         $result = $this->gitManager->getRepositoriesList();
         $this->assertFalse($result);
     }
 
-    public function testReadRepositoriesListWithContent() {
-        $this->dataStorage->storeRawData('repo_last_update_'.GITHUB_TEST_REPO, time());
-        $this->dataStorage->storeRawData('repo_data_'.GITHUB_TEST_REPO, '{"test": "a content"}');
+    public function testReadRepositoriesListWithContent()
+    {
+        $this->dataStorage->storeRawData('repo_last_update_' . GITHUB_TEST_REPO, time());
+        $this->dataStorage->storeRawData('repo_data_' . GITHUB_TEST_REPO, '{"test": "a content"}');
         $result = $this->gitManager->getRepositoriesList();
         $this->assertArrayHasKey('test', $result);
     }

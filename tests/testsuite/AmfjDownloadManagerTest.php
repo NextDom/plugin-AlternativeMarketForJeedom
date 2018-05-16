@@ -21,18 +21,22 @@ use PHPUnit\Framework\TestCase;
 require_once('core/class/AmfjDownloadManager.class.php');
 require_once('../../core/php/core.inc.php');
 
-class Mocked_Amfj_DownloadManager extends AmfjDownloadManager
+class Mocked_AmfjDownloadManager extends AmfjDownloadManager
 {
-    public function downloadContentWithCurl($url, $binary = false) {
-        return parent::downloadContentWithCurl($url);
+    public static function downloadContent($url, $binary = false) {
+        return parent::downloadContent($url, $binary);
     }
 
-    public function downloadContentWithFopen($url) {
+    public static function downloadContentWithCurl($url, $binary = false) {
+        return parent::downloadContentWithCurl($url, $binary);
+    }
+
+    public static function downloadContentWithFopen($url) {
         return parent::downloadContentWithFopen($url);
     }
 
-    public function setConnectionStatus($status) {
-        $this->connectionStatus = $status;
+    public static function setConnectionStatus($status) {
+        parent::$connectionStatus = $status;
     }
 }
 
@@ -42,48 +46,78 @@ class DownloadManagerTest extends TestCase
 
     public function setUp()
     {
-        $this->downloadManager = new Mocked_Amfj_DownloadManager();
+        Mocked_AmfjDownloadManager::init();
     }
 
     public function testIsConnected() {
-        $this->assertTrue($this->downloadManager->isConnected());
+        $this->assertTrue(Mocked_AmfjDownloadManager::isConnected());
     }
 
     public function testIsConnectedWithoutConnection() {
-        $this->downloadManager->setConnectionStatus(false);
-        $this->assertFalse($this->downloadManager->isConnected());
+        Mocked_AmfjDownloadManager::setConnectionStatus(false);
+        $this->assertFalse(Mocked_AmfjDownloadManager::isConnected());
     }
 
     public function testDownloadContent() {
-        $content = $this->downloadManager->downloadContent('http://www.perdu.com');
+        $content = Mocked_AmfjDownloadManager::downloadContent('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlGoodContent() {
-        $content = $this->downloadManager->downloadContentWithCurl('http://www.perdu.com');
+        $content = Mocked_AmfjDownloadManager::downloadContentWithCurl('http://www.perdu.com');
         $this->assertContains('Perdu sur l\'Internet', $content);
     }
 
     public function testDownloadContentWithCurlBadContent() {
-        $content = $this->downloadManager->downloadContentWithCurl('https://www.google.frrandom');
+        $content = Mocked_AmfjDownloadManager::downloadContentWithCurl('https://www.google.frrandom');
         $this->assertFalse($content);
     }
 
     public function testDownloadBinary() {
         system('wget -q https://www.facebook.com/images/fb_icon_325x325.png');
-        $this->downloadManager->downloadBinary('https://www.facebook.com/images/fb_icon_325x325.png', 'test.png');
+        Mocked_AmfjDownloadManager::downloadBinary('https://www.facebook.com/images/fb_icon_325x325.png', 'test.png');
         $this->assertFileEquals('fb_icon_325x325.png', 'test.png');
         unlink('fb_icon_325x325.png');
         unlink('test.png');
     }
 
-    public function testDdwnloadContentWithFopenGoodContent() {
-        $content = $this->downloadManager->downloadContentWithFopen('http://www.perdu.com');
-        $this->assertContains('Perdu sur l\'Internet', $content);
+    public function testDownloadWithoutGitHubToken() {
+        config::addKeyToCore('github::token', '');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test', $actions[0]['content']['msg']);
     }
 
-    public function testDdwnloadContentWithFopenBadContent() {
-        $content = $this->downloadManager->downloadContentWithFopen('https://www.google.frrandom');
-        $this->assertFalse($content);
+    public function testDownloadBinaryWithGitHubToken() {
+        config::addKeyToCore('github::token', 'SIMPLECHAIN');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test', true);
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test', $actions[0]['content']['msg']);
+    }
+
+    public function testDownloadWithGitHubTokenSimpleUrl() {
+        config::addKeyToCore('github::token', 'SIMPLECHAIN');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test?access_token=SIMPLECHAIN', $actions[0]['content']['msg']);
+    }
+
+    public function testDownloadWithGitHubTokenComplexUrl() {
+        config::addKeyToCore('github::token', 'SIMPLECHAIN');
+        Mocked_AmfjDownloadManager::init(true);
+        Mocked_AmfjDownloadManager::downloadContent('http://github.com/Test/Test?test=something');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('log_add', $actions[0]['action']);
+        $this->assertEquals('Download http://github.com/Test/Test?test=something&access_token=SIMPLECHAIN', $actions[0]['content']['msg']);
     }
 }
