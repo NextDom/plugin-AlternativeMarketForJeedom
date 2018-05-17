@@ -86,7 +86,22 @@ if (!isConnect('admin')) {
                     {{GitHub}}</a></p>
         </div>
     </div>
+    <div id="plugin-modal-screenshots">
+        <div id="plugin-screenshots" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+            </div>
+            <a class="left carousel-control" href="#plugin-screenshots" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">{{Précédent}}</span>
+            </a>
+            <a class="right carousel-control" href="#plugin-screenshots" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">{{Suivant}}</span>
+            </a>
+        </div>
+    </div>
     <div id="plugin-modal-footer" class="row">
+
         <button class="btn btn-primary" id="close-button">{{Fermer}}</button>
     </div>
 </div>

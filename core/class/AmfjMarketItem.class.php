@@ -95,6 +95,10 @@ class AmfjMarketItem
      * @var array Données de Jeedom sur le plugin
      */
     private $updateData;
+    /**
+     * @var array Liste des captures
+     */
+    private $screenshots;
 
     /**
      * Constructeur initialisant les informations de base
@@ -207,6 +211,7 @@ class AmfjMarketItem
         if (\array_key_exists('description', $jsonInformations)) $this->description = $jsonInformations['description'];
         if (\array_key_exists('defaultBranch', $jsonInformations)) $this->defaultBranch = $jsonInformations['defaultBranch'];
         if (\array_key_exists('branches', $jsonInformations)) $this->branchesList = $jsonInformations['branches'];
+        if (\array_key_exists('screenshots', $jsonInformations)) $this->screenshots = $jsonInformations['screenshots'];
     }
 
     /**
@@ -252,6 +257,7 @@ class AmfjMarketItem
         $dataArray['sourceName'] = $this->sourceName;
         $dataArray['changelogLink'] = $this->changelogLink;
         $dataArray['documentationLink'] = $this->documentationLink;
+        $dataArray['screenshots'] = $this->screenshots;
 
         $this->initUpdateData();
         $dataArray['installed'] = $this->isInstalled();
@@ -299,6 +305,7 @@ class AmfjMarketItem
             if (\array_key_exists('licence', $jsonContent)) $this->licence = $jsonContent['licence'];
             if (\array_key_exists('changelogLink', $jsonContent)) $this->changelogLink = $jsonContent['changelogLink'];
             if (\array_key_exists('documentationLink', $jsonContent)) $this->documentationLink = $jsonContent['documentationLink'];
+            if (\array_key_exists('screenshots', $jsonContent)) $this->screenshots = $jsonContent['screenshots'];
             $result = true;
         }
         return $result;

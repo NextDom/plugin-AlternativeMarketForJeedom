@@ -107,7 +107,7 @@ class AmfjMarket
             if ($content !== false) {
                 $marketData = json_decode($content, true);
                 $lastChange = $this->dataStorage->getRawData('repo_last_change_' . $this->source['name']);
-                if ($lastChange == null || $marketData['version'] > $lastChange) {
+                if ($force || $lastChange == null || $marketData['version'] > $lastChange) {
                     foreach ($marketData['plugins'] as $plugin) {
                         $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin);
                         $marketItem->writeCache();

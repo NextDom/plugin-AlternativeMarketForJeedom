@@ -1,6 +1,7 @@
 $(document).ready(function () {
     initDataModal();
     initInstallationButtons();
+    initPluginCarousel();
 });
 
 /**
@@ -139,7 +140,7 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
     else {
         $('#get-branches-informations').css('display', 'none');
         $('#install-plugin-advanced').css('display', 'block');
-        $('#install-plugin-advanced button').addClass( "disabled" );
+        $('#install-plugin-advanced button').addClass("disabled");
     }
 }
 
@@ -219,4 +220,22 @@ function ajaxQuery(url, data, callbackFunc) {
             handleAjaxError(request, status, error);
         }
     });
+}
+
+function initPluginCarousel() {
+    if (currentPlugin['screenshots'].length > 0) {
+        $('#plugin-screenshots').show();
+        var screenshots = currentPlugin['screenshots'];
+        var first = true;
+        for (var screenshotIndex = 0; screenshotIndex < screenshots.length; ++screenshotIndex) {
+                var itemClassList = 'item';
+                if (first === true) {
+                    itemClassList += ' active';
+                    first = false;
+                }
+                var itemToAdd = $('<div class="' + itemClassList + '"><img src="' + screenshots[screenshotIndex] + '"/></div>')
+                $('#plugin-screenshots .carousel-inner').append(itemToAdd);
+                $('#plugin-screenshots').carousel();
+            }
+    }
 }

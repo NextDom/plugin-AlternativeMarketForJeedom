@@ -8,14 +8,14 @@ var iconDownloadQueue = [];
 
 // Point d'entrée du script
 $(document).ready(function () {
-    refresh();
-    initFilters();
+    initEvents();
+    refresh(false);
 });
 
 /**
- * Initialise les évènements des filtres
+ * Initialise les évènements
  */
-function initFilters() {
+function initEvents() {
     $('#market-filter-src button').click(function () {
         var source = $(this).data('source');
         if (isActive($(this))) {
@@ -155,9 +155,6 @@ function updateFilteredList() {
  */
 function refresh(force) {
     var params = 'list';
-    if (typeof force !== undefined && force === true) {
-        params = 'list-force';
-    }
     $.post({
         url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
         data: {
@@ -258,6 +255,8 @@ function iconDownload() {
                     $('#div_alert').showAlert({message: iconData.result, level: 'danger'});
                 }
                 else {
+                    var img = new Image();
+                    img.src = iconData['result'];
                     itemObj.find('img').attr('src', iconData['result']);
                     if (iconDownloadQueue.length > 0) {
                         iconDownload();
