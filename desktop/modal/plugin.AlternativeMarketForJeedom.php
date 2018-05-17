@@ -87,6 +87,7 @@ if (!isConnect('admin')) {
         </div>
     </div>
     <div id="plugin-modal-footer" class="row">
+        <button class="btn btn-primary" id="close-button">{{Fermer}}</button>
     </div>
 </div>
 <?php

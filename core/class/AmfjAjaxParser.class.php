@@ -150,7 +150,11 @@ class AmfjAjaxParser
                                 array_push($result, $item->getDataInArray());
                             } else {
                                 if (!\in_array($item->getId(), $idList)) {
-                                    array_push($result, $item->getDataInArray());
+                                    $itemData = $item->getDataInArray();
+                                    if ($itemData['installed'] === true && $itemData['installedBranchData']['needUpdate'] === true) {
+                                        message::add('AlternativeMarketForJeedom', 'Mise à jour disponible pour '.$itemData['name'], null, null);
+                                    }
+                                    array_push($result, $itemData);
                                     array_push($idList, $item->getId());
                                 }
                             }
