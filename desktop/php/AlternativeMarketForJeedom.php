@@ -47,7 +47,6 @@ if (isset($_GET['message'])) {
 
     $messageIndex = intval($_GET['message']);
     if ($messageIndex < count($messages)) {
-        log::add('AlternativeMarketForJeedom', 'debug', $messages[$messageIndex]);
         message::add('AlternativeMarketForJeedom', $messages[$messageIndex]);
     }
 }
