@@ -70,5 +70,7 @@ function AlternativeMarketForJeedom_remove()
     foreach (eqLogic::byType('AlternativeMarketForJeedom') as $eqLogic) {
         $eqLogic->remove();
     }
+    // Suppression du cache depuis le répertoire core/ajax
+    exec('rm -fr ../../plugins/AlternativeMarketForJeedom/cache/*');
 }
 

@@ -1,3 +1,9 @@
+#logo-nextdom img {
+    width: 100%;
+    margin-top: 2rem;
+    max-width: 7em;
+}
+
 .market-filters {
     margin-top: 2rem;
 }

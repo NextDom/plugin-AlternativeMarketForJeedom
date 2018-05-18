@@ -170,58 +170,13 @@ function removePlugin(pluginId) {
         id: pluginId
     };
     ajaxQuery('core/ajax/update.ajax.php', data, function () {
-        window.location.href = window.location.href + "&message=1";
+        reloadWithMessage(1);
     });
 }
 
 /**
- * Lance l'installation du plugin
+ * Initialise le carousel pour les screenshots
  */
-function updatePlugin(id) {
-    var data = {
-        action: 'update',
-        id: id
-    };
-    ajaxQuery('core/ajax/update.ajax.php', data, function () {
-        var data = {
-            action: 'refresh',
-            params: 'branch-hash',
-            data: [currentPlugin['sourceName'], currentPlugin['fullName']]
-        }
-        // Met à jour les branches
-        ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
-            window.location.href = window.location.href + "&message=0";
-        });
-    });
-}
-
-/**
- * Lancer une requête Ajax
- *
- * @param data Données de la requête
- */
-function ajaxQuery(url, data, callbackFunc) {
-    $.post({
-        url: url,
-        data: data,
-        dataType: 'json',
-        success: function (data, status) {
-            // Test si l'appel a échoué
-            if (data.state !== 'ok' || status !== 'success') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-            }
-            else {
-                if (typeof callbackFunc !== "undefined") {
-                    callbackFunc();
-                }
-            }
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        }
-    });
-}
-
 function initPluginCarousel() {
     if (currentPlugin['screenshots'].length > 0) {
         $('#plugin-screenshots').show();

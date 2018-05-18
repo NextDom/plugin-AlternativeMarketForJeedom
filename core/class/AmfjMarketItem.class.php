@@ -346,7 +346,7 @@ class AmfjMarketItem
         AmfjDownloadManager::downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
             \unlink($targetPath);
-            $this->iconPath = 'core/img/no-image-plugin.png';
+            $this->iconPath = 'plugins/AlternativeMarketForJeedom/resources/unknown_icon.png';
         } else {
             $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
         }

@@ -154,27 +154,13 @@ function updateFilteredList() {
  * Rafraichit les éléments affichés
  */
 function refresh(force) {
-    var params = 'list';
-    $.post({
-        url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
-        data: {
-            action: 'refresh',
-            params: params,
-            data: sourcesList
-        },
-        dataType: 'json',
-        success: function (data, status) {
-            // Test si l'appel a échoué
-            if (data.state !== 'ok' || status !== 'success') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-            }
-            else {
-                refreshItems();
-            }
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        }
+    var ajaxData = {
+        action: 'refresh',
+        params: 'list',
+        data: sourcesList
+    };
+    ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function() {
+        refreshItems();
     });
 }
 
@@ -182,27 +168,14 @@ function refresh(force) {
  * Rafraichit un elément
  */
 function refreshItems() {
-    $.post({
-        url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
-        data: {
-            action: 'get',
-            params: 'list',
-            data: sourcesList
-        },
-        dataType: 'json',
-        success: function (data, status) {
-            // Test si l'appel a échoué
-            if (data.state !== 'ok' || status !== 'success') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-            }
-            else {
-                showItems(data['result']);
-                updateFilteredList();
-            }
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        }
+    var ajaxData = {
+        action: 'get',
+        params: 'list',
+        data: sourcesList
+    };
+    ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function (result) {
+        showItems(result);
+        updateFilteredList();
     });
 }
 
@@ -222,7 +195,6 @@ function showItems(items) {
         container.append(itemHtmlObj);
     }
     startIconsDownload();
-    $('#jqueryLoadingDiv').hide();
     $('.media').click(function () {
         showPluginModal($(this).data('plugin'), $(this).find('img').attr('src'));
     });
@@ -243,6 +215,7 @@ function iconDownload() {
         var itemObj = content[1];
         $.post({
             url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
+            global: false,
             data: {
                 action: 'get',
                 params: 'icon',
@@ -298,7 +271,7 @@ function getItemHtml(item) {
 
     var iconPath = item['iconPath'];
     if (item['iconPath'] === false) {
-        iconPath = 'core/img/no-image-plugin.png';
+        iconPath = 'plugins/AlternativeMarketForJeedom/resources/wait_icon.png';
     }
     // Préparation du code
     var result = '' +
@@ -338,4 +311,63 @@ function showPluginModal(pluginData, iconPath) {
     modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
     currentPlugin['iconPath'] = iconPath;
+}
+
+/**
+ * Lance l'installation du plugin
+ */
+function updatePlugin(id) {
+    var data = {
+        action: 'update',
+        id: id
+    };
+    ajaxQuery('core/ajax/update.ajax.php', data, function () {
+        var data = {
+            action: 'refresh',
+            params: 'branch-hash',
+            data: [currentPlugin['sourceName'], currentPlugin['fullName']]
+        }
+        // Met à jour les branches
+        ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
+            reloadWithMessage(0);
+        });
+    });
+}
+
+/**
+ * Lancer une requête Ajax
+ *
+ * @param data Données de la requête
+ */
+function ajaxQuery(url, data, callbackFunc) {
+    $.post({
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data, status) {
+            // Test si l'appel a échoué
+            if (data.state !== 'ok' || status !== 'success') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+            }
+            else {
+                if (typeof callbackFunc !== "undefined") {
+                    callbackFunc(data.result);
+                }
+            }
+        },
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        }
+    });
+}
+
+function reloadWithMessage(messageId) {
+    var urlMessageParamIndex = window.location.href.indexOf('message=');
+    if (urlMessageParamIndex === -1) {
+        window.location.href = window.location.href + "&message=" + messageId;
+    }
+    else {
+        window.location.href = window.location.href.substr(urlMessageParamIndex) + "&message=" + messageId;
+    }
+
 }

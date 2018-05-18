@@ -47,7 +47,8 @@ if (isset($_GET['message'])) {
 
     $messageIndex = intval($_GET['message']);
     if ($messageIndex < count($messages)) {
-        message::add('AlternativeMarketForJeedom', $messages[$messageIndex], null, null);
+        log::add('AlternativeMarketForJeedom', 'debug', $messages[$messageIndex]);
+        message::add('AlternativeMarketForJeedom', $messages[$messageIndex]);
     }
 }
 
@@ -56,56 +57,63 @@ include_file('desktop', 'AlternativeMarketForJeedom', 'css', 'AlternativeMarketF
 include_file('core', 'plugin.template', 'js');
 
 ?>
-<div class="market-filters row">
-    <div id="market-filter-src" class="btn-group col-sm-8">
-        <?php
-        if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) {
-            foreach ($eqLogics as $eqLogic) {
-                $name = $eqLogic->getName();
-                echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
-            }
-        }
-        ?>
+<div class="row">
+    <div id="logo-nextdom" class="col-sm-1">
+        <a href="https://nextdom.github.io/"><img src="plugins/AlternativeMarketForJeedom/resources/NextDomSquareRound.png"  alt="Site NextDom" /></a>
     </div>
-    <div class="col-sm-4">
-        <div id="admin-buttons" class="btn-group">
-            <a href="index.php?v=d&p=plugin&id=AlternativeMarketForJeedom" class="btn btn-primary"><i
-                        class="fa fa-wrench"></i> {{Configurer}}</a>
-            <button id="refresh-markets" class="btn btn-primary">
-                <i class="fa fa-refresh"></i> {{Rafraîchir}}
-            </button>
+    <div class="col-sm-11">
+        <div class="market-filters row">
+            <div id="market-filter-src" class="btn-group col-sm-8">
+                <?php
+                if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) {
+                    foreach ($eqLogics as $eqLogic) {
+                        $name = $eqLogic->getName();
+                        echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
+                    }
+                }
+                ?>
+            </div>
+            <div class="col-sm-4">
+                <div id="admin-buttons" class="btn-group">
+                    <a href="index.php?v=d&p=plugin&id=AlternativeMarketForJeedom" class="btn btn-primary"><i
+                                class="fa fa-wrench"></i> {{Configurer}}</a>
+                    <button id="refresh-markets" class="btn btn-primary">
+                        <i class="fa fa-refresh"></i> {{Rafraîchir}}
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="market-filters row">
-    <div class="btn-group col-sm-4">
-        <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
-        <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>
-    </div>
-    <div class="form-group col-sm-4">
-        <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" class="form-control" id="market-search" placeholder="{{Rechercher}}"/>
+        <div class="market-filters row">
+            <div class="btn-group col-sm-4">
+                <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
+                <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>
+            </div>
+            <div class="form-group col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                    <input type="text" class="form-control" id="market-search" placeholder="{{Rechercher}}"/>
+                </div>
+            </div>
+            <div class="form-group col-sm-4">
+                <select class="form-control" id="market-filter-category">
+                    <option value="all">{{Toutes les Catégories}}</option>
+                    <option value="security">{{Sécurité}}</option>
+                    <option value="automation protocol">{{Protocole domotique}}</option>
+                    <option value="programming">{{Programmation}}</option>
+                    <option value="organization">{{Organisation}}</option>
+                    <option value="weather">{{Météo}}</option>
+                    <option value="communication">{{Communication}}</option>
+                    <option value="devicecommunication">{{Objets communicants}}</option>
+                    <option value="multimedia">{{Multimédia}}</option>
+                    <option value="wellness">{{Bien-être}}</option>
+                    <option value="monitoring">{{Monitoring}}</option>
+                    <option value="health">{{Santé}}</option>
+                    <option value="nature">{{Nature}}</option>
+                    <option value="automatisation">{{Automatisme}}</option>
+                    <option value="energy">{{Energie}}</option>
+                </select>
+            </div>
         </div>
-    </div>
-    <div class="form-group col-sm-4">
-        <select class="form-control" id="market-filter-category">
-            <option value="all">{{Toutes les Catégories}}</option>
-            <option value="security">{{Sécurité}}</option>
-            <option value="automation protocol">{{Protocole domotique}}</option>
-            <option value="programming">{{Programmation}}</option>
-            <option value="organization">{{Organisation}}</option>
-            <option value="weather">{{Météo}}</option>
-            <option value="communication">{{Communication}}</option>
-            <option value="devicecommunication">{{Objets communicants}}</option>
-            <option value="multimedia">{{Multimédia}}</option>
-            <option value="wellness">{{Bien-être}}</option>
-            <option value="monitoring">{{Monitoring}}</option>
-            <option value="health">{{Santé}}</option>
-            <option value="nature">{{Nature}}</option>
-            <option value="automatisation">{{Automatisme}}</option>
-            <option value="energy">{{Energie}}</option>
-        </select>
     </div>
 </div>
 <div id="market-div" class="row">
