@@ -197,6 +197,15 @@ function showItems(items) {
     startIconsDownload();
     $('.media').click(function () {
         showPluginModal($(this).data('plugin'), $(this).find('img').attr('src'));
+        return false;
+    });
+    $('.update-marker').click(function() {
+        $('#updateModal').modal('show');
+        currentPlugin = $(this).parent().data('plugin');
+        $('#updateModal .btn-primary').click(function() {
+            updatePlugin(currentPlugin['installedBranchData']['id']);
+        });
+        return false;
     });
     $('[data-toggle="tooltip"]').tooltip();
 }
@@ -367,7 +376,7 @@ function reloadWithMessage(messageId) {
         window.location.href = window.location.href + "&message=" + messageId;
     }
     else {
-        window.location.href = window.location.href.substr(urlMessageParamIndex) + "&message=" + messageId;
+        window.location.href = window.location.href.substr(0, urlMessageParamIndex) + "message=" + messageId;
     }
 
 }
