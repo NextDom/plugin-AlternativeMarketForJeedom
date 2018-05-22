@@ -2,6 +2,9 @@ $(document).ready(function () {
     initDataModal();
     initInstallationButtons();
     initPluginCarousel();
+    $('#close-button').click(function() {
+        $('#md_modal').dialog('close');
+    });
 });
 
 /**
