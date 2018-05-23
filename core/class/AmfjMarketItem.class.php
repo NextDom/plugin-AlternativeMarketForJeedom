@@ -339,7 +339,6 @@ class AmfjMarketItem
      */
     public function downloadIcon()
     {
-        log::add('AlternativeMarketForJeedom', 'debug', 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png');
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
         $targetPath = \dirname(__FILE__) . '/../../cache/' . $iconFilename;
@@ -404,7 +403,7 @@ class AmfjMarketItem
     private function getInstalledBranchData()
     {
         $result = false;
-        if ($this->updateData !== false) {
+        if ($this->updateData !== false && $this->updateData !== null) {
             $configuration = $this->updateData->getConfiguration();
             if (\is_array($configuration) && \array_key_exists('version', $configuration)) {
                 $result = [];

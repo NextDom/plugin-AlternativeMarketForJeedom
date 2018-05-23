@@ -82,7 +82,6 @@ class AmfjMarket
     {
         $result = false;
         $gitManager = new AmfjGitManager($this->source['data']);
-        log::add('AlternativeMarketForJeedom', 'debug', 'GITHUB');
         if ($force || $this->isUpdateNeeded($this->source['data'])) {
             $result = $gitManager->updateRepositoriesList();
         }

@@ -31,11 +31,19 @@ class AmfjAjaxParserTest extends TestCase
         DB::init(true);
         $this->dataStorage = new AmfjDataStorage('amfj');
         $this->dataStorage->createDataTable();
+        mkdir('cache');
     }
 
     protected function tearDown()
     {
         $this->dataStorage->dropDataTable();
+        $filesList = scandir('cache');
+        foreach ($filesList as $file) {
+            if ($file != '.' && $file != '..') {
+                unlink('cache/' . $file);
+            }
+        }
+        rmdir('cache');
     }
 
     public function testBadAction() {
@@ -77,6 +85,45 @@ class AmfjAjaxParserTest extends TestCase
     public function testGetBadParams() {
         $result = AmfjAjaxParser::parse('get', 'bad_params', []);
         $this->assertFalse($result);
+    }
+
+    public function testGetIconWithoutCache() {
+        $initialRawData = '{"name":"AndroidRemoteControl","gitName":"plugin-AndroidRemoteControl","gitId":"NextDom","fullName":"NextDom\/plugin-AndroidRemoteControl","description":"Plugin pour Android","url":"https:\/\/github.com\/NextDom\/NextDom\/plugin-AndroidRemoteControl","id":"AndroidRemoteControl","author":"NextDom [Byackee, Slobberbone]","category":"multimedia","iconPath":false,"defaultBranch":"master","branchesList":[{"name":"develop","hash":"21337cbc82a5a2adf366443db681b85424871e55"},{"name":"master","hash":"f4e6b46d05261c12366626029475a77d37e50f03"}],"licence":"AGPL","sourceName":"NextDom Market","changelogLink":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/fr_FR\/changelog.html","documentationLink":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/"}';
+        $this->dataStorage->storeRawData('repo_data_NextDom_plugin-AndroidRemoteControl', $initialRawData);
+        JeedomVars::$initAnswers = array('action' => 'get', 'params' => 'icon', 'data' => array('sourceName' => 'Test Market', 'fullName' => 'NextDom/plugin-AndroidRemoteControl'));
+        include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
+        $actions = MockedActions::get();
+        $this->assertCount(5, $actions);
+        $this->assertEquals('include_file', $actions[0]['action']);
+        $this->assertEquals('authentification', $actions[0]['content']['name']);
+        $this->assertEquals('ajax_init', $actions[1]['action']);
+        // DEBUG en 2
+        $this->assertEquals('ajax_success', $actions[3]['action']);
+        $this->assertEquals('plugins/AlternativeMarketForJeedom/cache/NextDom_plugin-AndroidRemoteControl.png', $actions[3]['content']);
+    }
+
+    public function testGetIconWithoutCacheStoreData()
+    {
+        $initialRawData = '{"name":"AndroidRemoteControl","gitName":"plugin-AndroidRemoteControl","gitId":"NextDom","fullName":"NextDom\/plugin-AndroidRemoteControl","description":"Plugin pour Android","url":"https:\/\/github.com\/NextDom\/NextDom\/plugin-AndroidRemoteControl","id":"AndroidRemoteControl","author":"NextDom [Byackee, Slobberbone]","category":"multimedia","iconPath":false,"defaultBranch":"master","branchesList":[{"name":"develop","hash":"21337cbc82a5a2adf366443db681b85424871e55"},{"name":"master","hash":"f4e6b46d05261c12366626029475a77d37e50f03"}],"licence":"AGPL","sourceName":"NextDom Market","changelogLink":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/fr_FR\/changelog.html","documentationLink":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/"}';
+        $this->dataStorage->storeRawData('repo_data_NextDom_plugin-AndroidRemoteControl', $initialRawData);
+        JeedomVars::$initAnswers = array('action' => 'get', 'params' => 'icon', 'data' => array('sourceName' => 'Test Market', 'fullName' => 'NextDom/plugin-AndroidRemoteControl'));
+        include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
+        $marketItem = AmfjMarketItem::createFromCache('Test Market', 'NextDom/plugin-AndroidRemoteControl');
+        $this->assertEquals('plugins/AlternativeMarketForJeedom/cache/NextDom_plugin-AndroidRemoteControl.png', $marketItem->getIconPath());
+    }
+
+    public function testGetIconWithCache() {
+        $initialRawData = '{"name":"AndroidRemoteControl","gitName":"plugin-AndroidRemoteControl","gitId":"NextDom","fullName":"NextDom\/plugin-AndroidRemoteControl","description":"Plugin pour Android","url":"https:\/\/github.com\/NextDom\/NextDom\/plugin-AndroidRemoteControl","id":"AndroidRemoteControl","author":"NextDom [Byackee, Slobberbone]","category":"multimedia","iconPath":"plugins\/AlternativeMarketForJeedom\/cache\/NextDom_plugin-AndroidRemoteControl.png","defaultBranch":"master","branchesList":[{"name":"develop","hash":"21337cbc82a5a2adf366443db681b85424871e55"},{"name":"master","hash":"f4e6b46d05261c12366626029475a77d37e50f03"}],"licence":"AGPL","sourceName":"NextDom Market","changelogLink":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/fr_FR\/changelog.html","documentationLink":"https:\/\/NextDom.github.io\/plugin-AndroidRemoteControl\/"}';
+        $this->dataStorage->storeRawData('repo_data_NextDom_plugin-AndroidRemoteControl', $initialRawData);
+        JeedomVars::$initAnswers = array('action' => 'get', 'params' => 'icon', 'data' => array('sourceName' => 'Test Market', 'fullName' => 'NextDom/plugin-AndroidRemoteControl'));
+        include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
+        $actions = MockedActions::get();
+        $this->assertCount(4, $actions);
+        $this->assertEquals('include_file', $actions[0]['action']);
+        $this->assertEquals('authentification', $actions[0]['content']['name']);
+        $this->assertEquals('ajax_init', $actions[1]['action']);
+        $this->assertEquals('ajax_success', $actions[2]['action']);
+        $this->assertEquals('plugins/AlternativeMarketForJeedom/cache/NextDom_plugin-AndroidRemoteControl.png', $actions[2]['content']);
     }
 
     public function testSourceBadParams() {
