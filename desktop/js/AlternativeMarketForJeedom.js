@@ -87,7 +87,14 @@ function initEvents() {
     $('#mass-update').click(function() {
         if (pluginsUpdatedNeededList.length > 0) {
             currentPlugin = pluginsUpdatedNeededList[0];
-            updatePlugin(currentPlugin['installedBranchData']['id'], true);
+            $('#market-modal-title').text('Mettre à jour');
+            $('#market-modal-content').text('Voulez-vous mettre à jour tous les plugins ?');
+            $('#market-modal-valid').text('Mettre à jour');
+            $('#market-modal').modal('show');
+            $('#market-modal-valid').click(function() {
+                updatePlugin(currentPlugin['installedBranchData']['id'], true);
+            });
+            return false;
         }
     });
 }
@@ -213,9 +220,12 @@ function showItems(items) {
         return false;
     });
     $('.update-marker').click(function() {
-        $('#updateModal').modal('show');
+        $('#market-modal-title').text('Mettre à jour');
+        $('#market-modal-content').text('Voulez-vous mettre à jour ce plugin ?');
+        $('#market-modal-valid').text('Mettre à jour');
+        $('#market-modal').modal('show');
         currentPlugin = $(this).parent().data('plugin');
-        $('#updateModal .btn-primary').click(function() {
+        $('#market-modal-valid').click(function() {
             updatePlugin(currentPlugin['installedBranchData']['id'], false);
         });
         return false;
