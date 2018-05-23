@@ -151,6 +151,10 @@
     padding-right: 1.2em;
 }
 
+#mass-update {
+    display: none;
+}
+
 .market-filters .btn-primary,
 #plugin-modal .btn-primary {
     background-color: #33B8CC !important;

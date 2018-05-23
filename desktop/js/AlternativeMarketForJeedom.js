@@ -5,6 +5,7 @@ var filterInstalled = false;
 var filterNotInstalled = false;
 var currentSearchValue = '';
 var iconDownloadQueue = [];
+var pluginsUpdatedNeededList = [];
 
 // Point d'entrée du script
 $(document).ready(function () {
@@ -83,6 +84,12 @@ function initEvents() {
     $('#refresh-markets').click(function () {
         refresh(true);
     });
+    $('#mass-update').click(function() {
+        if (pluginsUpdatedNeededList.length > 0) {
+            currentPlugin = pluginsUpdatedNeededList[0];
+            updatePlugin(currentPlugin['installedBranchData']['id'], true);
+        }
+    });
 }
 
 /**
@@ -154,6 +161,8 @@ function updateFilteredList() {
  * Rafraichit les éléments affichés
  */
 function refresh(force) {
+    pluginsUpdatedNeededList = [];
+    $('#mass-update').hide();
     var ajaxData = {
         action: 'refresh',
         params: 'list',
@@ -176,6 +185,10 @@ function refreshItems() {
     ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function (result) {
         showItems(result);
         updateFilteredList();
+        if (pluginsUpdatedNeededList.length > 0) {
+            $('#mass-update').show();
+            $('#mass-update .badge').text(pluginsUpdatedNeededList.length);
+        }
     });
 }
 
@@ -203,7 +216,7 @@ function showItems(items) {
         $('#updateModal').modal('show');
         currentPlugin = $(this).parent().data('plugin');
         $('#updateModal .btn-primary').click(function() {
-            updatePlugin(currentPlugin['installedBranchData']['id']);
+            updatePlugin(currentPlugin['installedBranchData']['id'], false);
         });
         return false;
     });
@@ -291,6 +304,7 @@ function getItemHtml(item) {
     }
     if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
         result += '<div class="update-marker"><i data-toggle="tooltip" title="Mise à jour disponible" class="fa fa-download"></i></div>';
+        pluginsUpdatedNeededList.push(item);
     }
     result += '' +
         '<h4>' + title + '</h4>' +
@@ -325,7 +339,7 @@ function showPluginModal(pluginData, iconPath) {
 /**
  * Lance l'installation du plugin
  */
-function updatePlugin(id) {
+function updatePlugin(id, massUpdate) {
     var data = {
         action: 'update',
         id: id
@@ -338,7 +352,14 @@ function updatePlugin(id) {
         }
         // Met à jour les branches
         ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
-            reloadWithMessage(0);
+            if (massUpdate && pluginsUpdatedNeededList.length > 1) {
+                pluginsUpdatedNeededList.splice(0, 1);
+                currentPlugin = pluginsUpdatedNeededList[0];
+                updatePlugin(currentPlugin['installedBranchData']['id'], true);
+            }
+            else {
+                reloadWithMessage(0);
+            }
         });
     });
 }
@@ -370,6 +391,11 @@ function ajaxQuery(url, data, callbackFunc) {
     });
 }
 
+/**
+ * Recharge une page avec un message à afficher
+ *
+ * @param messageId Identifiant du message
+ */
 function reloadWithMessage(messageId) {
     var urlMessageParamIndex = window.location.href.indexOf('message=');
     if (urlMessageParamIndex === -1) {

@@ -61,21 +61,27 @@ include_file('core', 'plugin.template', 'js');
         <a href="https://nextdom.github.io/"><img src="plugins/AlternativeMarketForJeedom/resources/NextDomSquareRound.png"  alt="Site NextDom" /></a>
     </div>
     <div class="col-sm-11">
+        <?php if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) : ?>
         <div class="market-filters row">
-            <div id="market-filter-src" class="btn-group col-sm-8">
+            <div id="market-filter-src" class="btn-group col-sm-12">
                 <?php
-                if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) {
                     foreach ($eqLogics as $eqLogic) {
                         $name = $eqLogic->getName();
                         echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
                     }
-                }
                 ?>
             </div>
-            <div class="col-sm-4">
+        </div>
+        <?php endif; ?>
+        <div class="market-filters row">
+            <div class="col-sm-12">
                 <div id="admin-buttons" class="btn-group">
                     <a href="index.php?v=d&p=plugin&id=AlternativeMarketForJeedom" class="btn btn-primary"><i
                                 class="fa fa-wrench"></i> {{Configurer}}</a>
+                    <button id="mass-update" class="btn btn-primary">
+                        <i class="fa fa-download"></i> {{Mise à jour}}
+                        <span class="badge">0</span>
+                    </button>
                     <button id="refresh-markets" class="btn btn-primary">
                         <i class="fa fa-refresh"></i> {{Rafraîchir}}
                     </button>

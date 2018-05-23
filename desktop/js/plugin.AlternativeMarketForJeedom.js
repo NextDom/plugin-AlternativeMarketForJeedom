@@ -60,7 +60,7 @@ function initInstallationButtons() {
             initBranchesChoice(currentPlugin['branchesList'], installedBranch);
             if (currentPlugin['installedBranchData']['needUpdate'] === true) {
                 $('#update-plugin').click(function () {
-                    updatePlugin(currentPlugin['installedBranchData']['id']);
+                    updatePlugin(currentPlugin['installedBranchData']['id'], false);
                 });
             }
             else {
