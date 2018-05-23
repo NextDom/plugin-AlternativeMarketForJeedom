@@ -17,7 +17,7 @@
  */
 
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
-
+require_once('AmfjMarket.class.php');
 /**
  * Classe des objets de Jeedom
  */
@@ -46,5 +46,28 @@ class AlternativeMarketForJeedom extends eqLogic
             }
         }
         return $result;
+    }
+
+    /**
+     * Met à jour la liste tous les jours
+     */
+    public static function cronDaily()
+    {
+        AmfjDownloadManager::init();
+
+        $plugin = plugin::byId('AlternativeMarketForJeedom');
+        $eqLogics = eqLogic::byType($plugin->getId(), true);
+
+        foreach ($eqLogics as $eqLogic) {
+            $source = [];
+            $source['name'] = $eqLogic->getName();
+            $source['type'] = $eqLogic->getConfiguration('type');
+            $source['data'] = $eqLogic->getConfiguration('data');
+            $market = new AmfjMarket($source);
+            $market->refresh(true);
+            foreach ($market->getItems() as $marketItem) {
+                $marketItem->downloadIcon();
+            }
+        }
     }
 }
