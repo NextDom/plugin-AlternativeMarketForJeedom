@@ -64,11 +64,11 @@ include_file('core', 'plugin.template', 'js');
 
 ?>
 <div class="row">
-    <div id="logo-nextdom" class="col-sm-1">
+    <div id="logo-nextdom" class="hidden-xs hidden-sm col-md-1">
         <a href="https://nextdom.github.io/"><img
                     src="plugins/AlternativeMarketForJeedom/resources/NextDomSquareRound.png" alt="Site NextDom"/></a>
     </div>
-    <div class="col-sm-11">
+    <div class="col-sm-12 col-md-11">
         <?php if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) : ?>
             <div class="market-filters row">
                 <div id="market-filter-src" class="btn-group col-sm-12">
