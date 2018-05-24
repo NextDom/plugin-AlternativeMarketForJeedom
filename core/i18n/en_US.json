@@ -24,6 +24,14 @@
     "Installer des plugins de développeurs gardant leur indépendance,": "Install plugins of developers keeping their independence,",
     "Installer des plugins ne respectant pas la charte du Market Jeedom.": "Install plugins that do not comply with Market Jeedom's charter."
   },
+  "plugins\/AlternativeMarketForJeedom\/desktop\/modal\/nextdom.AlternativeMarketForJeedom.php": {
+    "Qui sommes-nous ?": "Who are we ?",
+    "Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.": "Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.",
+    "Où nous trouver ?": "Where to find us ?",
+    "GitHub": "GitHub",
+    "Site internet": "Website",
+    "Gitter": "Gitter"
+  },
   "plugins\/AlternativeMarketForJeedom\/desktop\/modal\/plugin.AlternativeMarketForJeedom.php": {
     "401 - Accès non autorisé": "401 - Unauthorized access",
     "Auteur": "Author",

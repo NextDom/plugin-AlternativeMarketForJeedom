@@ -8,6 +8,10 @@ $(document).ready(function () {
         showModal('Informations', 'disclaimer');
         return false;
     });
+    $('#show-nextdom-modal').click(function() {
+        showModal('Informations', 'nextdom');
+        return false;
+    });
     if (showDisclaimer || parseInt(showDisclaimer) == 1) {
         showModal('Informations', 'disclaimer');
     }
