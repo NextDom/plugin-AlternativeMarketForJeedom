@@ -75,8 +75,6 @@ include_file('core', 'plugin.template', 'js');
             </div>
         <?php endif; ?>
         <div class="market-filters row">
-        </div>
-        <div class="market-filters row">
             <div class="form-group btn-group col-sm-12 col-md-6 col-lg-3">
                 <button id="market-filter-installed" class="btn btn-primary">{{Installés}}</button>
                 <button id="market-filter-notinstalled" class="btn btn-primary">{{Non installés}}</button>

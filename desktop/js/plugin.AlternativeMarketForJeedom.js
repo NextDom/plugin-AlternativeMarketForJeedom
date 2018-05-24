@@ -42,12 +42,25 @@ function initDataModal() {
     $('#waffle-badge img').attr('src', 'https://badge.waffle.io/' + fullName + '.svg?columns=all');
 }
 
+/**
+ * Initialise les boutons d'installation
+ */
 function initInstallationButtons() {
     var defaultBranch = currentPlugin['defaultBranch'];
 
     $('#install-plugin').click(function () {
         installPlugin(currentPlugin['defaultBranch']);
     });
+    $('#default-branch-information').text('Branche ' + defaultBranch);
+    if (currentPlugin['branchesList'].length > 0) {
+        initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
+    }
+    else {
+        $('#get-branches-informations button').click(function () {
+            initBranchesUpdate(currentPlugin['defaultBranch']);
+        });
+    }
+
     if (currentPlugin['installed']) {
         $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         $('#remove-plugin').click(function () {
@@ -67,34 +80,11 @@ function initInstallationButtons() {
                 $('#update-plugin').parent().hide();
             }
         }
-        else {
-            // Nécessaire si les plugins ont été installés depuis l'URL
-            // TODO : Optimiser en supprimant le doublon de code
-            $('#default-branch-information').text('Branche ' + defaultBranch);
-            $('#update-plugin').parent().hide();
-            if (currentPlugin['branchesList'].length > 0) {
-                initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
-            }
-            else {
-                $('#get-branches-informations button').click(function () {
-                    initBranchesUpdate(currentPlugin['defaultBranch']);
-                });
-            }
-        }
     }
     else {
         $('#remove-plugin').parent().hide();
         $('#update-plugin').parent().hide();
         $('#config-plugin').parent().hide();
-        $('#default-branch-information').text('Branche ' + defaultBranch);
-        if (currentPlugin['branchesList'].length > 0) {
-            initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
-        }
-        else {
-            $('#get-branches-informations button').click(function () {
-                initBranchesUpdate(currentPlugin['defaultBranch']);
-            });
-        }
     }
 }
 
@@ -127,6 +117,7 @@ function initBranchesUpdate(defaultBranchChoice) {
 function initBranchesChoice(branchesList, defaultBranchChoice) {
     if (branchesList.length > 1) {
         var ulList = $('#install-plugin-advanced .dropdown-menu');
+        ulList.empty();
         for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
             var branchName = branchesList[branchIndex]['name'];
             if (branchName !== defaultBranchChoice) {
@@ -149,13 +140,15 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
 
 /**
  * Lance l'installation du plugin
+ *
+ * @param branch Nom de la branche GitHub à installer
  */
 function installPlugin(branch) {
 
     var data = {
         action: 'save',
         // Version de l'installation par URL
-//            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
+        // update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
         // Version de l'installation par GitHub
         update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"' + currentPlugin['gitName'] + '", "version":"' + branch + '"},"source":"github"}'
     };
@@ -166,6 +159,8 @@ function installPlugin(branch) {
 
 /**
  * Lance l'installation du plugin
+ *
+ * @param pluginId Identifiant du plugin
  */
 function removePlugin(pluginId) {
     var data = {

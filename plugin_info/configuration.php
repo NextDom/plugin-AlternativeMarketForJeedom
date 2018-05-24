@@ -32,6 +32,7 @@ sendVarToJs('showDisclaimer', $showDisclaimer);
 if ($showDisclaimer) {
     config::save('show-disclaimer', false, 'AlternativeMarketForJeedom');
 }
+
 include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeMarketForJeedom');
 ?>
     <form id="amfj-config" class="config-form form-horizontal">

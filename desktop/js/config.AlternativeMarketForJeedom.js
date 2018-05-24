@@ -40,6 +40,8 @@ function getListItem(itemData) {
 
 /**
  * Ajouter un utilisateur à la liste
+ *
+ * @param gitId Identifiant GitHub à ajouter
  */
 function addGitId(gitId) {
     if (typeof gitId === 'undefined' || typeof gitId !== 'string') {
