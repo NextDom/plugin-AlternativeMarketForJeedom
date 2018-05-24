@@ -2,7 +2,7 @@ $(document).ready(function () {
     initDataModal();
     initInstallationButtons();
     initPluginCarousel();
-    $('#close-button').click(function() {
+    $('#close-button').click(function () {
         $('#md_modal').dialog('close');
     });
 });
@@ -51,7 +51,7 @@ function initInstallationButtons() {
     $('#install-plugin').click(function () {
         installPlugin(currentPlugin['defaultBranch']);
     });
-    $('#default-branch-information').text('Branche ' + defaultBranch);
+    $('#default-branch-information').text(branchStr + defaultBranch);
     if (currentPlugin['branchesList'].length > 0) {
         initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
     }
@@ -121,7 +121,7 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
         for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
             var branchName = branchesList[branchIndex]['name'];
             if (branchName !== defaultBranchChoice) {
-                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchName + '</a></li>');
+                var liItem = $('<li data-branch="' + branchName + '"><a href="#">' + installBranchStr + ': ' + branchName + '</a></li>');
                 liItem.click(function () {
                     installPlugin($(this).data('branch'));
                 });
@@ -181,14 +181,14 @@ function initPluginCarousel() {
         var screenshots = currentPlugin['screenshots'];
         var first = true;
         for (var screenshotIndex = 0; screenshotIndex < screenshots.length; ++screenshotIndex) {
-                var itemClassList = 'item';
-                if (first === true) {
-                    itemClassList += ' active';
-                    first = false;
-                }
-                var itemToAdd = $('<div class="' + itemClassList + '"><img src="' + screenshots[screenshotIndex] + '"/></div>')
-                $('#plugin-screenshots .carousel-inner').append(itemToAdd);
-                $('#plugin-screenshots').carousel();
+            var itemClassList = 'item';
+            if (first === true) {
+                itemClassList += ' active';
+                first = false;
             }
+            var itemToAdd = $('<div class="' + itemClassList + '"><img src="' + screenshots[screenshotIndex] + '"/></div>')
+            $('#plugin-screenshots .carousel-inner').append(itemToAdd);
+            $('#plugin-screenshots').carousel();
+        }
     }
 }

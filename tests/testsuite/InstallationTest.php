@@ -56,7 +56,14 @@ class InstallationTest extends TestCase
     {
         AlternativeMarketForJeedom_remove();
         $actions = MockedActions::get();
-        $this->assertCount(1, $actions);
+        var_dump($actions);
+        $this->assertCount(4, $actions);
         $this->assertEquals('query_execute', $actions[0]['action']);
+        $this->assertEquals('remove', $actions[1]['action']);
+        $this->assertEquals('show-disclaimer', $actions[1]['content']['key']);
+        $this->assertEquals('remove', $actions[2]['action']);
+        $this->assertEquals('show-duplicates', $actions[2]['content']['key']);
+        $this->assertEquals('remove', $actions[3]['action']);
+        $this->assertEquals('show-sources-filters', $actions[3]['content']['key']);
     }
 }

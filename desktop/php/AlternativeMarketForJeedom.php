@@ -37,12 +37,19 @@ foreach ($eqLogics as $eqLogic) {
     array_push($sourcesList, $source);
 }
 sendVarToJs('sourcesList', $sourcesList);
+sendVarToJs('moreInformationsStr', __("Plus d'informations", __FILE__));
+sendVarToJs('updateStr', __("Mettre à jour", __FILE__));
+sendVarToJs('updateAllStr', __("Voulez-vous mettre à jour tous les plugins ?", __FILE__));
+sendVarToJs('updateThisStr', __("Voulez-vous mettre à jour ce plugin ?", __FILE__));
+sendVarToJs('installedPluginStr', __("Plugin installé", __FILE__));
+sendVarToJs('updateAvailableStr', __("Mise à jour disponible", __FILE__));
+
 
 // Affichage d'un message à un utilisateur
 if (isset($_GET['message'])) {
     $messages = [
         __('La mise à jour du plugin a été effecutée.', __FILE__),
-        __('Le plugin a bien été supprimé', __FILE__)
+        __('Le plugin a été supprimé', __FILE__)
     ];
 
     $messageIndex = intval($_GET['message']);

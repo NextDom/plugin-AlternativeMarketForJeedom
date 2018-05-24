@@ -40,12 +40,12 @@ if (!isConnect('admin')) {
                 </h4>
             </div>
             <div class="panel-body">
-                <p><b>{{Alternative Market For Jeedom<}}/b> vous permettra d'installer des plugins directement depuis les sources des développeurs.</p>
-                <p>Ceci vous donnera la possibilité de : </p>
+                <p>{{<b>Alternative Market For Jeedom</b> vous permettra d'installer des plugins directement depuis les sources des développeurs.}}</p>
+                <p>{{Ceci vous donnera la possibilité de : }}</p>
                 <ul>
-                    <li>Accéder à des versions en développement de plugins,</li>
-                    <li>Installer des plugins de développeurs gardant leur indépendance,</li>
-                    <li>Installer des plugins ne respectant pas la charte du Market Jeedom.</li>
+                    <li>{{Accéder à des versions en développement de plugins,}}</li>
+                    <li>{{Installer des plugins de développeurs gardant leur indépendance,}}</li>
+                    <li>{{Installer des plugins ne respectant pas la charte du Market Jeedom.}}</li>
                 </ul>
             </div>
         </div>

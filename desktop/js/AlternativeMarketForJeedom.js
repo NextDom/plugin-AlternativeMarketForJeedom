@@ -5,7 +5,7 @@ var filterInstalled = false;
 var filterNotInstalled = false;
 var currentSearchValue = '';
 var iconDownloadQueue = [];
-var pluginsUpdatedNeededList = [];
+var pluginsUpdateNeededList = [];
 
 // Point d'entrée du script
 $(document).ready(function () {
@@ -84,14 +84,19 @@ function initEvents() {
     $('#refresh-markets').click(function () {
         refresh(true);
     });
-    $('#mass-update').click(function() {
-        if (pluginsUpdatedNeededList.length > 0) {
-            currentPlugin = pluginsUpdatedNeededList[0];
-            $('#market-modal-title').text('Mettre à jour');
-            $('#market-modal-content').text('Voulez-vous mettre à jour tous les plugins ?');
-            $('#market-modal-valid').text('Mettre à jour');
+    $('#mass-update').click(function () {
+        if (pluginsUpdateNeededList.length > 0) {
+            currentPlugin = pluginsUpdateNeededList[0];
+            $('#market-modal-title').text(updateStr);
+            var contentHtml = '<p>' + updateAllStr + '</p><ul>';
+            for (var pluginIndex = 0; pluginIndex < pluginsUpdateNeededList.length; ++pluginIndex) {
+                contentHtml += '<li>' + pluginsUpdateNeededList[pluginIndex]['name'] + '</li>';
+            }
+            contentHtml += '</ul>';
+            $('#market-modal-content').html(contentHtml);
+            $('#market-modal-valid').text(updateStr);
             $('#market-modal').modal('show');
-            $('#market-modal-valid').click(function() {
+            $('#market-modal-valid').click(function () {
                 updatePlugin(currentPlugin['installedBranchData']['id'], true);
             });
             return false;
@@ -152,8 +157,12 @@ function updateFilteredList() {
         if (filterNotInstalled && dataInstalled === false) {
             hide = true;
         }
-        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue) === -1) {
-            hide = true;
+        if (!hide && currentSearchValue.length > 1) {
+            var title = $(this).find('h4').text().toLowerCase();
+            var description = $(this).find('.media-body').text().toLowerCase();
+            if (title.indexOf(currentSearchValue) === -1 && description.indexOf(currentSearchValue) === -1) {
+                hide = true;
+            }
         }
         if (hide) {
             $(this).slideUp();
@@ -168,14 +177,14 @@ function updateFilteredList() {
  * Rafraichit les éléments affichés
  */
 function refresh(force) {
-    pluginsUpdatedNeededList = [];
+    pluginsUpdateNeededList = [];
     $('#mass-update').hide();
     var ajaxData = {
         action: 'refresh',
         params: 'list',
         data: sourcesList
     };
-    ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function() {
+    ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function () {
         refreshItems();
     });
 }
@@ -192,9 +201,9 @@ function refreshItems() {
     ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function (result) {
         showItems(result);
         updateFilteredList();
-        if (pluginsUpdatedNeededList.length > 0) {
+        if (pluginsUpdateNeededList.length > 0) {
             $('#mass-update').show();
-            $('#mass-update .badge').text(pluginsUpdatedNeededList.length);
+            $('#mass-update .badge').text(pluginsUpdateNeededList.length);
         }
     });
 }
@@ -219,13 +228,13 @@ function showItems(items) {
         showPluginModal($(this).data('plugin'), $(this).find('img').attr('src'));
         return false;
     });
-    $('.update-marker').click(function() {
-        $('#market-modal-title').text('Mettre à jour');
-        $('#market-modal-content').text('Voulez-vous mettre à jour ce plugin ?');
-        $('#market-modal-valid').text('Mettre à jour');
+    $('.update-marker').click(function () {
+        $('#market-modal-title').text(updateStr);
+        $('#market-modal-content').text(updateThisStr);
+        $('#market-modal-valid').text(updateStr);
         $('#market-modal').modal('show');
         currentPlugin = $(this).parent().data('plugin');
-        $('#market-modal-valid').click(function() {
+        $('#market-modal-valid').click(function () {
             updatePlugin(currentPlugin['installedBranchData']['id'], false);
         });
         return false;
@@ -310,11 +319,11 @@ function getItemHtml(item) {
         '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-source="' + item['sourceName'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
-        result += '<div class="installed-marker"><i data-toggle="tooltip" title="Plugin installé" class="fa fa-check"></i></div>';
+        result += '<div class="installed-marker"><i data-toggle="tooltip" title="' + installedPluginStr + '" class="fa fa-check"></i></div>';
     }
     if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
-        result += '<div class="update-marker"><i data-toggle="tooltip" title="Mise à jour disponible" class="fa fa-download"></i></div>';
-        pluginsUpdatedNeededList.push(item);
+        result += '<div class="update-marker"><i data-toggle="tooltip" title="' + updateAvailableStr + '" class="fa fa-download"></i></div>';
+        pluginsUpdateNeededList.push(item);
     }
     result += '' +
         '<h4>' + title + '</h4>' +
@@ -326,7 +335,7 @@ function getItemHtml(item) {
         descriptionPar +
         '</div>' +
         '</div>' +
-        '<button>' + 'Plus d\'informations' + '</button>' +
+        '<button>' + moreInformationsStr + '</button>' +
         '<div class="gitid">' + item['sourceName'] + '</div>' +
         '</div>' +
         '</div>';
@@ -362,9 +371,9 @@ function updatePlugin(id, massUpdate) {
         }
         // Met à jour les branches
         ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
-            if (massUpdate && pluginsUpdatedNeededList.length > 1) {
-                pluginsUpdatedNeededList.splice(0, 1);
-                currentPlugin = pluginsUpdatedNeededList[0];
+            if (massUpdate && pluginsUpdateNeededList.length > 1) {
+                pluginsUpdateNeededList.splice(0, 1);
+                currentPlugin = pluginsUpdateNeededList[0];
                 updatePlugin(currentPlugin['installedBranchData']['id'], true);
             }
             else {

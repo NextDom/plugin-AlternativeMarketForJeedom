@@ -20,6 +20,9 @@ include_file('core', 'authentification', 'php');
 if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }
+
+sendVarToJs('installBranchStr', __("Installer la branche ", __FILE__));
+sendVarToJs('branchStr', __("Branche ", __FILE__));
 ?>
     <div id="div_pluginAlternativeMarketForJeedomAlert"></div>
     <div id="plugin-modal">
