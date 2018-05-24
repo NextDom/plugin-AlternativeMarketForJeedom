@@ -86,7 +86,7 @@ class eqLogic
         $this->id = $id;
     }
 
-    public static function byType($typeId) {
+    public static function byType($typeId, $onlyEnable = false) {
         return self::$byTypeAnswer;
     }
 
