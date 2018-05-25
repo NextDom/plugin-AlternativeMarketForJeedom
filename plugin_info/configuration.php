@@ -37,14 +37,14 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
 ?>
     <form id="amfj-config" class="config-form form-horizontal">
         <div class="form-group">
-            <div class="col-sm-4 control-label"></div>
-            <div class="col-sm-4">
-                <button id="show-disclaimer-modal" class="btn btn-primary"><i class="fa fa-info-circle"></i> {{Informations}}</button>
+            <label class="col-sm-3 control-label">{{Informations}} : </label>
+            <div class="col-sm-8">
+                <button id="show-disclaimer-modal" class="btn btn-danger"><i class="fa fa-info-circle"></i> {{Plugin / Disclaimer}}</button>
                 <button id="show-nextdom-modal" class="btn btn-success"><i class="fa fa-users"></i> {{NextDom}}</button>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">{{Afficher les doublons}} <sup><i
+            <label class="col-sm-3 control-label">{{Afficher les doublons}} <sup><i
                             class="fa fa-question-circle tooltips"
                             title="{{Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots}}"></i></sup> : </label>
             <div id="div_show-duplicates" class="col-sm-2 tooltips">
@@ -54,7 +54,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">{{Filtres des sources}} <sup><i
+            <label class="col-sm-3 control-label">{{Filtres des sources}} <sup><i
                             class="fa fa-question-circle tooltips"
                             title="{{Afficher les filtres des sources}}"></i></sup> : </label>
             <div id="div_show-sources-filters" class="col-sm-2 tooltips">
@@ -64,7 +64,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
             </div>
         </div>
         <div class="form-group">
-            <label for="sources-manager" class="col-sm-4 control-label">{{Gestionnaire de sources}} : </label>
+            <label for="sources-manager" class="col-sm-3 control-label">{{Gestionnaire de sources}} : </label>
             <div class="col-sm-2">
                 <button id="sources-manager" class="btn btn-primary"><i class="fa fa-th-large"></i> {{Gérer}}</button>
             </div>
