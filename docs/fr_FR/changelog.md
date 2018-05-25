@@ -1,15 +1,9 @@
-Change log
-==========
+# Changelog
 
-> **Warning**
->
-> Detail complet des mises à jour sur [Historique
-> Commit](https://github.com/Jeedom-Plugins-Extra/plugin-template/commits/master)
+Détail complet des mises à jour sur [Historique > Commit](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/commits/master)
 
 Liste des évolutions majeures de la version courante :
 
--   Initialisation du plugin
-
-Anciennes évolutions :
-
--   XXXX
+* Version 0.7
+  * Installation de plugins
+  * Mise à jour de plugins
