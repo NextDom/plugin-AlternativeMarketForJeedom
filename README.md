@@ -9,7 +9,9 @@ Ceci vous donnera la possibilité de :
  - Accéder à des versions en développement de plugins,
  - Installer des plugins de développeurs gardant leur indépendance,
  - Installer des plugins ne respectant pas la charte du Market Jeedom.
- 
+
+### Capture d'écran
+
 <img src="docs/images/screenshot1.png" align="center">
  
 ### Installation
@@ -29,7 +31,7 @@ Ceci vous donnera la possibilité de :
 * Nom du dépôt : __plugin-AlternativeMarketForJeedom__,
 * Branche : __master__ (par défaut).
 
-<img src="docs/images/HowToInstall2.png" align="center">
+<img src="docs/images/HowToInstall3.png" align="center">
 
 ### Documentation
 
