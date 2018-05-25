@@ -1,3 +1,10 @@
+#logo-nextdom img {
+    width: 100%;
+    margin-top: 2rem;
+    max-width: 7em;
+    float: right;
+}
+
 .market-filters {
     margin-top: 2rem;
 }
@@ -144,6 +151,10 @@
     padding-right: 1.2em;
 }
 
+#mass-update {
+    display: none;
+}
+
 .market-filters .btn-primary,
 #plugin-modal .btn-primary {
     background-color: #33B8CC !important;
@@ -252,4 +263,22 @@
 
 #plugin-modal .list-title {
     font-weight: bold;
+}
+
+#plugin-screenshots {
+    display: none;
+}
+
+#plugin-modal-screenshots .carousel-inner>.item>a>img, .carousel-inner>.item>img {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#plugin-modal-footer {
+    text-align: right;
+    margin-right: 0.5em;
+}
+
+.modal-content button.close {
+    margin-top: -25px;
 }

@@ -95,6 +95,10 @@ class AmfjMarketItem
      * @var array Données de Jeedom sur le plugin
      */
     private $updateData;
+    /**
+     * @var array Liste des captures
+     */
+    private $screenshots;
 
     /**
      * Constructeur initialisant les informations de base
@@ -207,6 +211,7 @@ class AmfjMarketItem
         if (\array_key_exists('description', $jsonInformations)) $this->description = $jsonInformations['description'];
         if (\array_key_exists('defaultBranch', $jsonInformations)) $this->defaultBranch = $jsonInformations['defaultBranch'];
         if (\array_key_exists('branches', $jsonInformations)) $this->branchesList = $jsonInformations['branches'];
+        if (\array_key_exists('screenshots', $jsonInformations)) $this->screenshots = $jsonInformations['screenshots'];
     }
 
     /**
@@ -252,6 +257,7 @@ class AmfjMarketItem
         $dataArray['sourceName'] = $this->sourceName;
         $dataArray['changelogLink'] = $this->changelogLink;
         $dataArray['documentationLink'] = $this->documentationLink;
+        $dataArray['screenshots'] = $this->screenshots;
 
         $this->initUpdateData();
         $dataArray['installed'] = $this->isInstalled();
@@ -299,6 +305,7 @@ class AmfjMarketItem
             if (\array_key_exists('licence', $jsonContent)) $this->licence = $jsonContent['licence'];
             if (\array_key_exists('changelogLink', $jsonContent)) $this->changelogLink = $jsonContent['changelogLink'];
             if (\array_key_exists('documentationLink', $jsonContent)) $this->documentationLink = $jsonContent['documentationLink'];
+            if (\array_key_exists('screenshots', $jsonContent)) $this->screenshots = $jsonContent['screenshots'];
             $result = true;
         }
         return $result;
@@ -332,14 +339,13 @@ class AmfjMarketItem
      */
     public function downloadIcon()
     {
-        log::add('AlternativeMarketForJeedom', 'debug', 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png');
         $iconFilename = \str_replace('/', '_', $this->fullName) . '.png';
         $iconUrl = 'https://raw.githubusercontent.com/' . $this->fullName . '/' . $this->defaultBranch . '/plugin_info/' . $this->id . '_icon.png';
         $targetPath = \dirname(__FILE__) . '/../../cache/' . $iconFilename;
         AmfjDownloadManager::downloadBinary($iconUrl, $targetPath);
         if (\filesize($targetPath) < 100) {
             \unlink($targetPath);
-            $this->iconPath = 'core/img/no-image-plugin.png';
+            $this->iconPath = 'plugins/AlternativeMarketForJeedom/resources/unknown_icon.png';
         } else {
             $this->iconPath = 'plugins/AlternativeMarketForJeedom/cache/' . $iconFilename;
         }
@@ -397,7 +403,7 @@ class AmfjMarketItem
     private function getInstalledBranchData()
     {
         $result = false;
-        if ($this->updateData !== false) {
+        if ($this->updateData !== false && $this->updateData !== null) {
             $configuration = $this->updateData->getConfiguration();
             if (\is_array($configuration) && \array_key_exists('version', $configuration)) {
                 $result = [];

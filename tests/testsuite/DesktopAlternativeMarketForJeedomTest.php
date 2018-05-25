@@ -48,17 +48,17 @@ class DesktopAlternativeMarketForJeedomTest extends TestCase
         include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
         $actions = MockedActions::get();
-        $this->assertCount(5, $actions);
+        $this->assertCount(11, $actions);
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
         $this->assertEquals('sendVarToJs', $actions[1]['action']);
         $this->assertEquals('sourcesList', $actions[1]['content']['var']);
-        $this->assertEquals('include_file', $actions[2]['action']);
-        $this->assertEquals('AlternativeMarketForJeedom', $actions[2]['content']['name']);
-        $this->assertEquals('include_file', $actions[3]['action']);
-        $this->assertEquals('AlternativeMarketForJeedom', $actions[3]['content']['name']);
-        $this->assertEquals('include_file', $actions[4]['action']);
-        $this->assertEquals('plugin.template', $actions[4]['content']['name']);
+        $this->assertEquals('include_file', $actions[8]['action']);
+        $this->assertEquals('AlternativeMarketForJeedom', $actions[8]['content']['name']);
+        $this->assertEquals('include_file', $actions[9]['action']);
+        $this->assertEquals('AlternativeMarketForJeedom', $actions[9]['content']['name']);
+        $this->assertEquals('include_file', $actions[10]['action']);
+        $this->assertEquals('plugin.template', $actions[10]['content']['name']);
         $this->assertContains('market-filters', $content);
         $this->assertContains('market-filter-category', $content);
     }
@@ -70,14 +70,41 @@ class DesktopAlternativeMarketForJeedomTest extends TestCase
         $this->assertNotContains('<button type="button" class="btn btn-primary" data-source="', $content);
     }
 
+    public function testWithEqLogics() {
+        config::$byKeyPluginData['AlternativeMarketForJeedom'] = [];
+        config::$byKeyPluginData['AlternativeMarketForJeedom']['show-sources-filters'] = true;
+        $dataForTest = array(
+            array('name' => 'src1', 'order' => 1, 'type' => 'json', 'data' => ''),
+            array('name' => 'src2', 'order' => 2, 'type' => 'json', 'data' => ''),
+            array('name' => 'src3', 'order' => 3, 'type' => 'github', 'data' => '')
+        );
+        $listEqLogic = array();
+        foreach ($dataForTest as $data) {
+            $testSrc = new AlternativeMarketForJeedom();
+            $testSrc->setName($data['name']);
+            $testSrc->setConfiguration('order', $data['order']);
+            $testSrc->setConfiguration('type', $data['type']);
+            $testSrc->setConfiguration('data', $data['data']);
+            \array_push($listEqLogic, $testSrc);
+        }
+        eqLogic::$byTypeAnswer = $listEqLogic;
+        ob_start();
+        include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
+        $content = ob_get_clean();
+        $this->assertContains('market-filter-src', $content);
+        $this->assertContains('<button type="button" class="btn btn-primary" data-source="src1"', $content);
+        $this->assertContains('<button type="button" class="btn btn-primary" data-source="src2"', $content);
+        $this->assertContains('<button type="button" class="btn btn-primary" data-source="src3"', $content);
+    }
+
     public function testWithMessage() {
         $_GET['message'] = 0;
         ob_start();
         include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
         ob_get_clean();
         $actions = MockedActions::get();
-        $this->assertCount(6, $actions);
-        $this->assertEquals('message_add', $actions[2]['action']);
-        $this->assertContains('mise à jour', $actions[2]['content']['message']);
+        $this->assertCount(12, $actions);
+        $this->assertEquals('message_add', $actions[8]['action']);
+        $this->assertContains('mise à jour', $actions[8]['content']['message']);
     }
 }

@@ -62,14 +62,6 @@ class eqLogic
         return $this->configuration;
     }
 
-    public static function byType($typeId) {
-        return self::$byTypeAnswer;
-    }
-
-    public static function byLogicalId($logicalId) {
-        return new eqLogic();
-    }
-
     public function setIsEnable($isEnable) {
         $this->isEnable = $isEnable;
     }
@@ -92,5 +84,19 @@ class eqLogic
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public static function byType($typeId, $onlyEnable = false) {
+        return self::$byTypeAnswer;
+    }
+
+    public static function byLogicalId($logicalId) {
+        return new eqLogic();
+    }
+
+    public static function byId($eqLogicId) {
+        $result = new eqLogic();
+        $result->setId($eqLogicId);
+        return $result;
     }
 }

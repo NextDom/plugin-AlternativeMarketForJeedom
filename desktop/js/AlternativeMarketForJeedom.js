@@ -5,17 +5,18 @@ var filterInstalled = false;
 var filterNotInstalled = false;
 var currentSearchValue = '';
 var iconDownloadQueue = [];
+var pluginsUpdateNeededList = [];
 
 // Point d'entrée du script
 $(document).ready(function () {
-    refresh();
-    initFilters();
+    initEvents();
+    refresh(false);
 });
 
 /**
- * Initialise les évènements des filtres
+ * Initialise les évènements
  */
-function initFilters() {
+function initEvents() {
     $('#market-filter-src button').click(function () {
         var source = $(this).data('source');
         if (isActive($(this))) {
@@ -83,6 +84,24 @@ function initFilters() {
     $('#refresh-markets').click(function () {
         refresh(true);
     });
+    $('#mass-update').click(function () {
+        if (pluginsUpdateNeededList.length > 0) {
+            currentPlugin = pluginsUpdateNeededList[0];
+            $('#market-modal-title').text(updateStr);
+            var contentHtml = '<p>' + updateAllStr + '</p><ul>';
+            for (var pluginIndex = 0; pluginIndex < pluginsUpdateNeededList.length; ++pluginIndex) {
+                contentHtml += '<li>' + pluginsUpdateNeededList[pluginIndex]['name'] + '</li>';
+            }
+            contentHtml += '</ul>';
+            $('#market-modal-content').html(contentHtml);
+            $('#market-modal-valid').text(updateStr);
+            $('#market-modal').modal('show');
+            $('#market-modal-valid').click(function () {
+                updatePlugin(currentPlugin['installedBranchData']['id'], true);
+            });
+            return false;
+        }
+    });
 }
 
 /**
@@ -138,8 +157,12 @@ function updateFilteredList() {
         if (filterNotInstalled && dataInstalled === false) {
             hide = true;
         }
-        if (!hide && currentSearchValue.length > 1 && $(this).find('h4').text().toLowerCase().indexOf(currentSearchValue) === -1) {
-            hide = true;
+        if (!hide && currentSearchValue.length > 1) {
+            var title = $(this).find('h4').text().toLowerCase();
+            var description = $(this).find('.media-body').text().toLowerCase();
+            if (title.indexOf(currentSearchValue) === -1 && description.indexOf(currentSearchValue) === -1) {
+                hide = true;
+            }
         }
         if (hide) {
             $(this).slideUp();
@@ -154,30 +177,15 @@ function updateFilteredList() {
  * Rafraichit les éléments affichés
  */
 function refresh(force) {
-    var params = 'list';
-    if (typeof force !== undefined && force === true) {
-        params = 'list-force';
-    }
-    $.post({
-        url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
-        data: {
-            action: 'refresh',
-            params: params,
-            data: sourcesList
-        },
-        dataType: 'json',
-        success: function (data, status) {
-            // Test si l'appel a échoué
-            if (data.state !== 'ok' || status !== 'success') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-            }
-            else {
-                refreshItems();
-            }
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        }
+    pluginsUpdateNeededList = [];
+    $('#mass-update').hide();
+    var ajaxData = {
+        action: 'refresh',
+        params: 'list',
+        data: sourcesList
+    };
+    ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function () {
+        refreshItems();
     });
 }
 
@@ -185,25 +193,17 @@ function refresh(force) {
  * Rafraichit un elément
  */
 function refreshItems() {
-    $.post({
-        url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
-        data: {
-            action: 'get',
-            params: 'list',
-            data: sourcesList
-        },
-        dataType: 'json',
-        success: function (data, status) {
-            // Test si l'appel a échoué
-            if (data.state !== 'ok' || status !== 'success') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-            }
-            else {
-                showItems(data['result']);
-            }
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
+    var ajaxData = {
+        action: 'get',
+        params: 'list',
+        data: sourcesList
+    };
+    ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function (result) {
+        showItems(result);
+        updateFilteredList();
+        if (pluginsUpdateNeededList.length > 0) {
+            $('#mass-update').show();
+            $('#mass-update .badge').text(pluginsUpdateNeededList.length);
         }
     });
 }
@@ -224,9 +224,20 @@ function showItems(items) {
         container.append(itemHtmlObj);
     }
     startIconsDownload();
-    $('#jqueryLoadingDiv').hide();
     $('.media').click(function () {
         showPluginModal($(this).data('plugin'), $(this).find('img').attr('src'));
+        return false;
+    });
+    $('.update-marker').click(function () {
+        $('#market-modal-title').text(updateStr);
+        $('#market-modal-content').text(updateThisStr);
+        $('#market-modal-valid').text(updateStr);
+        $('#market-modal').modal('show');
+        currentPlugin = $(this).parent().data('plugin');
+        $('#market-modal-valid').click(function () {
+            updatePlugin(currentPlugin['installedBranchData']['id'], false);
+        });
+        return false;
     });
     $('[data-toggle="tooltip"]').tooltip();
 }
@@ -245,6 +256,7 @@ function iconDownload() {
         var itemObj = content[1];
         $.post({
             url: 'plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php',
+            global: false,
             data: {
                 action: 'get',
                 params: 'icon',
@@ -257,6 +269,8 @@ function iconDownload() {
                     $('#div_alert').showAlert({message: iconData.result, level: 'danger'});
                 }
                 else {
+                    var img = new Image();
+                    img.src = iconData['result'];
                     itemObj.find('img').attr('src', iconData['result']);
                     if (iconDownloadQueue.length > 0) {
                         iconDownload();
@@ -298,17 +312,18 @@ function getItemHtml(item) {
 
     var iconPath = item['iconPath'];
     if (item['iconPath'] === false) {
-        iconPath = 'core/img/no-image-plugin.png';
+        iconPath = 'plugins/AlternativeMarketForJeedom/resources/wait_icon.png';
     }
     // Préparation du code
     var result = '' +
         '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-source="' + item['sourceName'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
-        result += '<div class="installed-marker"><i data-toggle="tooltip" title="Plugin installé" class="fa fa-check"></i></div>';
+        result += '<div class="installed-marker"><i data-toggle="tooltip" title="' + installedPluginStr + '" class="fa fa-check"></i></div>';
     }
     if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
-        result += '<div class="update-marker"><i data-toggle="tooltip" title="Mise à jour disponible" class="fa fa-download"></i></div>';
+        result += '<div class="update-marker"><i data-toggle="tooltip" title="' + updateAvailableStr + '" class="fa fa-download"></i></div>';
+        pluginsUpdateNeededList.push(item);
     }
     result += '' +
         '<h4>' + title + '</h4>' +
@@ -320,7 +335,7 @@ function getItemHtml(item) {
         descriptionPar +
         '</div>' +
         '</div>' +
-        '<button>' + 'Plus d\'informations' + '</button>' +
+        '<button>' + moreInformationsStr + '</button>' +
         '<div class="gitid">' + item['sourceName'] + '</div>' +
         '</div>' +
         '</div>';
@@ -338,4 +353,75 @@ function showPluginModal(pluginData, iconPath) {
     modal.load('index.php?v=d&plugin=AlternativeMarketForJeedom&modal=plugin.AlternativeMarketForJeedom').dialog('open');
     currentPlugin = pluginData;
     currentPlugin['iconPath'] = iconPath;
+}
+
+/**
+ * Lance l'installation du plugin
+ */
+function updatePlugin(id, massUpdate) {
+    var data = {
+        action: 'update',
+        id: id
+    };
+    ajaxQuery('core/ajax/update.ajax.php', data, function () {
+        var data = {
+            action: 'refresh',
+            params: 'branch-hash',
+            data: [currentPlugin['sourceName'], currentPlugin['fullName']]
+        }
+        // Met à jour les branches
+        ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
+            if (massUpdate && pluginsUpdateNeededList.length > 1) {
+                pluginsUpdateNeededList.splice(0, 1);
+                currentPlugin = pluginsUpdateNeededList[0];
+                updatePlugin(currentPlugin['installedBranchData']['id'], true);
+            }
+            else {
+                reloadWithMessage(0);
+            }
+        });
+    });
+}
+
+/**
+ * Lancer une requête Ajax
+ *
+ * @param data Données de la requête
+ */
+function ajaxQuery(url, data, callbackFunc) {
+    $.post({
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data, status) {
+            // Test si l'appel a échoué
+            if (data.state !== 'ok' || status !== 'success') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+            }
+            else {
+                if (typeof callbackFunc !== "undefined") {
+                    callbackFunc(data.result);
+                }
+            }
+        },
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        }
+    });
+}
+
+/**
+ * Recharge une page avec un message à afficher
+ *
+ * @param messageId Identifiant du message
+ */
+function reloadWithMessage(messageId) {
+    var urlMessageParamIndex = window.location.href.indexOf('message=');
+    if (urlMessageParamIndex === -1) {
+        window.location.href = window.location.href + "&message=" + messageId;
+    }
+    else {
+        window.location.href = window.location.href.substr(0, urlMessageParamIndex) + "message=" + messageId;
+    }
+
 }

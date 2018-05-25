@@ -48,11 +48,13 @@ class ModalPluginAlternativeMarketForJeedomTest extends TestCase
         include(dirname(__FILE__) . '/../desktop/modal/plugin.AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
         $actions = MockedActions::get();
-        $this->assertCount(2, $actions);
+        $this->assertCount(4, $actions);
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
-        $this->assertEquals('include_file', $actions[1]['action']);
-        $this->assertEquals('plugin.AlternativeMarketForJeedom', $actions[1]['content']['name']);
+        $this->assertEquals('sendVarToJs', $actions[1]['action']);
+        $this->assertEquals('sendVarToJs', $actions[2]['action']);
+        $this->assertEquals('include_file', $actions[3]['action']);
+        $this->assertEquals('plugin.AlternativeMarketForJeedom', $actions[3]['content']['name']);
         $this->assertContains('plugin-modal-body', $content);
         $this->assertContains('div_pluginAlternativeMarketForJeedomAlert', $content);
     }

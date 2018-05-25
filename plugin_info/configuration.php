@@ -32,6 +32,7 @@ sendVarToJs('showDisclaimer', $showDisclaimer);
 if ($showDisclaimer) {
     config::save('show-disclaimer', false, 'AlternativeMarketForJeedom');
 }
+
 include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeMarketForJeedom');
 ?>
     <form id="amfj-config" class="config-form form-horizontal">
@@ -39,6 +40,7 @@ include_file('desktop', 'AlternativeMarketForJeedomConfig', 'css', 'AlternativeM
             <div class="col-sm-4 control-label"></div>
             <div class="col-sm-4">
                 <button id="show-disclaimer-modal" class="btn btn-primary"><i class="fa fa-info-circle"></i> {{Informations}}</button>
+                <button id="show-nextdom-modal" class="btn btn-success"><i class="fa fa-users"></i> {{NextDom}}</button>
             </div>
         </div>
         <div class="form-group">

@@ -57,7 +57,7 @@ sendVarToJs('sourcesList', $sourcesList);
                     }
                 }
                 ?>
-                <a class="btn btn-success btn-sm pull-right" id="sources-list-save"><i class="fa fa-check-circle icon-white"></i> Sauvegarder</a>
+                <a class="btn btn-success btn-sm pull-right" id="sources-list-save"><i class="fa fa-check-circle icon-white"></i> {{Sauvegarder}}</a>
             </ul>
         </div>
         <div class="container">
@@ -66,7 +66,7 @@ sendVarToJs('sourcesList', $sourcesList);
         <div class="container">
             <label>{{Ajouter : }}</label>
             <div class="input-group">
-                <input id="git-id" type="text" class="form-control" placeholder="{{Identifiant GitHub..}}"/>
+                <input id="git-id" type="text" class="form-control" placeholder="{{Identifiant GitHub...}}"/>
                 <span class="input-group-btn">
                     <button id="add-git" class="btn btn-nextdom" type="button"><i class="fa fa-plus"></i></button>
                 </span>

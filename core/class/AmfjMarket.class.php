@@ -82,7 +82,6 @@ class AmfjMarket
     {
         $result = false;
         $gitManager = new AmfjGitManager($this->source['data']);
-        log::add('AlternativeMarketForJeedom', 'debug', 'GITHUB');
         if ($force || $this->isUpdateNeeded($this->source['data'])) {
             $result = $gitManager->updateRepositoriesList();
         }
@@ -107,7 +106,7 @@ class AmfjMarket
             if ($content !== false) {
                 $marketData = json_decode($content, true);
                 $lastChange = $this->dataStorage->getRawData('repo_last_change_' . $this->source['name']);
-                if ($lastChange == null || $marketData['version'] > $lastChange) {
+                if ($force || $lastChange == null || $marketData['version'] > $lastChange) {
                     foreach ($marketData['plugins'] as $plugin) {
                         $marketItem = AmfjMarketItem::createFromJson($this->source['name'], $plugin);
                         $marketItem->writeCache();

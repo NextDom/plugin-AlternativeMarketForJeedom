@@ -1,6 +1,10 @@
 $(document).ready(function () {
     initDataModal();
     initInstallationButtons();
+    initPluginCarousel();
+    $('#close-button').click(function () {
+        $('#md_modal').dialog('close');
+    });
 });
 
 /**
@@ -38,12 +42,25 @@ function initDataModal() {
     $('#waffle-badge img').attr('src', 'https://badge.waffle.io/' + fullName + '.svg?columns=all');
 }
 
+/**
+ * Initialise les boutons d'installation
+ */
 function initInstallationButtons() {
     var defaultBranch = currentPlugin['defaultBranch'];
 
     $('#install-plugin').click(function () {
         installPlugin(currentPlugin['defaultBranch']);
     });
+    $('#default-branch-information').text(branchStr + defaultBranch);
+    if (currentPlugin['branchesList'].length > 0) {
+        initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
+    }
+    else {
+        $('#get-branches-informations button').click(function () {
+            initBranchesUpdate(currentPlugin['defaultBranch']);
+        });
+    }
+
     if (currentPlugin['installed']) {
         $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         $('#remove-plugin').click(function () {
@@ -56,25 +73,11 @@ function initInstallationButtons() {
             initBranchesChoice(currentPlugin['branchesList'], installedBranch);
             if (currentPlugin['installedBranchData']['needUpdate'] === true) {
                 $('#update-plugin').click(function () {
-                    updatePlugin(currentPlugin['installedBranchData']['id']);
+                    updatePlugin(currentPlugin['installedBranchData']['id'], false);
                 });
             }
             else {
                 $('#update-plugin').parent().hide();
-            }
-        }
-        else {
-            // Nécessaire si les plugins ont été installés depuis l'URL
-            // TODO : Optimiser en supprimant le doublon de code
-            $('#default-branch-information').text('Branche ' + defaultBranch);
-            $('#update-plugin').parent().hide();
-            if (currentPlugin['branchesList'].length > 0) {
-                initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
-            }
-            else {
-                $('#get-branches-informations button').click(function () {
-                    initBranchesUpdate(currentPlugin['defaultBranch']);
-                });
             }
         }
     }
@@ -82,15 +85,6 @@ function initInstallationButtons() {
         $('#remove-plugin').parent().hide();
         $('#update-plugin').parent().hide();
         $('#config-plugin').parent().hide();
-        $('#default-branch-information').text('Branche ' + defaultBranch);
-        if (currentPlugin['branchesList'].length > 0) {
-            initBranchesChoice(currentPlugin['branchesList'], defaultBranch);
-        }
-        else {
-            $('#get-branches-informations button').click(function () {
-                initBranchesUpdate(currentPlugin['defaultBranch']);
-            });
-        }
     }
 }
 
@@ -123,10 +117,11 @@ function initBranchesUpdate(defaultBranchChoice) {
 function initBranchesChoice(branchesList, defaultBranchChoice) {
     if (branchesList.length > 1) {
         var ulList = $('#install-plugin-advanced .dropdown-menu');
+        ulList.empty();
         for (var branchIndex = 0; branchIndex < branchesList.length; ++branchIndex) {
             var branchName = branchesList[branchIndex]['name'];
             if (branchName !== defaultBranchChoice) {
-                var liItem = $('<li data-branch="' + branchName + '"><a href="#">Installer la branche ' + branchName + '</a></li>');
+                var liItem = $('<li data-branch="' + branchName + '"><a href="#">' + installBranchStr + ': ' + branchName + '</a></li>');
                 liItem.click(function () {
                     installPlugin($(this).data('branch'));
                 });
@@ -139,19 +134,21 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
     else {
         $('#get-branches-informations').css('display', 'none');
         $('#install-plugin-advanced').css('display', 'block');
-        $('#install-plugin-advanced button').addClass( "disabled" );
+        $('#install-plugin-advanced button').addClass("disabled");
     }
 }
 
 /**
  * Lance l'installation du plugin
+ *
+ * @param branch Nom de la branche GitHub à installer
  */
 function installPlugin(branch) {
 
     var data = {
         action: 'save',
         // Version de l'installation par URL
-//            update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
+        // update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"url":"' + currentPlugin['url'] + '/archive/' + branch + '.zip"},"source":"url"}'
         // Version de l'installation par GitHub
         update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"' + currentPlugin['gitName'] + '", "version":"' + branch + '"},"source":"github"}'
     };
@@ -162,6 +159,8 @@ function installPlugin(branch) {
 
 /**
  * Lance l'installation du plugin
+ *
+ * @param pluginId Identifiant du plugin
  */
 function removePlugin(pluginId) {
     var data = {
@@ -169,54 +168,27 @@ function removePlugin(pluginId) {
         id: pluginId
     };
     ajaxQuery('core/ajax/update.ajax.php', data, function () {
-        window.location.href = window.location.href + "&message=1";
+        reloadWithMessage(1);
     });
 }
 
 /**
- * Lance l'installation du plugin
+ * Initialise le carousel pour les screenshots
  */
-function updatePlugin(id) {
-    var data = {
-        action: 'update',
-        id: id
-    };
-    ajaxQuery('core/ajax/update.ajax.php', data, function () {
-        var data = {
-            action: 'refresh',
-            params: 'branch-hash',
-            data: [currentPlugin['sourceName'], currentPlugin['fullName']]
-        }
-        // Met à jour les branches
-        ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', data, function () {
-            window.location.href = window.location.href + "&message=0";
-        });
-    });
-}
-
-/**
- * Lancer une requête Ajax
- *
- * @param data Données de la requête
- */
-function ajaxQuery(url, data, callbackFunc) {
-    $.post({
-        url: url,
-        data: data,
-        dataType: 'json',
-        success: function (data, status) {
-            // Test si l'appel a échoué
-            if (data.state !== 'ok' || status !== 'success') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+function initPluginCarousel() {
+    if (currentPlugin['screenshots'].length > 0) {
+        $('#plugin-screenshots').show();
+        var screenshots = currentPlugin['screenshots'];
+        var first = true;
+        for (var screenshotIndex = 0; screenshotIndex < screenshots.length; ++screenshotIndex) {
+            var itemClassList = 'item';
+            if (first === true) {
+                itemClassList += ' active';
+                first = false;
             }
-            else {
-                if (typeof callbackFunc !== "undefined") {
-                    callbackFunc();
-                }
-            }
-        },
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
+            var itemToAdd = $('<div class="' + itemClassList + '"><img src="' + screenshots[screenshotIndex] + '"/></div>')
+            $('#plugin-screenshots .carousel-inner').append(itemToAdd);
+            $('#plugin-screenshots').carousel();
         }
-    });
+    }
 }

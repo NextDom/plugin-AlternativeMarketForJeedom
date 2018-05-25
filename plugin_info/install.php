@@ -65,10 +65,17 @@ function AlternativeMarketForJeedom_update()
  */
 function AlternativeMarketForJeedom_remove()
 {
+    // Suppression des sources de la base de données
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->dropDataTable();
     foreach (eqLogic::byType('AlternativeMarketForJeedom') as $eqLogic) {
         $eqLogic->remove();
     }
+    // Suppresion des données de configuration
+    config::remove('show-disclaimer', 'AlternativeMarketForJeedom');
+    config::remove('show-duplicates', 'AlternativeMarketForJeedom');
+    config::remove('show-sources-filters', 'AlternativeMarketForJeedom');
+    // Suppression du cache depuis le répertoire core/ajax
+    exec('rm -fr ../../plugins/AlternativeMarketForJeedom/cache/*');
 }
 
