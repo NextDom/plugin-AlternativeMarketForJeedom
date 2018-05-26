@@ -86,7 +86,10 @@ class AmfjMarket
             $result = $gitManager->updateRepositoriesList();
         }
         $repositories = $gitManager->getRepositoriesList();
-        $gitManager->updateRepositories($this->source['name'], $repositories, $force);
+        if ($repositories !== false) {
+            $gitManager->updateRepositories($this->source['name'], $repositories, $force);
+            $result = true;
+        }
         return $result;
     }
 

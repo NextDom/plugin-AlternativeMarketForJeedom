@@ -58,8 +58,13 @@ class eqLogic
         $this->configuration[$key] = $configuration;
     }
 
-    public function getConfiguration() {
-        return $this->configuration;
+    public function getConfiguration($key = null) {
+        if ($key == null) {
+            return $this->configuration;
+        }
+        else {
+            return $this->configuration[$key];
+        }
     }
 
     public function setIsEnable($isEnable) {

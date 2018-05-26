@@ -203,3 +203,7 @@
 #nextdom-modal li {
     font-size: 1.2em;
 }
+
+#nextdom-modal .list-group {
+    margin-bottom: 0 !important;
+}
