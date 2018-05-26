@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once('../../core/php/core.inc.php');
 
-class ModalDisclaimerAlternativeMarketForJeedomTest extends TestCase
+class ModalNextDomAlternativeMarketForJeedomTest extends TestCase
 {
     protected function setUp()
     {
@@ -34,7 +34,7 @@ class ModalDisclaimerAlternativeMarketForJeedomTest extends TestCase
     {
         JeedomVars::$isConnected = false;
         try {
-            include(dirname(__FILE__) . '/../desktop/modal/disclaimer.AlternativeMarketForJeedom.php');
+            include(dirname(__FILE__) . '/../desktop/modal/nextdom.AlternativeMarketForJeedom.php');
             $this->fail("L'exception n'a pas été déclenchée.");
         } catch (Exception $e) {
             $this->assertEquals($e->getMessage(), '{{401 - Accès non autorisé}}');
@@ -44,7 +44,7 @@ class ModalDisclaimerAlternativeMarketForJeedomTest extends TestCase
     public function testWithUserConnected()
     {
         ob_start();
-        include(dirname(__FILE__) . '/../desktop/modal/disclaimer.AlternativeMarketForJeedom.php');
+        include(dirname(__FILE__) . '/../desktop/modal/nextdom.AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
         $actions = MockedActions::get();
         $this->assertCount(1, $actions);
