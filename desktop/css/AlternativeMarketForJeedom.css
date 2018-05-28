@@ -272,6 +272,7 @@
 #plugin-modal-screenshots .carousel-inner>.item>a>img, .carousel-inner>.item>img {
     margin-left: auto;
     margin-right: auto;
+    max-width: 70%;
 }
 
 #plugin-modal-footer {
