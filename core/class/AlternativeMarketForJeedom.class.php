@@ -18,6 +18,8 @@
 
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
 require_once('AmfjMarket.class.php');
+require_once('AmfjDownloadManager.class.php');
+
 /**
  * Classe des objets de Jeedom
  */

@@ -22,6 +22,38 @@ use PHPUnit\Framework\TestCase;
 
 class AlternativeMarketForJeedomTest extends TestCase
 {
+    private $dataStorage;
+
+    public function setUp()
+    {
+        if (file_exists('.github-token')) {
+            $token = str_replace("\n", "", file_get_contents('.github-token'));
+            config::addKeyToCore('github::token', $token);
+        }
+        update::$byLogicalIdResult = false;
+        DB::init(true);
+        $source = [];
+        $source['type'] = 'github';
+        $source['name'] = 'NextDom';
+        $source['data'] = 'NextDom';
+        $this->market = new AmfjMarket($source);
+        $this->dataStorage = new AmfjDataStorage('amfj');
+        $this->dataStorage->createDataTable();
+        mkdir('cache');
+    }
+
+    public function tearDown()
+    {
+        $filesList = scandir('cache');
+        foreach ($filesList as $file) {
+            if ($file != '.' && $file != '..') {
+                unlink('cache/' . $file);
+            }
+        }
+        rmdir('cache');
+        $this->dataStorage->dropDataTable();
+    }
+
     public function testClassDeclaration()
     {
         $this->assertTrue(class_exists('AlternativeMarketForJeedom'));
@@ -38,6 +70,7 @@ class AlternativeMarketForJeedomTest extends TestCase
             array('name' => 'obj4', 'order' => 0),
             array('name' => 'obj5', 'order' => 1),
             array('name' => 'obj6', 'order' => 7),
+            array('name' => 'obj7', 'order' => 7),
         );
         $listEqLogic = array();
         foreach ($dataForTest as $data) {
@@ -51,5 +84,27 @@ class AlternativeMarketForJeedomTest extends TestCase
         $this->assertEquals('obj3', $listEqLogic[2]->getName());
         $this->assertEquals('obj1', $listEqLogic[4]->getName());
         $this->assertEquals('obj6', $listEqLogic[5]->getName());
+    }
+
+    public function testCronDailyWithSources() {
+        $dataForTest = array(
+            array('name' => 'src1', 'order' => 1, 'type' => 'github', 'data' => 'jeedom'),
+            array('name' => 'src2', 'order' => 2, 'type' => 'json', 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-stable.json')
+        );
+        $listEqLogic = array();
+        foreach ($dataForTest as $data) {
+            $testSrc = new AlternativeMarketForJeedom();
+            $testSrc->setName($data['name']);
+            $testSrc->setConfiguration('order', $data['order']);
+            $testSrc->setConfiguration('type', $data['type']);
+            $testSrc->setConfiguration('data', $data['data']);
+            \array_push($listEqLogic, $testSrc);
+        }
+        eqLogic::$byTypeAnswer = $listEqLogic;
+        AlternativeMarketForJeedom::cronDaily();
+        $actions = MockedActions::get();
+        $this->assertTrue(count($actions) > 100);
+        $cacheList = scandir('cache');
+        $this->assertTrue(count($cacheList) > 50);
     }
 }
