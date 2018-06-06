@@ -178,10 +178,14 @@ function updateFilteredList() {
  */
 function refresh(force) {
     pluginsUpdateNeededList = [];
+    var params = 'list';
+    if (force) {
+        params += '-force';
+    }
     $('#mass-update').hide();
     var ajaxData = {
         action: 'refresh',
-        params: 'list',
+        params: params,
         data: sourcesList
     };
     ajaxQuery('plugins/AlternativeMarketForJeedom/core/ajax/AlternativeMarketForJeedom.ajax.php', ajaxData, function () {

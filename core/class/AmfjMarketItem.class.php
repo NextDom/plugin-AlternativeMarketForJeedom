@@ -411,12 +411,15 @@ class AmfjMarketItem
                 $result['hash'] = $this->updateData->getLocalVersion();
                 $result['needUpdate'] = false;
                 $result['id'] = $this->updateData->getId();
-                if ($this->updateData->getStatus() === 'update') {
-                    $result['needUpdate'] = true;
-                } else {
-                    foreach ($this->branchesList as $branch) {
-                        if ($branch['name'] === $result['branch'] && $branch['hash'] !== $result['hash']) {
-                            $result['needUpdate'] = true;
+                if ($this->updateData->getSource() === 'github') {
+                    if ($this->updateData->getStatus() === 'update') {
+                        $result['needUpdate'] = true;
+                    } else {
+                        foreach ($this->branchesList as $branch) {
+                            if ($branch['name'] === $result['branch'] &&
+                                $branch['hash'] !== $result['hash']) {
+                                $result['needUpdate'] = true;
+                            }
                         }
                     }
                 }
