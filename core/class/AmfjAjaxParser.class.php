@@ -206,26 +206,23 @@ class AmfjAjaxParser
      */
     public static function source($params, array $data)
     {
+        $dataStorage = new AmfjDataStorage('amfj');
         switch ($params) {
             case 'add':
-                $source = new AlternativeMarketForJeedom();
-                $source->setName($data['id']);
-                $source->setLogicalId($data['id']);
-                $source->setEqType_name('AlternativeMarketForJeedom');
-                $source->setIsEnable(1);
-                $source->setConfiguration('type', $data['type']);
-                $source->setConfiguration('order', 888);
-                $source->setConfiguration('data', $data['id']);
-                $source->save();
+                $source = [];
+                $source['name'] = $data['id'];
+                $source['type'] = $data['type'];
+                $source['enabled'] = 1;
+                $source['order'] = 777;
+                $source['data'] = $data['id'];
+                $dataStorage->storeJsonData('source_'.$source['name'], $source);
                 $result = true;
                 break;
             case 'remove':
-                $source = eqLogic::byLogicalId($data['id'], 'AlternativeMarketForJeedom');
-                $source->remove();
-                $sourceConfig = [];
                 $sourceConfig['name'] = $data['id'];
                 $market = new AmfjMarket($sourceConfig);
                 $market->remove();
+                $dataStorage->remove('source_'.$data['id']);
                 $result = true;
                 break;
             default :
@@ -245,10 +242,11 @@ class AmfjAjaxParser
     {
         switch ($params) {
             case 'sources':
+                $dataStorage = new AmfjDataStorage('amfj');
                 foreach ($data as $source) {
-                    $eqLogicSource = eqLogic::byId($source['id']);
-                    $eqLogicSource->setIsEnable($source['enable']);
-                    $eqLogicSource->save();
+                    $sourceData = $dataStorage->getJsonData('source_'.$source['id']);
+                    $sourceData['enabled'] = $source['enable'];
+                    $dataStorage->storeJsonData('source_'.$source['id'], $sourceData);
                 }
                 $result = true;
                 break;

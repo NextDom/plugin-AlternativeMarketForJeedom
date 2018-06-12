@@ -21,21 +21,19 @@ if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }
 
-$plugin = plugin::byId('AlternativeMarketForJeedom');
-$eqLogics = eqLogic::byType($plugin->getId());
+require_once(__DIR__.'/../../core/class/AmfjDataStorage.class.php');
+$dataStorage = new AmfjDataStorage('amfj');
+$sourcesListRaw = $dataStorage->getAllByPrefix('source_');
 
 $sourcesList = array();
-\usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpByOrder'));
-
-foreach ($eqLogics as $eqLogic) {
-    $source = [];
-    $source['id'] = $eqLogic->getId();
-    $source['name'] = $eqLogic->getName();
-    $source['type'] = $eqLogic->getConfiguration()['type'];
-    $source['data'] = $eqLogic->getConfiguration()['data'];
-    $source['enabled'] = $eqLogic->getIsEnable();
-    array_push($sourcesList, $source);
+$idCount = 1;
+foreach ($sourcesListRaw as $sourceRaw) {
+    $source = json_decode($sourceRaw['data'], true);
+    $source['id'] = $idCount++;
+    \array_push($sourcesList, $source);
 }
+
+\usort($sourcesList, array('AlternativeMarketForJeedom', 'cmpByOrder'));
 
 sendVarToJs('sourcesList', $sourcesList);
 
@@ -49,7 +47,7 @@ sendVarToJs('sourcesList', $sourcesList);
             <ul id="sources-list" class="list-group">
                 <?php foreach ($sourcesList as $source) {
                     if ($source['type'] !== 'github') {
-                        echo '<li class="list-group-item"><span class="pull-right"><input id="check-source-'.$source['id'].'" type="checkbox"';
+                        echo '<li class="list-group-item"><span class="pull-right"><input data-name="'.$source['name'].'" id="check-source-'.$source['id'].'" type="checkbox"';
                         if ($source['enabled'] == 1) {
                             echo ' checked="checked"';
                         }

@@ -80,7 +80,7 @@ function saveSourcesChoices() {
     var result = [];
     for (var i = 0; i < inputsList.length; ++i) {
         var item = $(inputsList[i]);
-        var itemId = item.attr('id').substr(13);
+        var itemId = item.data('name');
         var enable = 0;
 
         if (item.is(':checked')) {
