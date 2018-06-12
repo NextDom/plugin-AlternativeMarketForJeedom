@@ -36,8 +36,8 @@ class AlternativeMarketForJeedom extends eqLogic
     public static function cmpByOrder($obj1, $obj2)
     {
         $result = null;
-        $obj1Order = $obj1->getConfiguration()['order'];
-        $obj2Order = $obj2->getConfiguration()['order'];
+        $obj1Order = $obj1['order'];
+        $obj2Order = $obj2['order'];
         if ($obj1Order == $obj2Order) {
             $result = 0;
         } else {

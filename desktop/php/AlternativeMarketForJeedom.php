@@ -16,6 +16,7 @@
  */
 
 require_once __DIR__ . '/../../core/class/AmfjMarket.class.php';
+require_once __DIR__.'/../../core/class/AmfjDataStorage.class.php';
 
 include_file('core', 'authentification', 'php');
 
@@ -23,19 +24,20 @@ if (!isConnect('admin')) {
     throw new \Exception('{{401 - Accès non autorisé}}');
 }
 
-$plugin = plugin::byId('AlternativeMarketForJeedom');
-$eqLogics = eqLogic::byType($plugin->getId(), true);
-\usort($eqLogics, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+$dataStorage = new AmfjDataStorage('amfj');
+$sourcesListRaw = $dataStorage->getAllByPrefix('source_');
 
 $sourcesList = array();
-foreach ($eqLogics as $eqLogic) {
-    $source = [];
-    $source['id'] = $eqLogic->getId();
-    $source['name'] = $eqLogic->getName();
-    $source['type'] = $eqLogic->getConfiguration()['type'];
-    $source['data'] = $eqLogic->getConfiguration()['data'];
-    array_push($sourcesList, $source);
+foreach ($sourcesListRaw as $sourceRaw) {
+    $source = json_decode($sourceRaw['data'], true);
+
+    if ($source['enabled'] == 1) {
+        \array_push($sourcesList, $source);
+    }
 }
+
+\usort($sourcesList, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+
 sendVarToJs('sourcesList', $sourcesList);
 sendVarToJs('moreInformationsStr', __("Plus d'informations", __FILE__));
 sendVarToJs('updateStr', __("Mettre à jour", __FILE__));
@@ -69,12 +71,12 @@ include_file('core', 'plugin.template', 'js');
                     src="plugins/AlternativeMarketForJeedom/resources/NextDomSquareRound.png" alt="Site NextDom"/></a>
     </div>
     <div class="col-sm-12 col-md-11">
-        <?php if (count($eqLogics) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) : ?>
+        <?php if (count($sourcesList) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) : ?>
             <div class="market-filters row">
                 <div id="market-filter-src" class="btn-group col-sm-12">
                     <?php
-                    foreach ($eqLogics as $eqLogic) {
-                        $name = $eqLogic->getName();
+                    foreach ($sourcesList as $source) {
+                        $name = $source['name'];
                         echo '<button type="button" class="btn btn-primary" data-source="' . $name . '">' . $name . '</button >';
                     }
                     ?>

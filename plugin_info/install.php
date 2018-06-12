@@ -29,26 +29,18 @@ function AlternativeMarketForJeedom_install()
     $dataStorage->createDataTable();
 
     $markets = [
-        ['name' => 'NextDom Stable', 'enabled' => 1, 'order' => 1, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-stable.json'],
-        ['name' => 'NextDom draft', 'enabled' => 0, 'order' => 2, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-draft.json'],
-        ['name' => 'Lunarok', 'enabled' => 1, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-stable.json'],
-        ['name' => 'Lunarok draft', 'enabled' => 0, 'order' => 3, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-draft.json'],
-        ['name' => 'Mika-nt28', 'enabled' => 1, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-stable.json'],
-        ['name' => 'Mika-nt28 draft', 'enabled' => 0, 'order' => 4, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-draft.json'],
-        ['name' => 'KiwiHC16', 'enabled' => 1, 'order' => 5, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/KiwiHC16.json'],
-        ['name' => 'Jeedom', 'enabled' => 1, 'order' => 999, 'url' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/jeedom.json']
+        ['name' => 'NextDom Stable', 'enabled' => 1, 'type' => 'json', 'order' => 1, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-stable.json'],
+        ['name' => 'NextDom draft', 'enabled' => 0, 'type' => 'json', 'order' => 2, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/nextdom-draft.json'],
+        ['name' => 'Lunarok', 'enabled' => 1, 'type' => 'json', 'order' => 3, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-stable.json'],
+        ['name' => 'Lunarok draft', 'enabled' => 0, 'type' => 'json', 'order' => 3, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/lunarok-draft.json'],
+        ['name' => 'Mika-nt28', 'enabled' => 1, 'type' => 'json', 'order' => 4, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-stable.json'],
+        ['name' => 'Mika-nt28 draft', 'enabled' => 0, 'type' => 'json', 'order' => 4, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/mika-nt28-draft.json'],
+        ['name' => 'KiwiHC16', 'enabled' => 1, 'type' => 'json', 'order' => 5, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/KiwiHC16.json'],
+        ['name' => 'Jeedom', 'enabled' => 1, 'type' => 'json', 'order' => 999, 'data' => 'https://raw.githubusercontent.com/NextDom/AlternativeMarket-Lists/master/results/jeedom.json']
     ];
 
     foreach ($markets as $market) {
-        $defaultMarket = new AlternativeMarketForJeedom();
-        $defaultMarket->setName($market['name']);
-        $defaultMarket->setLogicalId($market['name']);
-        $defaultMarket->setEqType_name('AlternativeMarketForJeedom');
-        $defaultMarket->setConfiguration('type', 'json');
-        $defaultMarket->setConfiguration('order', $market['order']);
-        $defaultMarket->setConfiguration('data', $market['url']);
-        $defaultMarket->setIsEnable($market['enabled']);
-        $defaultMarket->save();
+        $dataStorage->storeJsonData('source_'.$market['name'], $market);
     }
 
     config::save('github::enable', 1);
@@ -68,9 +60,7 @@ function AlternativeMarketForJeedom_remove()
     // Suppression des sources de la base de données
     $dataStorage = new AmfjDataStorage('amfj');
     $dataStorage->dropDataTable();
-    foreach (eqLogic::byType('AlternativeMarketForJeedom') as $eqLogic) {
-        $eqLogic->remove();
-    }
+
     // Suppresion des données de configuration
     config::remove('show-disclaimer', 'AlternativeMarketForJeedom');
     config::remove('show-duplicates', 'AlternativeMarketForJeedom');

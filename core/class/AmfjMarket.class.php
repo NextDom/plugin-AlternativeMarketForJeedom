@@ -167,6 +167,7 @@ class AmfjMarket
      */
     public function getItemsFromJson()
     {
+        error_log('coucou');
         $result = array();
         $plugins = $this->dataStorage->getJsonData('repo_data_' . $this->source['name']);
         foreach ($plugins as $plugin) {

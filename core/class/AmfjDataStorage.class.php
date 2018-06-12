@@ -190,4 +190,11 @@ class AmfjDataStorage
         $statement = DB::getConnection()->prepare("DELETE FROM `".$this->dataTableName."` WHERE `code` LIKE ?");
         $statement->execute(array($code));
     }
+
+    public function getAllByPrefix($prefix) {
+        $statement = DB::getConnection()->prepare("SELECT `data` FROM `" . $this->dataTableName . "` WHERE `code` LIKE ?");
+        $statement->execute(array($prefix.'%'));
+        $returnValue = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $returnValue;
+    }
 }
