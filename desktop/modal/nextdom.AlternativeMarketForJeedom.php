@@ -42,7 +42,7 @@ if (!isConnect('admin')) {
         <div class="panel-body">
             <ul class="list-group">
                 <li class="list-group-item"><i class="fa fa-github"></i><span> {{GitHub}} : </span><a href="https://github.com/NextDom">https://github.com/NextDom</a></li>
-                <li class="list-group-item"><i class="fa fa-globe"></i><span> {{Site internet}} : </span><a href="https://nextdom.github.io">https://nextdom.github.io</a></li>
+                <li class="list-group-item"><i class="fa fa-globe"></i><span> {{Site internet}} : </span><a href="https://www.nextdom.org">https://www.nextdom.org</a></li>
                 <li class="list-group-item"><i class="fa fa-comments"></i><span> {{Gitter}} : </span><a href="https://gitter.im/NextDom">https://gitter.im/NextDom</a></li>
             </ul>
         </div>
