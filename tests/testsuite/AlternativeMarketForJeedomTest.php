@@ -72,18 +72,11 @@ class AlternativeMarketForJeedomTest extends TestCase
             array('name' => 'obj6', 'order' => 7),
             array('name' => 'obj7', 'order' => 7),
         );
-        $listEqLogic = array();
-        foreach ($dataForTest as $data) {
-            $testObj = new AlternativeMarketForJeedom();
-            $testObj->setName($data['name']);
-            $testObj->setConfiguration('order', $data['order']);
-            \array_push($listEqLogic, $testObj);
-        }
-        \usort($listEqLogic, array('AlternativeMarketForJeedom', 'cmpByOrder'));
-        $this->assertEquals('obj4', $listEqLogic[0]->getName());
-        $this->assertEquals('obj3', $listEqLogic[2]->getName());
-        $this->assertEquals('obj1', $listEqLogic[4]->getName());
-        $this->assertEquals('obj6', $listEqLogic[5]->getName());
+        \usort($dataForTest, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+        $this->assertEquals('obj4', $dataForTest[0]['name']);
+        $this->assertEquals('obj3', $dataForTest[2]['name']);
+        $this->assertEquals('obj1', $dataForTest[4]['name']);
+        $this->assertEquals('obj6', $dataForTest[5]['name']);
     }
 
     public function testCronDailyWithSources() {

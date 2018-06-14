@@ -45,9 +45,15 @@ function AlternativeMarketForJeedom_install()
     config::save('show-disclaimer', true, 'AlternativeMarketForJeedom');
 }
 
+/**
+ * Fonction appelée à la mise à jour du plugin
+ */
 function AlternativeMarketForJeedom_update()
 {
-
+    // Suppression de l'ancienne gestion des sources
+    foreach (eqLogic::byType('AlternativeMarketForJeedom') as $eqLogic) {
+        $eqLogic->remove();
+    }
 }
 
 /**

@@ -221,4 +221,15 @@ class AmfjDataStorageTest extends TestCase
         $this->assertEquals('query_execute', $actions[0]['action']);
         $this->assertContains('DELETE FROM ', $actions[0]['content']['query']);
     }
+
+    public function testGetAllByPrefix()
+    {
+        $result = $this->dataStorage->getAllByPrefix('Precode');
+        $actions = MockedActions::get();
+        $this->assertCount(1, $actions);
+        $this->assertEquals('query_execute', $actions[0]['action']);
+        $this->assertContains('SELECT `data` ', $actions[0]['content']['query']);
+        $this->assertContains('LIKE ?', $actions[0]['content']['query']);
+    }
+
 }
