@@ -68,7 +68,7 @@ include_file('core', 'plugin.template', 'js');
 <div class="row">
     <div id="logo-nextdom" class="hidden-xs hidden-sm col-md-1">
         <a href="https://nextdom.github.io/"><img
-                    src="plugins/AlternativeMarketForJeedom/resources/NextDomSquareRound.png" alt="Site NextDom"/></a>
+                    src="plugins/AlternativeMarketForJeedom/resources/NextDom_Square_BlueAlpha.png" alt="Site NextDom"/></a>
     </div>
     <div class="col-sm-12 col-md-11">
         <?php if (count($sourcesList) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) : ?>
