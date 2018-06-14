@@ -14,21 +14,21 @@ matrix:
     - cd ${TRAVIS_BUILD_DIR}
     - echo ${GITHUB_TOKEN} > .github-token
     - ./tests/launch_tests.sh
+    - sonar-scanner
     after_script:
     - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g'
       clover.xml
     - php vendor/bin/php-coveralls
-    - sonar-scanner
   - language: markdown
     addons:
+      sonarcloud:
+        organization: "nextdom-user-github"
+        token:
+          secure: bTcB6qTDM0QyPj7Su3xebTsydoW+0hIxBZm6fnXM5MCdok2VfWHX5Ws8sYeTm/AwpnpZ7BJ9Z7hv3n5kNZJqiwsxR5KiN1mp/6PoLixuJn25CIB+G3VIVhZ73cwLVQU8d9URP0n5jBaqhBAYtENz5x+66ILqQnRbD8/bJpRwlErb7KhYfOgbLsd2fzR9vuC2hnuK/TjfSWorQRyw/R/3D102eY67x0KQo4nKXz2ZF8gHV3j4N3k5mBGAp6BT9c/Zg/vtcSDhKlPgugVuXfWNQFrEZHsSKadU9Jx7l3poazVimvECqfLScmvlHom1BvDRU5qDh79F0Jt9V5DA39vk7nL+3p6dg3g7REVl9FeY+IeGEGLS0qGTPJk9vAJEmsd9MCQ1t72XxP83300WEHvhQ38Jv6kdkV85AOpNgQFIuUR0kCkrTpMKoWDUbn5+RO8AoJOynEE0NpktLB1B+HteDj9/wead6DRcpyCF+7Otrvcf0QsRtnjSg/6PsV1txMcT3atcnYv/mcjpX81/BmPJu9ush6P0hlgt75u0la5H0TWcVGyVJ8aHojc3pIwLDI1Rw+iiEl1kI5vI7Wh7xUxkvdx4dBX722ZdGQSTNVapC0KHTvRiHeog2tha+x3RkSbhw20IErbg+NxK990QDzdqYI3wcGnv+sRJNx258XcJwNY=
       apt:
         packages:
         - aspell
         - aspell-fr
-      sonarcloud:
-        organization: nextdom
-        token:
-          secure: RrNQu9HImlFSDEOHgK2XYTNyh6DOkwO2NapUgOLSZQM2xtCixOWJd03PY3gcAehHkOJL9gM8In3BL/LjyiqV9OmKsspcVgybZThEAYRco5UW5HIV2sxlV9aglYk5nzEOlSxvdIvfjTgysUEb85v4536Ts5j3cFgwqGCNQnMJ5oW+Q5AvLUF5fnEz5BOg69oqo1Fn9zhBgLIjb9WwGi9wKcHlKJI+fNfGBUOojH+iAtx8YXngrjuHo5sVZ1V5vhfM46JDanEciphLqJaFTi7dc593OZiHI3upJI3P7Elyw4YRyXGoFTypS3DbiqDjb4fFIvmlwtuqgoRFkK2/YsdvV8m+ZbVtIlQgvQrzcL0pICbcIYl+WVt80JS6pDQca0WgFgWjPImY2TKzjYvzP2gXEgD0EEU3tN6GWXX6QF4F8bXOEJgQlrkhJx/FU4stljaSwtqJHY8+ycsl0mHccAU6lvvLUE+WoAEfiuUVO1mrmSqUvyBV2u2VDRoGEJtvMrsnIZzNFafa0O+HzGE0c9+Kh0LpuPf7zYGUWDNQZbGnlAbJd4GxJcqLe6qvoOFT2h+bLsuqe1Bcc24TitTZlTr+5kbZCKe05Y+wPXaiDOdoL3tLyBTqgPhkFL/0PN0yKvqMpG4HMucVrPpI68bbXgT1KMDri0sCP/P2pRUaSqvfcew=
     script:
     - gem install mdl
     - cd ${TRAVIS_BUILD_DIR}
