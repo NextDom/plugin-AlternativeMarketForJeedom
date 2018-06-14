@@ -186,11 +186,23 @@ class AmfjDataStorage
         return \json_decode($this->getRawData($code), true);
     }
 
+    /**
+     * Supprime une données à partir de son code
+     *
+     * @param string $code Code de la données à supprimer
+     */
     public function remove($code) {
         $statement = DB::getConnection()->prepare("DELETE FROM `".$this->dataTableName."` WHERE `code` LIKE ?");
         $statement->execute(array($code));
     }
 
+    /**
+     * Obtenir toutes données ayant un préfix commun.
+     *
+     * @param string $prefix Préfixe des clés.
+     *
+     * @return array Liste des résultats
+     */
     public function getAllByPrefix($prefix) {
         $statement = DB::getConnection()->prepare("SELECT `data` FROM `" . $this->dataTableName . "` WHERE `code` LIKE ?");
         $statement->execute(array($prefix.'%'));

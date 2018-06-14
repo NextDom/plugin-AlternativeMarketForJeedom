@@ -8,22 +8,26 @@ matrix:
     - composer install
     - mkdir -p build/logs
     - mysql -e 'CREATE DATABASE jeedom_test;'
+    addons:
+      sonarcloud:
+        organization: "nextdom-user-github"
+        token:
+          secure: bTcB6qTDM0QyPj7Su3xebTsydoW+0hIxBZm6fnXM5MCdok2VfWHX5Ws8sYeTm/AwpnpZ7BJ9Z7hv3n5kNZJqiwsxR5KiN1mp/6PoLixuJn25CIB+G3VIVhZ73cwLVQU8d9URP0n5jBaqhBAYtENz5x+66ILqQnRbD8/bJpRwlErb7KhYfOgbLsd2fzR9vuC2hnuK/TjfSWorQRyw/R/3D102eY67x0KQo4nKXz2ZF8gHV3j4N3k5mBGAp6BT9c/Zg/vtcSDhKlPgugVuXfWNQFrEZHsSKadU9Jx7l3poazVimvECqfLScmvlHom1BvDRU5qDh79F0Jt9V5DA39vk7nL+3p6dg3g7REVl9FeY+IeGEGLS0qGTPJk9vAJEmsd9MCQ1t72XxP83300WEHvhQ38Jv6kdkV85AOpNgQFIuUR0kCkrTpMKoWDUbn5+RO8AoJOynEE0NpktLB1B+HteDj9/wead6DRcpyCF+7Otrvcf0QsRtnjSg/6PsV1txMcT3atcnYv/mcjpX81/BmPJu9ush6P0hlgt75u0la5H0TWcVGyVJ8aHojc3pIwLDI1Rw+iiEl1kI5vI7Wh7xUxkvdx4dBX722ZdGQSTNVapC0KHTvRiHeog2tha+x3RkSbhw20IErbg+NxK990QDzdqYI3wcGnv+sRJNx258XcJwNY=
+      apt:
+        packages:
+        - aspell
+        - aspell-fr
     before_script:
     - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
     script:
     - cd ${TRAVIS_BUILD_DIR}
     - echo ${GITHUB_TOKEN} > .github-token
-    - "./tests/launch_tests.sh"
+    - ./tests/launch_tests.sh
     after_script:
-    - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g'
-      clover.xml
+    - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g' clover.xml
     - php vendor/bin/php-coveralls
+    - sonar-scanner
   - language: markdown
-    addons:
-      apt:
-        packages:
-        - aspell
-        - aspell-fr
     script:
     - gem install mdl
     - cd ${TRAVIS_BUILD_DIR}

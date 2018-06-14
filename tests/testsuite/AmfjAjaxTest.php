@@ -19,12 +19,18 @@
 use PHPUnit\Framework\TestCase;
 
 require_once('../../core/php/core.inc.php');
+require_once('core/class/AmfjDataStorage.class.php');
 
 class AmfjAjaxTest extends TestCase
 {
+    public $dataStorage;
+
     protected function setUp()
     {
+        DB::init(false);
         JeedomVars::$isConnected = true;
+        $this->dataStorage = new AmfjDataStorage('amfj');
+
     }
 
     protected function tearDown()
@@ -67,15 +73,16 @@ class AmfjAjaxTest extends TestCase
     }
 
     public function testGoodAction() {
+
         JeedomVars::$initAnswers = array('action' => 'source', 'params' => 'add', 'data' => array('id' => 'NextDom', 'type' => 'github'));
         include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
         $actions = MockedActions::get();
-        $this->assertCount(5, $actions);
+        $this->assertCount(6, $actions);
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
         $this->assertEquals('ajax_init', $actions[1]['action']);
-        $this->assertEquals('eqLogic_save', $actions[2]['action']);
-        $this->assertEquals('NextDom', $actions[2]['content']);
-        $this->assertEquals('ajax_success', $actions[3]['action']);
+        $this->assertEquals('query_execute', $actions[2]['action']);
+        $this->assertEquals('query_execute', $actions[3]['action']);
+        $this->assertEquals('ajax_success', $actions[4]['action']);
     }
 }

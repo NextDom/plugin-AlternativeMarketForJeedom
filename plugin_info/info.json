@@ -8,8 +8,8 @@
   "hasDependency": false,
   "hasOwnDaemon": false,
   "maxDependancyInstallTime": 0,
-  "documentation": "https://jeedom.github.io/plugin-AlternativeMarketForJeedom/#language#/",
-  "changelog": "https://jeedom.github.io/plugin-AlternativeMarketForJeedom/#language#/changelog",
+  "documentation": "https://nextdom.github.io/plugin-AlternativeMarketForJeedom/#language#/",
+  "changelog": "https://nextdom.github.io/plugin-AlternativeMarketForJeedom/#language#/changelog",
   "description": "Market alternatif pour la solution domotique Jeedom",
   "author": "Sylvain DANGIN"
 }

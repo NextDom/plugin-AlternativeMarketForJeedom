@@ -132,16 +132,18 @@ class AmfjAjaxParserTest extends TestCase
     }
 
     public function testSourceAdd() {
+        DB::init(false);
         JeedomVars::$initAnswers = array('action' => 'source', 'params' => 'add', 'data' => array('id' => 'NextDom', 'type' => 'github'));
         include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
         $actions = MockedActions::get();
-        $this->assertCount(5, $actions);
+        $this->assertCount(6, $actions);
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
         $this->assertEquals('ajax_init', $actions[1]['action']);
-        $this->assertEquals('eqLogic_save', $actions[2]['action']);
-        $this->assertEquals('NextDom', $actions[2]['content']);
-        $this->assertEquals('ajax_success', $actions[3]['action']);
+        $this->assertEquals('query_execute', $actions[3]['action']);
+        $this->assertContains('INSERT INTO', $actions[3]['content']['query']);
+        $this->assertEquals('source_NextDom', $actions[3]['content']['data'][0]);
+        $this->assertEquals('ajax_success', $actions[4]['action']);
     }
 
     public function testSourceRemove() {
@@ -153,19 +155,21 @@ class AmfjAjaxParserTest extends TestCase
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
         $this->assertEquals('ajax_init', $actions[1]['action']);
-        $this->assertEquals('eqLogic_remove', $actions[2]['action']);
+        $this->assertEquals('query_execute', $actions[2]['action']);
+        $this->assertContains('DELETE FROM ', $actions[2]['content']['query']);
+        $this->assertContains('repo_ignore_NextDom', $actions[2]['content']['data'][0]);
         $this->assertEquals('query_execute', $actions[3]['action']);
         $this->assertContains('DELETE FROM ', $actions[3]['content']['query']);
-        $this->assertContains('repo_ignore_NextDom', $actions[3]['content']['data'][0]);
+        $this->assertContains('repo_last_change_NextDom', $actions[3]['content']['data'][0]);
         $this->assertEquals('query_execute', $actions[4]['action']);
         $this->assertContains('DELETE FROM ', $actions[4]['content']['query']);
-        $this->assertContains('repo_last_change_NextDom', $actions[4]['content']['data'][0]);
+        $this->assertContains('repo_data_NextDom', $actions[4]['content']['data'][0]);
         $this->assertEquals('query_execute', $actions[5]['action']);
         $this->assertContains('DELETE FROM ', $actions[5]['content']['query']);
-        $this->assertContains('repo_data_NextDom', $actions[5]['content']['data'][0]);
+        $this->assertContains('repo_last_update_NextDom', $actions[5]['content']['data'][0]);
         $this->assertEquals('query_execute', $actions[6]['action']);
         $this->assertContains('DELETE FROM ', $actions[6]['content']['query']);
-        $this->assertContains('repo_last_update_NextDom', $actions[6]['content']['data'][0]);
+        $this->assertContains('source_NextDom', $actions[6]['content']['data'][0]);
         $this->assertEquals('ajax_success', $actions[7]['action']);
     }
 
@@ -175,15 +179,30 @@ class AmfjAjaxParserTest extends TestCase
     }
 
     public function testSaveSources() {
-        JeedomVars::$initAnswers = array('action' => 'save', 'params' => 'sources', 'data' => array(array('id' => 1, 'enable' => 'true'), array('id' => 2, 'enable' => false)));
+        DB::init(false);
+        JeedomVars::$initAnswers = array('action' => 'save', 'params' => 'sources', 'data' => array(array('id' => 'NextDom', 'enable' => true), array('id' => 'Jeedom', 'enable' => false)));
         include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
         $actions = MockedActions::get();
-        $this->assertCount(6, $actions);
+        $this->assertCount(10, $actions);
+        /*
+        var_dump($actions[4]);
+        var_dump($actions[5]);
+        var_dump($actions[6]);
+        var_dump($actions[7]);
+        var_dump($actions[8]);
+        var_dump($actions[9]);
+        */
         $this->assertEquals('include_file', $actions[0]['action']);
         $this->assertEquals('authentification', $actions[0]['content']['name']);
         $this->assertEquals('ajax_init', $actions[1]['action']);
-        $this->assertEquals('eqLogic_save', $actions[2]['action']);
-        $this->assertEquals('eqLogic_save', $actions[3]['action']);
-        $this->assertEquals('ajax_success', $actions[4]['action']);
+        $this->assertEquals('query_execute', $actions[2]['action']);
+        $this->assertContains('SELECT ', $actions[2]['content']['query']);
+        $this->assertEquals('query_execute', $actions[4]['action']);
+        $this->assertContains('INSERT INTO ', $actions[4]['content']['query']);
+        $this->assertContains('"enabled":true', $actions[4]['content']['data'][1]);
+        $this->assertEquals('query_execute', $actions[7]['action']);
+        $this->assertContains('INSERT INTO ', $actions[7]['content']['query']);
+        $this->assertContains('"enabled":false', $actions[7]['content']['data'][1]);
+        $this->assertEquals('ajax_success', $actions[8]['action']);
     }
 }

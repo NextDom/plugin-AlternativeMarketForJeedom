@@ -37,18 +37,26 @@ class ModalConfigAlternativeMarketForJeedomTest extends TestCase
 
     protected function setUp()
     {
+        DB::init(true);
+        $this->dataStorage = new AmfjDataStorage('amfj');
+        $this->dataStorage->createDataTable();
         $this->sources = [];
-        array_push($this->sources, new EqLogicTest(1, 'GitHub Enabled', array('type' => 'github', 'data' => '', 'order' => 1), true));
-        array_push($this->sources, new EqLogicTest(2, 'GitHub Disabled', array('type' => 'github', 'data' => '', 'order' => 2), false));
-        array_push($this->sources, new EqLogicTest(3, 'Json Enabled', array('type' => 'json', 'data' => '', 'order' => 3), true));
-        array_push($this->sources, new EqLogicTest(4, 'Json Disabled', array('type' => 'json', 'data' => '', 'order' => 4), false));
-        array_push($this->sources, new EqLogicTest(60, 'Another Json Enabled', array('type' => 'json', 'data' => '', 'order' => 6), true));
-        eqLogic::$byTypeAnswer = $this->sources;
+        $this->sources = [
+            ['name' => 'GitHub Enabled', 'enabled' => 1, 'type' => 'github', 'order' => 1, 'data' => ''],
+            ['name' => 'GitHub Disabled', 'enabled' => 0, 'type' => 'github', 'order' => 2, 'data' => ''],
+            ['name' => 'Json Enabled', 'enabled' => 1, 'type' => 'json', 'order' => 3, 'data' => ''],
+            ['name' => 'Json Disabled', 'enabled' => 0, 'type' => 'json', 'order' => 4, 'data' => ''],
+            ['name' => 'Another Json Disabled', 'enabled' => 0, 'type' => 'json', 'order' => 6, 'data' => ''],
+        ];
+        foreach ($this->sources as $source) {
+            $this->dataStorage->storeJsonData('source_'.$source['name'], $source);
+        }
 
     }
 
     protected function tearDown()
     {
+        $this->dataStorage->dropDataTable();
     }
 
     public function testNotConnected()
@@ -86,9 +94,11 @@ class ModalConfigAlternativeMarketForJeedomTest extends TestCase
         include(dirname(__FILE__) . '/../desktop/modal/config.AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
 
-        $this->assertContains('id="check-source-3" type="checkbox" checked="checked">', $content);
-        $this->assertContains('id="check-source-4" type="checkbox">', $content);
-        $this->assertContains('id="check-source-60" type="checkbox" checked="checked">', $content);
+        $this->assertNotContains('id="check-source-1"', $content);
+        $this->assertNotContains('GitHub Enabled', $content);
+        $this->assertContains('id="check-source-3" type="checkbox" checked="checked"', $content);
+        $this->assertContains('data-name="Json Disabled" id="check-source-4" type="checkbox">', $content);
+        $this->assertContains('data-name="Json Enabled"', $content);
     }
 
     public function testSourcesList() {

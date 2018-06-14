@@ -28,15 +28,17 @@ $dataStorage = new AmfjDataStorage('amfj');
 $sourcesListRaw = $dataStorage->getAllByPrefix('source_');
 
 $sourcesList = array();
-foreach ($sourcesListRaw as $sourceRaw) {
-    $source = json_decode($sourceRaw['data'], true);
+if ($sourcesListRaw !== null) {
+    foreach ($sourcesListRaw as $sourceRaw) {
+        $source = json_decode($sourceRaw['data'], true);
 
-    if ($source['enabled'] == 1) {
-        \array_push($sourcesList, $source);
+        if ($source['enabled'] == 1) {
+            \array_push($sourcesList, $source);
+        }
     }
-}
 
-\usort($sourcesList, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+    \usort($sourcesList, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+}
 
 sendVarToJs('sourcesList', $sourcesList);
 sendVarToJs('moreInformationsStr', __("Plus d'informations", __FILE__));
@@ -68,7 +70,7 @@ include_file('core', 'plugin.template', 'js');
 <div class="row">
     <div id="logo-nextdom" class="hidden-xs hidden-sm col-md-1">
         <a href="https://nextdom.github.io/"><img
-                    src="plugins/AlternativeMarketForJeedom/resources/NextDomSquareRound.png" alt="Site NextDom"/></a>
+                    src="plugins/AlternativeMarketForJeedom/resources/NextDom_Square_BlueAlpha.png" alt="Site NextDom"/></a>
     </div>
     <div class="col-sm-12 col-md-11">
         <?php if (count($sourcesList) > 1 && config::byKey('show-sources-filters', 'AlternativeMarketForJeedom')) : ?>
