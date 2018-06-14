@@ -18,12 +18,17 @@ matrix:
     - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g'
       clover.xml
     - php vendor/bin/php-coveralls
+    - sonar-scanner
   - language: markdown
     addons:
       apt:
         packages:
         - aspell
         - aspell-fr
+      sonarcloud:
+        organization: nextdom
+        token:
+          secure: KTrf9gBvx6X8nsc08DK5FJVS+SfOlXeR7hr55egeKFP1ulqybL0Sfa+orRfSFKYDRuzWN8N78U8FYRWQP6kPLMGHTCWPIyaxaDkfoM/RkwvOk5LKS7Bfv/VAyFp8mR0fJnF2T6+JwMVtmn84PdtTmvO6gngfHpYnnMcXgG+ENCSAhMDxi/+KZeWCVtVRCdujKugXIYn8i13WrqyYCPBEo+OaAdOJ9kOLxOh1mjhrt1ImcFoJ9yff3v7DPvliBJycanoNvqFoJ4gGIXV+agzHAdeUm+etMW/ThKmZYgUuOUdObkTNG6meXJKMb2dnOsRWirwcE+sguJ6oTkcd4hMCrGnCQ5dU2Vp5NoLM8moFWUCn1yO52B0bNovpOBFhKZbSuCDBmiK3OeSWh+tyviQ85+X06XTHjva1b5jVb4AblZSuYyt062tOlXyqTRziFiZtr2jy/YF+XiVek+ep4eXCnST93fG/zl5VK5igwuhqBEiAn04XLDI1BWUXZ1rxNa10hoLNVvmTFYNFOqC8/pUT96S3RC3NFmsLLd2K2i2Ie9oj4Lf5RBD2fYzr8XKtKiqI6JSl4S3UgX+HYiD0lj4jh9pzm50QX/N0DqlhKzjJXWkwExjIQwAY9csaa8edAN7tVd/Z/gdZxPAQfY29TN1JA0+kqpxAvHT6QFK6cEPEc0s=
     script:
     - gem install mdl
     - cd ${TRAVIS_BUILD_DIR}
