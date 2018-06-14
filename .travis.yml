@@ -13,7 +13,7 @@ matrix:
     script:
     - cd ${TRAVIS_BUILD_DIR}
     - echo ${GITHUB_TOKEN} > .github-token
-    - "./tests/launch_tests.sh"
+    - ./tests/launch_tests.sh
     after_script:
     - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g'
       clover.xml
@@ -28,7 +28,7 @@ matrix:
       sonarcloud:
         organization: nextdom
         token:
-          secure: KTrf9gBvx6X8nsc08DK5FJVS+SfOlXeR7hr55egeKFP1ulqybL0Sfa+orRfSFKYDRuzWN8N78U8FYRWQP6kPLMGHTCWPIyaxaDkfoM/RkwvOk5LKS7Bfv/VAyFp8mR0fJnF2T6+JwMVtmn84PdtTmvO6gngfHpYnnMcXgG+ENCSAhMDxi/+KZeWCVtVRCdujKugXIYn8i13WrqyYCPBEo+OaAdOJ9kOLxOh1mjhrt1ImcFoJ9yff3v7DPvliBJycanoNvqFoJ4gGIXV+agzHAdeUm+etMW/ThKmZYgUuOUdObkTNG6meXJKMb2dnOsRWirwcE+sguJ6oTkcd4hMCrGnCQ5dU2Vp5NoLM8moFWUCn1yO52B0bNovpOBFhKZbSuCDBmiK3OeSWh+tyviQ85+X06XTHjva1b5jVb4AblZSuYyt062tOlXyqTRziFiZtr2jy/YF+XiVek+ep4eXCnST93fG/zl5VK5igwuhqBEiAn04XLDI1BWUXZ1rxNa10hoLNVvmTFYNFOqC8/pUT96S3RC3NFmsLLd2K2i2Ie9oj4Lf5RBD2fYzr8XKtKiqI6JSl4S3UgX+HYiD0lj4jh9pzm50QX/N0DqlhKzjJXWkwExjIQwAY9csaa8edAN7tVd/Z/gdZxPAQfY29TN1JA0+kqpxAvHT6QFK6cEPEc0s=
+          secure: RrNQu9HImlFSDEOHgK2XYTNyh6DOkwO2NapUgOLSZQM2xtCixOWJd03PY3gcAehHkOJL9gM8In3BL/LjyiqV9OmKsspcVgybZThEAYRco5UW5HIV2sxlV9aglYk5nzEOlSxvdIvfjTgysUEb85v4536Ts5j3cFgwqGCNQnMJ5oW+Q5AvLUF5fnEz5BOg69oqo1Fn9zhBgLIjb9WwGi9wKcHlKJI+fNfGBUOojH+iAtx8YXngrjuHo5sVZ1V5vhfM46JDanEciphLqJaFTi7dc593OZiHI3upJI3P7Elyw4YRyXGoFTypS3DbiqDjb4fFIvmlwtuqgoRFkK2/YsdvV8m+ZbVtIlQgvQrzcL0pICbcIYl+WVt80JS6pDQca0WgFgWjPImY2TKzjYvzP2gXEgD0EEU3tN6GWXX6QF4F8bXOEJgQlrkhJx/FU4stljaSwtqJHY8+ycsl0mHccAU6lvvLUE+WoAEfiuUVO1mrmSqUvyBV2u2VDRoGEJtvMrsnIZzNFafa0O+HzGE0c9+Kh0LpuPf7zYGUWDNQZbGnlAbJd4GxJcqLe6qvoOFT2h+bLsuqe1Bcc24TitTZlTr+5kbZCKe05Y+wPXaiDOdoL3tLyBTqgPhkFL/0PN0yKvqMpG4HMucVrPpI68bbXgT1KMDri0sCP/P2pRUaSqvfcew=
     script:
     - gem install mdl
     - cd ${TRAVIS_BUILD_DIR}
