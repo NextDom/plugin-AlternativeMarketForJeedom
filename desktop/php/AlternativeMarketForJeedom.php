@@ -28,15 +28,17 @@ $dataStorage = new AmfjDataStorage('amfj');
 $sourcesListRaw = $dataStorage->getAllByPrefix('source_');
 
 $sourcesList = array();
-foreach ($sourcesListRaw as $sourceRaw) {
-    $source = json_decode($sourceRaw['data'], true);
+if ($sourcesListRaw !== null) {
+    foreach ($sourcesListRaw as $sourceRaw) {
+        $source = json_decode($sourceRaw['data'], true);
 
-    if ($source['enabled'] == 1) {
-        \array_push($sourcesList, $source);
+        if ($source['enabled'] == 1) {
+            \array_push($sourcesList, $source);
+        }
     }
-}
 
-\usort($sourcesList, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+    \usort($sourcesList, array('AlternativeMarketForJeedom', 'cmpByOrder'));
+}
 
 sendVarToJs('sourcesList', $sourcesList);
 sendVarToJs('moreInformationsStr', __("Plus d'informations", __FILE__));

@@ -56,6 +56,7 @@ class ModalConfigAlternativeMarketForJeedomTest extends TestCase
 
     protected function tearDown()
     {
+        $this->dataStorage->dropDataTable();
     }
 
     public function testNotConnected()

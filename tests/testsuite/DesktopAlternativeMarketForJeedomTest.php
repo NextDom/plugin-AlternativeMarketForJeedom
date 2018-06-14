@@ -20,15 +20,25 @@ use PHPUnit\Framework\TestCase;
 
 require_once('../../core/php/core.inc.php');
 require_once('core/class/AlternativeMarketForJeedom.class.php');
+require_once('core/class/AmfjDataStorage.class.php');
 
 class DesktopAlternativeMarketForJeedomTest extends TestCase
 {
+    public $dataStorage;
+
     protected function setUp()
     {
+        DB::init(true);
+        $this->dataStorage = new AmfjDataStorage('amfj');
+        $this->dataStorage->dropDataTable();
+        $this->dataStorage->createDataTable();
+        MockedActions::clear();
     }
 
     protected function tearDown()
     {
+        $this->dataStorage->dropDataTable();
+        MockedActions::clear();
     }
 
     public function testNotConnected()
@@ -63,41 +73,37 @@ class DesktopAlternativeMarketForJeedomTest extends TestCase
         $this->assertContains('market-filter-category', $content);
     }
 
-    public function testWithoutEqLogics() {
+    public function testWithoutSources()
+    {
         ob_start();
         include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
         $this->assertNotContains('<button type="button" class="btn btn-primary" data-source="', $content);
     }
 
-    public function testWithEqLogics() {
+    public function testWithSources()
+    {
         config::$byKeyPluginData['AlternativeMarketForJeedom'] = [];
         config::$byKeyPluginData['AlternativeMarketForJeedom']['show-sources-filters'] = true;
         $dataForTest = array(
-            array('name' => 'src1', 'order' => 1, 'type' => 'json', 'data' => ''),
-            array('name' => 'src2', 'order' => 2, 'type' => 'json', 'data' => ''),
-            array('name' => 'src3', 'order' => 3, 'type' => 'github', 'data' => '')
+            array('name' => 'src1', 'enabled' => 1, 'order' => 1, 'type' => 'json', 'data' => ''),
+            array('name' => 'src2', 'enabled' => 1, 'order' => 2, 'type' => 'json', 'data' => ''),
+            array('name' => 'src3', 'enabled' => 0, 'order' => 3, 'type' => 'github', 'data' => '')
         );
-        $listEqLogic = array();
         foreach ($dataForTest as $data) {
-            $testSrc = new AlternativeMarketForJeedom();
-            $testSrc->setName($data['name']);
-            $testSrc->setConfiguration('order', $data['order']);
-            $testSrc->setConfiguration('type', $data['type']);
-            $testSrc->setConfiguration('data', $data['data']);
-            \array_push($listEqLogic, $testSrc);
+            $this->dataStorage->storeJsonData('source_' . $data['name'], $data);
         }
-        eqLogic::$byTypeAnswer = $listEqLogic;
         ob_start();
         include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');
         $content = ob_get_clean();
         $this->assertContains('market-filter-src', $content);
         $this->assertContains('<button type="button" class="btn btn-primary" data-source="src1"', $content);
         $this->assertContains('<button type="button" class="btn btn-primary" data-source="src2"', $content);
-        $this->assertContains('<button type="button" class="btn btn-primary" data-source="src3"', $content);
+        $this->assertNotContains('<button type="button" class="btn btn-primary" data-source="src3"', $content);
     }
 
-    public function testWithMessage() {
+    public function testWithMessage()
+    {
         $_GET['message'] = 0;
         ob_start();
         include(dirname(__FILE__) . '/../desktop/php/AlternativeMarketForJeedom.php');

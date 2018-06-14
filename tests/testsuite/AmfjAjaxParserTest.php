@@ -180,7 +180,7 @@ class AmfjAjaxParserTest extends TestCase
 
     public function testSaveSources() {
         DB::init(false);
-        JeedomVars::$initAnswers = array('action' => 'save', 'params' => 'sources', 'data' => array(array('id' => 'NextDom', 'enable' => 'true'), array('id' => 'Jeedom', 'enable' => false)));
+        JeedomVars::$initAnswers = array('action' => 'save', 'params' => 'sources', 'data' => array(array('id' => 'NextDom', 'enable' => true), array('id' => 'Jeedom', 'enable' => false)));
         include(dirname(__FILE__) . '/../core/ajax/AlternativeMarketForJeedom.ajax.php');
         $actions = MockedActions::get();
         $this->assertCount(10, $actions);
@@ -199,10 +199,10 @@ class AmfjAjaxParserTest extends TestCase
         $this->assertContains('SELECT ', $actions[2]['content']['query']);
         $this->assertEquals('query_execute', $actions[4]['action']);
         $this->assertContains('INSERT INTO ', $actions[4]['content']['query']);
-        $this->assertContains('"enabled":"true" ', $actions[4]['content']['data'][2]);
+        $this->assertContains('"enabled":true', $actions[4]['content']['data'][1]);
         $this->assertEquals('query_execute', $actions[7]['action']);
         $this->assertContains('INSERT INTO ', $actions[7]['content']['query']);
-        $this->assertContains('"enabled":"true" ', $actions[7]['content']['data'][2]);
+        $this->assertContains('"enabled":false', $actions[7]['content']['data'][1]);
         $this->assertEquals('ajax_success', $actions[8]['action']);
     }
 }
