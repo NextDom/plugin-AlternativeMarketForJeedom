@@ -31,6 +31,12 @@ if (!isConnect('admin')) {
         </div>
         <div class="panel-body">
             {{Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.}}
+            <div>
+                <a href="https://github.com/NextDom">
+                    <img src="plugins/AlternativeMarketForJeedom/resources/NextDom_Square_BlueWhite.png" alt="NextDom" style="height:100px;margin-top:10px">
+                    <img src="plugins/AlternativeMarketForJeedom/resources/NextDom_BlueBlackWhite.png" alt="NextDom" style="height:100px;margin-top:10px;margin-left:10px">
+                </a>
+            </div>
         </div>
     </div>
     <div class="panel panel-info">
