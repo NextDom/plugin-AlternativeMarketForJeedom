@@ -8,18 +8,6 @@ matrix:
     - composer install
     - mkdir -p build/logs
     - mysql -e 'CREATE DATABASE jeedom_test;'
-    before_script:
-    - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
-    script:
-    - cd ${TRAVIS_BUILD_DIR}
-    - echo ${GITHUB_TOKEN} > .github-token
-    - ./tests/launch_tests.sh
-    - sonar-scanner
-    after_script:
-    - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g'
-      clover.xml
-    - php vendor/bin/php-coveralls
-  - language: markdown
     addons:
       sonarcloud:
         organization: "nextdom-user-github"
@@ -29,6 +17,17 @@ matrix:
         packages:
         - aspell
         - aspell-fr
+    before_script:
+    - find . -type f -name *.php -not -path "./vendor/*" | xargs -n1 php -l
+    script:
+    - cd ${TRAVIS_BUILD_DIR}
+    - echo ${GITHUB_TOKEN} > .github-token
+    - ./tests/launch_tests.sh
+    after_script:
+    - sed -i'' 's/tests\/mocked_Jeedom_env\/plugins\/AlternativeMarketForJeedom\///g' clover.xml
+    - php vendor/bin/php-coveralls
+    - sonar-scanner
+  - language: markdown
     script:
     - gem install mdl
     - cd ${TRAVIS_BUILD_DIR}
