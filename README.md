@@ -34,4 +34,4 @@ Ceci vous donnera la possibilité de :
 
 ### Documentation
 
-Vous trouverez la documentation [ici](https://github.com/cyrilphoenix71/jeedom_Opening/blob/stable/doc/fr_FR/index.asciidoc)
+Vous trouverez la documentation [ici](https://nextdom.github.io/plugin-AlternativeMarketForJeedom/fr_FR/)
