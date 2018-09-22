@@ -10,7 +10,7 @@ Ceci vous donnera la possibilité de :
 ## Aperçu
 
 ### Page du plugin
-![screenshot1](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/edit/master/docs/images/screenshot1.png)
+![screenshot1](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/raw/master/docs/images/screenshot1.png)
 
 ### Installation d'un plugin
 ![screenshot1](../images/screenshot2.png)
