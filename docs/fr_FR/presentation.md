@@ -16,4 +16,4 @@ Ceci vous donnera la possibilité de :
 ![screenshot1](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/raw/master/docs/images/screenshot2.png)
 
 ### Configuration
-![screenshot1](../images/screenshot3.png)
+![screenshot1](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/raw/master/docs/images/screenshot3.png)
