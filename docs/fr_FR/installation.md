@@ -7,9 +7,9 @@
 ![install2](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/raw/master/docs/images/HowToInstall2.png)
 
 3. Remplir les informations suivantes : 
-* Type de source : __GitHub__,
-* ID logique du plugin : __AlternativeMarketForJeedom__,
-* Utiliser ou organisation du dépôt : __NextDom__,
-* Nom du dépôt : __plugin-AlternativeMarketForJeedom__,
-* Branche : __master__ (par défaut).
+- Type de source : __GitHub__,
+- ID logique du plugin : __AlternativeMarketForJeedom__,
+- Utiliser ou organisation du dépôt : __NextDom__,
+- Nom du dépôt : __plugin-AlternativeMarketForJeedom__,
+- Branche : __master__ (par défaut).
 ![install3](https://github.com/NextDom/plugin-AlternativeMarketForJeedom/raw/master/docs/images/HowToInstall3.png)
