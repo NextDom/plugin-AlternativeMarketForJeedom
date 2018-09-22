@@ -3,9 +3,9 @@
 __Alternative Market For Jeedom__ vous permettra d'installer des plugins directement depuis les sources des développeurs.
 
 Ceci vous donnera la possibilité de : 
-* Accéder à des versions en développement de plugins,
-* Installer des plugins de développeurs gardant leur indépendance,
-* Installer des plugins ne respectant pas la charte du Market Jeedom.
+  - Accéder à des versions en développement de plugins,
+  - Installer des plugins de développeurs gardant leur indépendance,
+  - Installer des plugins ne respectant pas la charte du Market Jeedom.
 
 ## Aperçu
 
