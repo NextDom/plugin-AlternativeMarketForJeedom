@@ -9,7 +9,7 @@
     "Gestionnaire des sources": "Gestionnaire des sources",
     "Gestionnaire des sources personnalisées": "Gestionnaire des sources personnalisées",
     "Identifiant GitHub...": "Identifiant GitHub...",
-    "Liste des dépots configurés : ": "Liste des dépots configurés : ",
+    "Liste des dépots configurés : ": "Liste des dépôts configurés : ",
     "Sauvegarder": "Sauvegarder"
   },
   "plugins\/AlternativeMarketForJeedom\/desktop\/modal\/disclaimer.AlternativeMarketForJeedom.php": {
@@ -26,7 +26,7 @@
   },
   "plugins\/AlternativeMarketForJeedom\/desktop\/modal\/nextdom.AlternativeMarketForJeedom.php": {
     "Qui sommes-nous ?": "Qui sommes-nous ?",
-    "Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.": "Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.",
+    "Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.": "Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisée par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.",
     "Où nous trouver ?": "Où nous trouver ?",
     "GitHub": "GitHub",
     "Site internet": "Site internet",
@@ -63,7 +63,7 @@
     "Energie": "Energie",
     "Fermer": "Fermer",
     "Installés": "Installés",
-    "La mise à jour du plugin a été effecutée.": "La mise à jour du plugin a été effecutée.",
+    "La mise à jour du plugin a été effecutée.": "La mise à jour du plugin a été effectuée.",
     "Le plugin a été supprimé": "Le plugin a été supprimé",
     "Mise(s) à jour": "Mise(s) à jour",
     "Monitoring": "Monitoring",
@@ -90,7 +90,7 @@
   "plugins\/AlternativeMarketForJeedom\/plugin_info\/configuration.php": {
     "Informations": "Informations",
     "Afficher les doublons": "Afficher les doublons",
-    "Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots": "Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots",
+    "Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépots": "Autorise l'affichage multiple des plugins en cas de présence dans plusieurs dépôts",
     "Filtres des sources": "Filtres des sources",
     "Afficher les filtres des sources": "Afficher les filtres des sources",
     "Gestionnaire de sources": "Gestionnaire de sources",
