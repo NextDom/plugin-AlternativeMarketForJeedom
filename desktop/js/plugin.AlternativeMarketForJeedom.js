@@ -62,7 +62,7 @@ function initInstallationButtons() {
     }
 
     if (currentPlugin['installed']) {
-        $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
+        $('#config-plugin').attr('href', 'index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         $('#remove-plugin').click(function () {
             removePlugin(currentPlugin['id']);
         });
@@ -153,7 +153,7 @@ function installPlugin(branch) {
         update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"' + currentPlugin['gitName'] + '", "version":"' + branch + '"},"source":"github"}'
     };
     ajaxQuery('core/ajax/update.ajax.php', data, function () {
-        window.location.replace('/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
+        window.location.replace('index.php?v=d&p=plugin&id=' + currentPlugin['id']);
     });
 }
 
