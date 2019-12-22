@@ -143,6 +143,14 @@
     color: white;
 }
 
+#config-modal .list-group-item {
+    height: 32px;
+}
+
+#div_plugin_configuration .form-group {
+    height: 32px;
+}
+
 #github-list-container {
     margin-top: 1.5em;
 }
@@ -207,3 +215,4 @@
 #nextdom-modal .list-group {
     margin-bottom: 0 !important;
 }
+
