@@ -30,7 +30,7 @@ if (!isConnect('admin')) {
             </h4>
         </div>
         <div class="panel-body">
-            {{Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom réalisé par une équipe géniale ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS, hormis la volonté de faire grandir la solution.}}
+            {{Nous sommes un regroupement de développeurs, passionnés, adeptes de la solution Open Source de domotique Jeedom ! Nous n'avons aucun lien commercial ou autre avec Jeedom SAS.}}
             <div>
                 <a href="https://github.com/NextDom">
                     <img src="plugins/AlternativeMarketForJeedom/resources/NextDom_Square_BlueWhite.png" alt="NextDom" style="height:100px;margin-top:10px">
@@ -47,11 +47,10 @@ if (!isConnect('admin')) {
         </div>
         <div class="panel-body">
             <ul class="list-group">
-                <li class="list-group-item"><i class="fa fa-github"></i><span> {{GitHub}} : </span><a href="https://github.com/NextDom">https://github.com/NextDom</a></li>
+                <li class="list-group-item"><i class="fab fa-github"></i><span> {{GitHub}} : </span><a href="https://github.com/NextDom">https://github.com/NextDom</a></li>
                 <li class="list-group-item"><i class="fa fa-globe"></i><span> {{Site internet}} : </span><a href="https://www.nextdom.org">https://www.nextdom.org</a></li>
-                <li class="list-group-item"><i class="fa fa-comments"></i><span> {{Gitter}} : </span><a href="https://gitter.im/NextDom">https://gitter.im/NextDom</a></li>
+                <li class="list-group-item"><i class="fab fa-discord"></i><span> {{Chat Discord}} : </span><a href="https://discord.gg/fQBjmq9">https://discord.gg/fQBjmq9</a></li>
             </ul>
         </div>
     </div>
 </div>
-

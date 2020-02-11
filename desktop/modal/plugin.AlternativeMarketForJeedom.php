@@ -68,7 +68,6 @@ sendVarToJs('branchStr', __("Branche ", __FILE__));
                 <div id="badges">
                     <span><a id="travis-badge"><img src=""/></a></span>
                     <span><a id="coveralls-badge"><img src=""/></a></span>
-                    <span><a id="waffle-badge"><img src=""/></a></span>
                 </div>
             </div>
         </div>
@@ -85,7 +84,7 @@ sendVarToJs('branchStr', __("Branche ", __FILE__));
                         {{Documentation}}</a></p>
                 <p><a id="changelog-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-list"></i>
                         {{Changelog}}</a></p>
-                <p><a id="github-link" class="btn btn-success" target="_blank" href=""><i class="fa fa-github"></i>
+                <p><a id="github-link" class="btn btn-success" target="_blank" href=""><i class="fab fa-github"></i>
                         {{GitHub}}</a></p>
             </div>
         </div>
