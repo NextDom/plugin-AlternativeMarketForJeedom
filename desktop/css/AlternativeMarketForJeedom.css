@@ -13,13 +13,6 @@
     display: none;
 }
 
-#amfj-config .form-group {
-    height: 36px;
-}
-#amfj-config .form-group>label {
-    line-height: 32px;
-}
-
 #admin-buttons {
     float: right;
 }
