@@ -38,8 +38,6 @@ function initDataModal() {
     $('#travis-badge img').attr('src', 'https://travis-ci.org/' + fullName + '.svg?branch=' + defaultBranch);
     $('#coveralls-badge').attr('href', 'https://coveralls.io/github/' + fullName + '?branch=' + defaultBranch);
     $('#coveralls-badge img').attr('src', 'https://coveralls.io/repos/github/' + fullName + '/badge.svg?branch=' + defaultBranch);
-    $('#waffle-badge').attr('href', 'https://waffle.io/' + fullName);
-    $('#waffle-badge img').attr('src', 'https://badge.waffle.io/' + fullName + '.svg?columns=all');
 }
 
 /**
@@ -62,7 +60,7 @@ function initInstallationButtons() {
     }
 
     if (currentPlugin['installed']) {
-        $('#config-plugin').attr('href', '/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
+        $('#config-plugin').attr('href', 'index.php?v=d&p=plugin&id=' + currentPlugin['id']);
         $('#remove-plugin').click(function () {
             removePlugin(currentPlugin['id']);
         });
@@ -153,7 +151,7 @@ function installPlugin(branch) {
         update: '{"logicalId":"' + currentPlugin['id'] + '","configuration":{"user":"' + currentPlugin['gitId'] + '", "repository":"' + currentPlugin['gitName'] + '", "version":"' + branch + '"},"source":"github"}'
     };
     ajaxQuery('core/ajax/update.ajax.php', data, function () {
-        window.location.replace('/index.php?v=d&p=plugin&id=' + currentPlugin['id']);
+        window.location.replace('index.php?v=d&p=plugin&id=' + currentPlugin['id']);
     });
 }
 
