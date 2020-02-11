@@ -115,6 +115,12 @@
     font-size: 1em;
     color: grey;
 }
+#amfj-config .form-group {
+    height: 36px;
+}
+#amfj-config .form-group>label {
+    line-height: 32px;
+}
 
 #config-modal h3 {
     text-align: center;
